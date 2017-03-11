@@ -1,0 +1,4 @@
+﻿D:\AKSHAY\School\GGP\NASAGfxEngine\DX11Starter\PixelShader.hlsl(56,34-44): error X4502: invalid vs_2_0 output semantic 'SV_TARGET'
+D:\AKSHAY\School\GGP\NASAGfxEngine\DX11Starter\PixelShader.hlsl(22,19-28): error X4502: invalid vs_2_0 input semantic 'WORLDPOS'
+  
+  compilation failed; no code produced
