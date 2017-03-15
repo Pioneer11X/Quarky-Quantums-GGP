@@ -477,16 +477,16 @@ void Game::OnMouseUp(WPARAM buttonState, int x, int y)
 void Game::OnMouseMove(WPARAM buttonState, int x, int y)
 {
 	// Add any custom code here...
-	if (buttonState & 0x0001)	// Left button is down
-	{
-		camera->MoveSideways((x - prevMousePos.x) * 0.005f);
-		camera->MoveVertical((y - prevMousePos.y) * 0.005f);
-	}
-	if (buttonState & 0x0002)	// Right button is down
-	{
-		camera->SetRotationY(x - prevMousePos.x);
-		camera->SetRotationX(y - prevMousePos.y);
-	}
+	//if (buttonState & 0x0001)	// Left button is down
+	//{
+	//	camera->MoveSideways((x - prevMousePos.x) * 0.005f);
+	//	camera->MoveVertical((y - prevMousePos.y) * 0.005f);
+	//}
+	//if (buttonState & 0x0002)	// Right button is down
+	//{
+	//	camera->SetRotationY(x - prevMousePos.x);
+	//	camera->SetRotationX(y - prevMousePos.y);
+	//}
 
 	// Save the previous mouse position, so we have it for the future
 	prevMousePos.x = x;
@@ -502,7 +502,7 @@ void Game::OnMouseWheel(float wheelDelta, int x, int y)
 {
 	// Add any custom code here...
 
-	camera->MoveAlongDirection(wheelDelta * 0.1f);
+	//camera->MoveAlongDirection(wheelDelta * 0.1f);
 }
 
 std::vector<Entity*> Game::GetEntities()
