@@ -4,7 +4,7 @@
 
 void Camera::Update(float deltaTime, float totalTime)
 {
-	HandleKeyboardInput(deltaTime);
+	//HandleKeyboardInput(deltaTime);
 
 	if (isDirty)
 	{
@@ -85,37 +85,15 @@ XMFLOAT3 & Camera::GetPosition()
 	return position;
 }
 
-void Camera::HandleKeyboardInput(float moveSpeed)
+void Camera::LerpToPosition(XMFLOAT3& lookAt, float deltaTime)
 {
-	if (InputManager::Instance()->isForwardPressed())
-	{
-		MoveAlongDirection(moveSpeed);
-	}
+	XMVECTOR here = XMLoadFloat3(&position);
+	XMVECTOR target = XMLoadFloat3(&lookAt);
+	XMVECTOR result = XMVectorLerp(here, target, 2 * deltaTime);
+	XMStoreFloat3(&position, result);
+	position.z = lookAt.z - 10;
 
-	if (InputManager::Instance()->isBackwardPressed())
-	{
-		MoveAlongDirection(-moveSpeed);
-	}
-
-	if (InputManager::Instance()->isLeftPressed())
-	{
-		MoveSideways(moveSpeed);
-	}
-
-	if (InputManager::Instance()->isRightPressed())
-	{
-		MoveSideways(-moveSpeed);
-	}
-
-	if (InputManager::Instance()->isUpPressed())
-	{
-		MoveVertical(moveSpeed);
-	}
-
-	if (InputManager::Instance()->isDownPressed())
-	{
-		MoveVertical(-moveSpeed);
-	}
+	isDirty = true;
 }
 
 Camera::Camera()

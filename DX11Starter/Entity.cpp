@@ -22,6 +22,11 @@ Entity::~Entity()
 {
 }
 
+XMFLOAT3 Entity::GetPosition()
+{
+	return position;
+}
+
 void Entity::SetTranslation(float x, float y, float z)
 {
 	this->position.x = x;

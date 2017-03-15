@@ -19,8 +19,6 @@ private:
 	float rotationX;
 	float rotationY;
 
-	void HandleKeyboardInput(float moveSpeed);
-
 	// Bool to check if values have changed since last frame
 	bool isDirty;
 
@@ -37,5 +35,6 @@ public:
 	void MoveSideways(float val);
 	void MoveVertical(float val);
 	XMFLOAT3& GetPosition();
+	void LerpToPosition(XMFLOAT3& lookAt, float deltaTime);
 };
 

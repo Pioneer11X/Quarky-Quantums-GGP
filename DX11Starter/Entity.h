@@ -31,6 +31,7 @@ private:
 public:
 	Entity(Mesh* Object, Material* materialInput);
 	~Entity();
+	XMFLOAT3 GetPosition();
 	void SetTranslation(float x, float y, float z);
 	void SetRotation(float x, float y, float z, float w);
 	void SetRotationAboutZ(float angle);

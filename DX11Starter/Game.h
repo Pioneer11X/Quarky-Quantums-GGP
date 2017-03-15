@@ -11,6 +11,7 @@
 #include "Material.h"
 #include "Lights.h"
 #include "WICTextureLoader.h"
+#include "ControlledEntity.h"
 
 class Camera;
 
@@ -95,5 +96,7 @@ private:
 
 	//Array of all point lights
 	std::vector<PointLight> pointLights;
+
+	ControlledEntity* playerChar;
 };
 

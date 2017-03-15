@@ -18,7 +18,7 @@ Game* Game::instance;
 Game::Game(HINSTANCE hInstance)
 	: DXCore( 
 		hInstance,		   // The application's handle
-		"AkshayR's DirectX Game",	   // Text for the window's title bar
+		"Quirky Quantums", // Text for the window's title bar
 		1280,			   // Width of the window's client area
 		720,			   // Height of the window's client area
 		true)			   // Show extra stats (fps) in title bar?
@@ -293,6 +293,9 @@ void Game::CreateBasicGeometry()
 
 	entities.push_back(new Entity(meshObjs[5], materials[1]));
 
+	playerChar = new ControlledEntity(meshObjs[2], materials[2]);
+	entities.push_back(playerChar);
+
 }
 
 
@@ -343,6 +346,9 @@ void Game::Update(float deltaTime, float totalTime)
 	entities[5]->SetRotation(0.0f, sin(totalTime / 2), 0.0f, cos(totalTime / 2));
 
 #pragma endregion
+
+	playerChar->HandleKeyboardInput(1.0f * deltaTime);
+	camera->LerpToPosition(playerChar->GetPosition(), deltaTime);
 	
 	camera->Update(deltaTime, totalTime);
 }
