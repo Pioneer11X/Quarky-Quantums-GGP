@@ -1,5 +1,6 @@
 #include "Game.h"
 #include "Vertex.h"
+#include "Box2D/Box2D.h"
 
 // For the DirectX Math library
 using namespace DirectX;
@@ -532,5 +533,11 @@ XMFLOAT3 & Game::GetCameraPostion()
 {
 	// TODO: insert return statement here
 	return camera->GetPosition();
+}
+
+void Game::InitBox2D()
+{
+	b2Vec2 gravity(0.0f, -10.0f);
+	b2World world(gravity);
 }
 #pragma endregion

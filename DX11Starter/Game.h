@@ -48,6 +48,9 @@ public:
 
 	// Get Camera Position
 	XMFLOAT3& GetCameraPostion();
+
+	void InitBox2D();
+
 private:
 
 	// Game Instance
