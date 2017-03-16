@@ -12,6 +12,7 @@
 #include "Lights.h"
 #include "WICTextureLoader.h"
 #include "ControlledEntity.h"
+#include "Box2D\Box2D.h"
 
 class Camera;
 
@@ -101,5 +102,18 @@ private:
 	std::vector<PointLight> pointLights;
 
 	ControlledEntity* playerChar;
+
+	// Box2D Shit.
+
+	float32 timeStep = 1.0f / 60.0f;
+	int32 velocityIterations = 6;
+	int32 positionIterations = 2;
+
+	b2Body* groundBody;
+	b2Body* playerBody;
+
+	b2Vec2 gravity;
+	b2World world;
+
 };
 

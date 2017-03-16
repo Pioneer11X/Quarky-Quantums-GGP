@@ -1,6 +1,5 @@
 #include "Game.h"
 #include "Vertex.h"
-#include "Box2D/Box2D.h"
 
 // For the DirectX Math library
 using namespace DirectX;
@@ -29,6 +28,9 @@ Game::Game(HINSTANCE hInstance)
 		delete instance;
 		instance = NULL;
 	}
+
+	b2Vec2 gravity(0.0f, -10.0f);
+	b2World world(gravity);
 
 	instance = this;
 
@@ -109,6 +111,7 @@ Game::~Game()
 	}
 
 	materials.clear();
+
 }
 
 // --------------------------------------------------------
@@ -156,6 +159,7 @@ void Game::Init()
 	device->CreateSamplerState(&sampDesc, &sampler);
 
 	CreateBasicGeometry();
+	InitBox2D();
 	
 	//Init Light
 	DirectionalLight light;
@@ -285,7 +289,7 @@ void Game::CreateBasicGeometry()
 
 	entities.push_back(new Entity(meshObjs[2], materials[2]));
 
-	meshObjs.push_back(new Mesh(pathModifier + "helix.obj", device));
+	meshObjs.push_back(new Mesh(pathModifier + "Plane.obj", device));
 
 	entities.push_back(new Entity(meshObjs[3], materials[3]));
 
@@ -335,17 +339,21 @@ void Game::Update(float deltaTime, float totalTime)
 
 #pragma region EnitityUpdates
 
+	world.Step(deltaTime, velocityIterations, positionIterations);
+
 	entities[0]->SetTranslation(0.0f, 0.0f, 0.0f);
 	entities[1]->SetTranslation(0.0f, 2.0f, 0.0f);
 	entities[2]->SetTranslation(0.0f, -2.0f, 0.0f);
-	entities[3]->SetTranslation(2.0f, 0.0f, 0.0f);
+
+	// Plane Obj.
+	entities[3]->SetTranslation(0.0f, -5.0f, 0.0f);
 	entities[4]->SetTranslation(0.0f, 0.0f, 2.0f);
 	entities[5]->SetTranslation(-2.0f, 0.0f, 0.0f);
 
 	entities[0]->SetRotation(0.0f, sin(totalTime / 2), 0.0f, cos(totalTime / 2));
 	entities[1]->SetRotation(0.0f, sin(totalTime / 2), 0.0f, cos(totalTime / 2));
 	entities[2]->SetRotation(0.0f, sin(totalTime / 2), 0.0f, cos(totalTime / 2));
-	entities[3]->SetRotation(0.0f, sin(totalTime / 2), 0.0f, cos(totalTime / 2));
+	//entities[3]->SetRotation(0.0f, sin(totalTime / 2), 0.0f, cos(totalTime / 2));
 	entities[4]->SetRotation(0.0f, sin(totalTime / 2), 0.0f, cos(totalTime / 2));
 	entities[5]->SetRotation(0.0f, sin(totalTime / 2), 0.0f, cos(totalTime / 2));
 
@@ -539,5 +547,32 @@ void Game::InitBox2D()
 {
 	b2Vec2 gravity(0.0f, -10.0f);
 	b2World world(gravity);
+
+	b2BodyDef groundBodyDef;
+	groundBodyDef.position.Set(0.0f, -10.0f);
+
+	groundBody = world.CreateBody(&groundBodyDef);
+
+	b2PolygonShape groundBox;
+	// X as 10 and Y as 1. No Z for Box2D
+	groundBox.SetAsBox(10.0f, 1.0f);
+	groundBody->CreateFixture(&groundBox, 0.0f);
+
+	b2BodyDef playerBodyDef;
+	playerBodyDef.type = b2_dynamicBody;
+	playerBodyDef.position.Set(0.0f, 0.0f);
+
+	playerBody = world.CreateBody(&playerBodyDef);
+
+	b2PolygonShape playerBox;
+	playerBox.SetAsBox(1.0f, 1.5f); // A Cylinders Projection in 2D Space.
+
+	b2FixtureDef fixDef;
+	fixDef.shape = &playerBox;
+	fixDef.density = 1.0f;
+	fixDef.friction = 0.3f;
+
+	playerBody->CreateFixture(&fixDef);
+
 }
 #pragma endregion
