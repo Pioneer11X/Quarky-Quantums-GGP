@@ -161,12 +161,14 @@ void Game::Init()
 	light.AmbientColor = XMFLOAT4(0.1f, 0.1f, 0.1f, 1.0f);
 	light.DiffuseColor = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
 	light.Direction = XMFLOAT3(1.0f, -1.0f, 0.0f);
+	light.isOn = 1;
 
 	//Init Light 2
 	DirectionalLight light2;
 	light2.AmbientColor = XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f);
 	light2.DiffuseColor = XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f);
 	light2.Direction = XMFLOAT3(1.0f, 1.0f, 0.0f);
+	light2.isOn = 1;
 
 	dirLights.push_back(light);
 	dirLights.push_back(light2);
@@ -175,6 +177,7 @@ void Game::Init()
 	PointLight pLight;
 	pLight.Color = XMFLOAT4(1.0f, 0.57f, 0.17f, 1.0f);
 	pLight.Position = XMFLOAT3(2.0f, 0.0f, 0.0f);
+	pLight.isOn = 1;
 
 	pointLights.push_back(pLight);
 
@@ -348,6 +351,10 @@ void Game::Update(float deltaTime, float totalTime)
 #pragma endregion
 
 	playerChar->HandleKeyboardInput(1.0f * deltaTime);
+
+	if (playerChar->lightIsOn != pointLights[0].isOn)
+		pointLights[0].isOn = playerChar->lightIsOn;
+
 	camera->LerpToPosition(playerChar->GetPosition(), deltaTime);
 	
 	camera->Update(deltaTime, totalTime);

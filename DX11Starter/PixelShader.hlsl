@@ -28,12 +28,14 @@ struct DirectionalLight
 	float4 AmbientColor;
 	float4 DiffuseColor;
 	float3 Direction;
+	int isOn;
 };
 
 struct PointLight
 {
 	float4 Color;
 	float3 Position;
+	int isOn;
 };
 
 cbuffer ExternalData : register(b0)
@@ -56,30 +58,48 @@ cbuffer ExternalData : register(b0)
 float4 main(VertexToPixel input) : SV_TARGET
 {
 	float4 surfaceColor = diffuseTexture.Sample(basicSampler, input.uv);
+	float4 specularLight = { 0.0f, 0.0f, 0.0f, 0.0f };
 
 	// Normalize the normal vector
 	input.normal = normalize(input.normal);
 
-	// Negate light dir (fromDir) to get direction of light
-	float3 lightDir = normalize(-light.Direction);
-	float3 light2Dir = normalize(-light2.Direction);
+	float4 totalLight = { 0.0f, 0.0f, 0.0f, 0.0f };
 
-	// Calculate N dot L
-	float lightAmount = saturate(dot(input.normal, lightDir));
-	float light2Amount = saturate(dot(input.normal, light2Dir));
+	if (light.isOn == 1)
+	{
+		// Negate light dir (fromDir) to get direction of light
+		float3 lightDir = normalize(-light.Direction);
 
-	float3 dirToPointLight = normalize(pointLight.Position - input.worldPos);
-	float pointLightAmount = saturate(dot(input.normal, dirToPointLight));
+		// Calculate N dot L
+		float lightAmount = saturate(dot(input.normal, lightDir));
 
-	float3 dirToCamera = normalize(cameraPosition - input.worldPos);
-	float3 reflectionVector = reflect(-dirToPointLight, input.normal);
-	float specularLight = pow(saturate(dot(reflectionVector, dirToCamera)), 128);
+		totalLight += (light.DiffuseColor * lightAmount) + (light.AmbientColor);
+	}
+
+	if (light2.isOn == 1)
+	{
+		// Negate light dir (fromDir) to get direction of light
+		float3 light2Dir = normalize(-light2.Direction);
+
+		// Calculate N dot L
+		float light2Amount = saturate(dot(input.normal, light2Dir));
+
+		totalLight += (light2.DiffuseColor * light2Amount) + (light2.AmbientColor);
+	}
+
+	if (pointLight.isOn == 1)
+	{
+		float3 dirToPointLight = normalize(pointLight.Position - input.worldPos);
+		float pointLightAmount = saturate(dot(input.normal, dirToPointLight));
+
+		float3 dirToCamera = normalize(cameraPosition - input.worldPos);
+		float3 reflectionVector = reflect(-dirToPointLight, input.normal);
+		specularLight += pow(saturate(dot(reflectionVector, dirToCamera)), 128);
+
+		totalLight += (pointLight.Color * pointLightAmount);
+	}
 
 	return surfaceColor * 
-		((light.DiffuseColor * lightAmount) +
-		(light.AmbientColor) +
-		(light2.DiffuseColor * light2Amount) +
-		(light2.AmbientColor) +
-		(pointLight.Color * pointLightAmount)) +
+		(totalLight) +
 		(specularLight);
 }

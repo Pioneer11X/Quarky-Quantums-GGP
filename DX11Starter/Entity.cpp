@@ -82,15 +82,6 @@ void Entity::Move(float x, float y, float z)
 	isDirty = true;
 }
 
-void Entity::MoveForward(float x)
-{
-	XMFLOAT3 rotatedVector;
-	XMStoreFloat3(&rotatedVector, XMVector3Rotate(XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f), XMLoadFloat4(&rotation)));
-	Move(x * rotatedVector.x, x * rotatedVector.y, 0.0f);
-
-	isDirty = true;
-}
-
 void Entity::CalculateWorldMatrix()
 {
 	if (isDirty)

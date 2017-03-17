@@ -20,12 +20,14 @@ public:
 	InputManager();
 	~InputManager();
 	static InputManager* Instance();
-	KeyPressed GetKeyPressed();
 	bool isUpPressed();
 	bool isDownPressed();
 	bool isLeftPressed();
 	bool isRightPressed();
 	bool isForwardPressed();
 	bool isBackwardPressed();
+
+	bool GetKeyDown(int vKey);
+	bool GetKeyHolding(int vKey);
 };
 

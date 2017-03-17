@@ -23,20 +23,6 @@ InputManager * InputManager::Instance()
 	return instance;
 }
 
-KeyPressed InputManager::GetKeyPressed()
-{
-	if (GetAsyncKeyState(KeyPressed::UP) & 0x8000)
-		return KeyPressed::UP;
-	if (GetAsyncKeyState(KeyPressed::DOWN) & 0x8000)
-		return KeyPressed::DOWN;
-	if (GetAsyncKeyState(KeyPressed::RIGHT) & 0x8000)
-		return KeyPressed::RIGHT;
-	if (GetAsyncKeyState(KeyPressed::LEFT) & 0x8000)
-		return KeyPressed::LEFT;
-
-	return NONE;
-}
-
 bool InputManager::isUpPressed()
 {
 	if (GetAsyncKeyState(KeyPressed::UP) & 0x8000)
@@ -76,5 +62,25 @@ bool InputManager::isBackwardPressed()
 {
 	if (GetAsyncKeyState(KeyPressed::BACKWARD) & 0x8000)
 		return true;
+	return false;
+}
+
+bool InputManager::GetKeyDown(int vKey)
+{
+	SHORT keyState = GetAsyncKeyState(vKey);
+
+	if (keyState & 1)
+		return true;
+
+	return false;
+}
+
+bool InputManager::GetKeyHolding(int vKey)
+{
+	SHORT keyState = GetAsyncKeyState(vKey);
+
+	if (keyState & 1 << 15)
+		return true;
+
 	return false;
 }

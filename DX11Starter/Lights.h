@@ -9,10 +9,21 @@ struct DirectionalLight
 	XMFLOAT4 AmbientColor;
 	XMFLOAT4 DiffuseColor;
 	XMFLOAT3 Direction;
+	int isOn;
 };
 
 struct PointLight
 {
 	XMFLOAT4 Color;
 	XMFLOAT3 Position;
+	int isOn;
+};
+
+struct SpotLight
+{
+	XMFLOAT4 Color;
+	XMFLOAT3 Position;
+	XMFLOAT3 Direction;
+	XMFLOAT3 SpotPower;
+	int isOn;
 };

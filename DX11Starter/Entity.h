@@ -37,10 +37,11 @@ public:
 	void SetRotationAboutZ(float angle);
 	void SetScale(float x, float y, float z);
 	void Move(float x, float y, float z);
-	void MoveForward(float x);
 	void CalculateWorldMatrix();
-	Mesh* GetMesh();
 	XMFLOAT4X4& GetWorldMatrix();
+
+	// Get Mesh
+	Mesh* GetMesh();
 
 	// Set WVP
 	void PrepareMaterial(XMFLOAT4X4 camViewMatrix, XMFLOAT4X4 camProjectionMatrix);
