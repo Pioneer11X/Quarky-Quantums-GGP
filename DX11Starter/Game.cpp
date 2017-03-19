@@ -6,6 +6,8 @@ using namespace DirectX;
 
 // Initialize static variables
 Game* Game::instance;
+b2Vec2 gravity(0.0f, -10.0f);
+b2World world(gravity);
 
 // --------------------------------------------------------
 // Constructor
@@ -28,9 +30,6 @@ Game::Game(HINSTANCE hInstance)
 		delete instance;
 		instance = NULL;
 	}
-
-	b2Vec2 gravity(0.0f, -10.0f);
-	b2World world(gravity);
 
 	instance = this;
 
@@ -279,30 +278,49 @@ void Game::CreateBasicGeometry()
 
 	meshObjs.push_back(new Mesh(pathModifier + "sphere.obj", device));
 
-	entities.push_back(new Entity(meshObjs[0], materials[0]));
+	entities.push_back(new Entity(meshObjs[0], materials[0], &world));
 
 	meshObjs.push_back(new Mesh(pathModifier + "cone.obj", device));
 
-	entities.push_back(new Entity(meshObjs[1], materials[2]));
+	entities.push_back(new Entity(meshObjs[1], materials[2], &world));
 
 	meshObjs.push_back(new Mesh(pathModifier + "cylinder.obj", device));
 
-	entities.push_back(new Entity(meshObjs[2], materials[2]));
+	entities.push_back(new Entity(meshObjs[2], materials[2], &world));
 
 	meshObjs.push_back(new Mesh(pathModifier + "Plane.obj", device));
-
+	// Dont pass world as this is the plane obj and not dynamic.
 	entities.push_back(new Entity(meshObjs[3], materials[3]));
 
 	meshObjs.push_back(new Mesh(pathModifier + "torus.obj", device));
 
-	entities.push_back(new Entity(meshObjs[4], materials[2]));
+	entities.push_back(new Entity(meshObjs[4], materials[2], &world));
 
 	meshObjs.push_back(new Mesh(pathModifier + "cube.obj", device));
 
-	entities.push_back(new Entity(meshObjs[5], materials[1]));
+	entities.push_back(new Entity(meshObjs[5], materials[1], &world));
 
-	playerChar = new ControlledEntity(meshObjs[2], materials[2]);
+	playerChar = new ControlledEntity(meshObjs[2], materials[2], &world);
 	entities.push_back(playerChar);
+
+	// Initial Posture for the objects.
+
+	entities[0]->SetTranslation(2.0f, 0.0f, 0.0f);
+	entities[1]->SetTranslation(4.0f, 2.0f, 0.0f);
+	entities[2]->SetTranslation(-4.0f, -2.0f, 0.0f);
+	// Plane Obj.
+	entities[3]->SetTranslation(0.0f, -5.0f, 0.0f);
+	entities[4]->SetTranslation(0.0f, 0.0f, 2.0f);
+	entities[5]->SetTranslation(-2.0f, 0.0f, 0.0f);
+
+	entities[0]->AddPhysicsBody(&world);
+	entities[1]->AddPhysicsBody(&world);
+	entities[2]->AddPhysicsBody(&world);
+	// Plane Obj.AddPhysicsBody(&world);
+	//entities[3]->AddPhysicsBody(&world);
+	entities[4]->AddPhysicsBody(&world);
+	entities[5]->AddPhysicsBody(&world);
+	playerChar->AddPhysicsBody(&world);
 
 }
 
@@ -341,23 +359,45 @@ void Game::Update(float deltaTime, float totalTime)
 
 	world.Step(deltaTime, velocityIterations, positionIterations);
 
-	entities[0]->SetTranslation(0.0f, 0.0f, 0.0f);
-	entities[1]->SetTranslation(0.0f, 2.0f, 0.0f);
-	entities[2]->SetTranslation(0.0f, -2.0f, 0.0f);
+	//printf("%f , %f", );
+	//entities[1]->SetTranslation( playerBody->GetPosition().x , playerBody->GetPosition().y + 3.0f, playerChar->GetPosition().z );
+
+	entities[0]->UpdatePhysicsTick();
+	entities[1]->UpdatePhysicsTick();
+	entities[2]->UpdatePhysicsTick();
+	//entities[3]->UpdatePhysicsTick();
+	entities[4]->UpdatePhysicsTick();
+	entities[5]->UpdatePhysicsTick();
+	playerChar->UpdatePhysicsTick();
+
+	//entities[0]->SetTranslation(0.0f, 0.0f, 0.0f);
+	//entities[1]->SetTranslation(0.0f, 2.0f, 0.0f);
+	//entities[2]->SetTranslation(0.0f, -2.0f, 0.0f);
 
 	// Plane Obj.
-	entities[3]->SetTranslation(0.0f, -5.0f, 0.0f);
-	entities[4]->SetTranslation(0.0f, 0.0f, 2.0f);
-	entities[5]->SetTranslation(-2.0f, 0.0f, 0.0f);
+	//entities[3]->SetTranslation(0.0f, -5.0f, 0.0f);
+	//entities[4]->SetTranslation(0.0f, 0.0f, 2.0f);
+	//entities[5]->SetTranslation(-2.0f, 0.0f, 0.0f);
 
-	entities[0]->SetRotation(0.0f, sin(totalTime / 2), 0.0f, cos(totalTime / 2));
-	entities[1]->SetRotation(0.0f, sin(totalTime / 2), 0.0f, cos(totalTime / 2));
-	entities[2]->SetRotation(0.0f, sin(totalTime / 2), 0.0f, cos(totalTime / 2));
+	//entities[0]->SetRotation(0.0f, sin(totalTime / 2), 0.0f, cos(totalTime / 2));
+	//entities[1]->SetRotation(0.0f, sin(totalTime / 2), 0.0f, cos(totalTime / 2));
+	//entities[2]->SetRotation(0.0f, sin(totalTime / 2), 0.0f, cos(totalTime / 2));
 	//entities[3]->SetRotation(0.0f, sin(totalTime / 2), 0.0f, cos(totalTime / 2));
-	entities[4]->SetRotation(0.0f, sin(totalTime / 2), 0.0f, cos(totalTime / 2));
-	entities[5]->SetRotation(0.0f, sin(totalTime / 2), 0.0f, cos(totalTime / 2));
+	//entities[4]->SetRotation(0.0f, sin(totalTime / 2), 0.0f, cos(totalTime / 2));
+	//entities[5]->SetRotation(0.0f, sin(totalTime / 2), 0.0f, cos(totalTime / 2));
 
 #pragma endregion
+
+	// Printing and debug.
+	//if ( float(totalTime) - int(totalTime) == 0.0f) {
+		// For one second, I'm assuming. 
+		printf("Entity 0: %f, %f, %f\n", entities[0]->GetPosition().x, entities[0]->GetPosition().y, entities[0]->GetPosition().z);
+		printf("Entity 1: %f, %f, %f\n", entities[1]->GetPosition().x, entities[1]->GetPosition().y, entities[1]->GetPosition().z);
+		printf("Entity 2: %f, %f, %f\n", entities[2]->GetPosition().x, entities[2]->GetPosition().y, entities[2]->GetPosition().z);
+		printf("Entity 3: %f, %f, %f\n", entities[3]->GetPosition().x, entities[3]->GetPosition().y, entities[3]->GetPosition().z);
+		printf("Entity 4: %f, %f, %f\n", entities[4]->GetPosition().x, entities[4]->GetPosition().y, entities[4]->GetPosition().z);
+		printf("Entity 5: %f, %f, %f\n", entities[5]->GetPosition().x, entities[5]->GetPosition().y, entities[5]->GetPosition().z);
+	//}
 
 	playerChar->HandleKeyboardInput(1.0f * deltaTime);
 
@@ -545,17 +585,14 @@ XMFLOAT3 & Game::GetCameraPostion()
 
 void Game::InitBox2D()
 {
-	b2Vec2 gravity(0.0f, -10.0f);
-	b2World world(gravity);
-
 	b2BodyDef groundBodyDef;
-	groundBodyDef.position.Set(0.0f, -10.0f);
+	groundBodyDef.position.Set(0.0f, -5.0f);
 
 	groundBody = world.CreateBody(&groundBodyDef);
 
 	b2PolygonShape groundBox;
 	// X as 10 and Y as 1. No Z for Box2D
-	groundBox.SetAsBox(10.0f, 1.0f);
+	groundBox.SetAsBox(10.0f, 0.001f);
 	groundBody->CreateFixture(&groundBox, 0.0f);
 
 	b2BodyDef playerBodyDef;

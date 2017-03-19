@@ -2,7 +2,7 @@
 
 
 
-Entity::Entity(Mesh * Object, Material* materialInput)
+Entity::Entity(Mesh * Object, Material* materialInput, b2World* world)
 {
 	isDirty = true;
 	meshObj = Object;
@@ -15,8 +15,9 @@ Entity::Entity(Mesh * Object, Material* materialInput)
 	SetTranslation(0.0f, 0.0f, 0.0f);
 
 	XMStoreFloat4x4(&worldMatrix, XMMatrixTranspose(XMMatrixIdentity()));
+	//if ( world != nullptr)
+	//this->AddPhysicsBody(world);
 }
-
 
 Entity::~Entity()
 {
@@ -101,6 +102,36 @@ XMFLOAT4X4& Entity::GetWorldMatrix()
 {
 	return worldMatrix;
 }
+
+void Entity::AddPhysicsBody(b2World *world)
+{
+	b2BodyDef PhysicsBodyDef;
+	PhysicsBodyDef.type = b2_dynamicBody;
+	PhysicsBodyDef.position.Set(position.x, position.y);
+
+	PhysicsBody = (*world).CreateBody(&PhysicsBodyDef);
+
+	b2PolygonShape PhysicsBox;
+	PhysicsBox.SetAsBox(1.0f, 1.0f);
+
+	b2FixtureDef FixDef;
+	FixDef.shape = &PhysicsBox;
+	FixDef.density = 1.0f;
+	FixDef.friction = 0.3f;
+
+	PhysicsBody->CreateFixture(&FixDef);
+}
+
+void Entity::UpdatePhysicsTick()
+{
+
+	if (PhysicsBody != nullptr) {
+		SetTranslation(PhysicsBody->GetPosition().x, PhysicsBody->GetPosition().y, GetPosition().z);
+	}
+
+}
+
+
 
 void Entity::PrepareMaterial(XMFLOAT4X4 camViewMatrix, XMFLOAT4X4 camProjectionMatrix)
 {

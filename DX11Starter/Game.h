@@ -56,6 +56,8 @@ private:
 
 	// Game Instance
 	static Game* instance;
+	//static b2Vec2 gravity;
+	//static b2World world;
 
 	// Initialization helper methods - feel free to customize, combine, etc.
 	void LoadShaders(); 
@@ -111,9 +113,6 @@ private:
 
 	b2Body* groundBody;
 	b2Body* playerBody;
-
-	b2Vec2 gravity;
-	b2World world;
 
 };
 

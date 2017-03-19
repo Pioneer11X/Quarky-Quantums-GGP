@@ -2,7 +2,7 @@
 
 
 
-ControlledEntity::ControlledEntity(Mesh* Object, Material* materialInput) : Entity (Object, materialInput)
+ControlledEntity::ControlledEntity(Mesh* Object, Material* materialInput, b2World* world) : Entity (Object, materialInput, world)
 {
 	lightIsOn = true;
 }
