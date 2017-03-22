@@ -158,7 +158,7 @@ void Game::Init()
 	device->CreateSamplerState(&sampDesc, &sampler);
 
 	CreateBasicGeometry();
-	InitBox2D();
+	//InitBox2D();
 	
 	//Init Light
 	DirectionalLight light;
@@ -227,40 +227,7 @@ void Game::LoadShaders()
 // --------------------------------------------------------
 void Game::CreateMatrices()
 {
-	//// Set up world matrix
-	//// - In an actual game, each object will need one of these and they should
-	////   update when/if the object moves (every frame)
-	//// - You'll notice a "transpose" happening below, which is redundant for
-	////   an identity matrix.  This is just to show that HLSL expects a different
-	////   matrix (column major vs row major) than the DirectX Math library
-	//XMMATRIX W = XMMatrixIdentity();
-	//XMStoreFloat4x4(&worldMatrix, XMMatrixTranspose(W)); // Transpose for HLSL!
 
-	//// Create the View matrix
-	//// - In an actual game, recreate this matrix every time the camera 
-	////    moves (potentially every frame)
-	//// - We're using the LOOK TO function, which takes the position of the
-	////    camera and the direction vector along which to look (as well as "up")
-	//// - Another option is the LOOK AT function, to look towards a specific
-	////    point in 3D space
-	//XMVECTOR pos = XMVectorSet(0, 0, -5, 0);
-	//XMVECTOR dir = XMVectorSet(0, 0, 1, 0);
-	//XMVECTOR up  = XMVectorSet(0, 1, 0, 0);
-	//XMMATRIX V   = XMMatrixLookToLH(
-	//	pos,     // The position of the "camera"
-	//	dir,     // Direction the camera is looking
-	//	up);     // "Up" direction in 3D space (prevents roll)
-	//XMStoreFloat4x4(&viewMatrix, XMMatrixTranspose(V)); // Transpose for HLSL!
-
-	//// Create the Projection matrix
-	//// - This should match the window's aspect ratio, and also update anytime
-	////   the window resizes (which is already happening in OnResize() below)
-	//XMMATRIX P = XMMatrixPerspectiveFovLH(
-	//	0.25f * 3.1415926535f,		// Field of View Angle
-	//	(float)width / height,		// Aspect ratio
-	//	0.1f,						// Near clip plane distance
-	//	100.0f);					// Far clip plane distance
-	//XMStoreFloat4x4(&projectionMatrix, XMMatrixTranspose(P)); // Transpose for HLSL!
 }
 
 
@@ -278,33 +245,32 @@ void Game::CreateBasicGeometry()
 
 	meshObjs.push_back(new Mesh(pathModifier + "sphere.obj", device));
 
-	entities.push_back(new Entity(meshObjs[0], materials[0], &world));
+	entities.push_back(new Entity(meshObjs[0], materials[0], 2.0f, 0.0f, 0.0f, &world, true, 0.5f, 0.5f));
 
 	meshObjs.push_back(new Mesh(pathModifier + "cone.obj", device));
 
-	entities.push_back(new Entity(meshObjs[1], materials[2], &world));
+	entities.push_back(new Entity(meshObjs[1], materials[2], 4.0f, 2.0f, 0.0f, &world, true, 0.5f, 0.5f));
 
 	meshObjs.push_back(new Mesh(pathModifier + "cylinder.obj", device));
 
-	entities.push_back(new Entity(meshObjs[2], materials[2], &world));
+	entities.push_back(new Entity(meshObjs[2], materials[2], -4.0f, -2.0f, 0.0f, &world, true, 0.5f, 0.5f));
 
 	meshObjs.push_back(new Mesh(pathModifier + "Plane.obj", device));
 	// Dont pass world as this is the plane obj and not dynamic.
-	entities.push_back(new Entity(meshObjs[3], materials[3]));
+	entities.push_back(new Entity(meshObjs[3], materials[3], 0.0f, -5.0f, 0.0f, &world, false, 10.0f, 0.1f ));
 
 	meshObjs.push_back(new Mesh(pathModifier + "torus.obj", device));
 
-	entities.push_back(new Entity(meshObjs[4], materials[2], &world));
+	entities.push_back(new Entity(meshObjs[4], materials[2], -6.0f, 0.0f, 2.0f, &world, true, 0.5f, 0.5f));
 
 	meshObjs.push_back(new Mesh(pathModifier + "cube.obj", device));
 
-	entities.push_back(new Entity(meshObjs[5], materials[1], &world));
+	entities.push_back(new Entity(meshObjs[5], materials[1], -2.0f, 0.0f, 0.0f, &world, true, 0.5f, 0.5f));
 
-	playerChar = new ControlledEntity(meshObjs[2], materials[2], &world);
+	playerChar = new ControlledEntity(meshObjs[2], materials[2], 0.0f, 0.0f, 0.0f, &world, true, 0.5f, 0.5f);
 	entities.push_back(playerChar);
 
 	// Initial Posture for the objects.
-
 	entities[0]->SetTranslation(2.0f, 0.0f, 0.0f);
 	entities[1]->SetTranslation(4.0f, 2.0f, 0.0f);
 	entities[2]->SetTranslation(-4.0f, -2.0f, 0.0f);
@@ -312,15 +278,6 @@ void Game::CreateBasicGeometry()
 	entities[3]->SetTranslation(0.0f, -5.0f, 0.0f);
 	entities[4]->SetTranslation(0.0f, 0.0f, 2.0f);
 	entities[5]->SetTranslation(-2.0f, 0.0f, 0.0f);
-
-	entities[0]->AddPhysicsBody(&world);
-	entities[1]->AddPhysicsBody(&world);
-	entities[2]->AddPhysicsBody(&world);
-	// Plane Obj.AddPhysicsBody(&world);
-	//entities[3]->AddPhysicsBody(&world);
-	entities[4]->AddPhysicsBody(&world);
-	entities[5]->AddPhysicsBody(&world);
-	playerChar->AddPhysicsBody(&world);
 
 }
 
@@ -399,7 +356,7 @@ void Game::Update(float deltaTime, float totalTime)
 		printf("Entity 5: %f, %f, %f\n", entities[5]->GetPosition().x, entities[5]->GetPosition().y, entities[5]->GetPosition().z);
 	//}
 
-	playerChar->HandleKeyboardInput(1.0f * deltaTime);
+	playerChar->HandleKeyboardInput(10.0f * deltaTime);
 
 	if (playerChar->lightIsOn != pointLights[0].isOn)
 		pointLights[0].isOn = playerChar->lightIsOn;

@@ -2,7 +2,7 @@
 
 
 
-Entity::Entity(Mesh * Object, Material* materialInput, b2World* world)
+Entity::Entity(Mesh * Object, Material* materialInput, float _posX, float _posY, float _posZ, b2World* world, bool isDynamic, float _sizeX, float _sizeY)
 {
 	isDirty = true;
 	meshObj = Object;
@@ -15,8 +15,10 @@ Entity::Entity(Mesh * Object, Material* materialInput, b2World* world)
 	SetTranslation(0.0f, 0.0f, 0.0f);
 
 	XMStoreFloat4x4(&worldMatrix, XMMatrixTranspose(XMMatrixIdentity()));
-	//if ( world != nullptr)
-	//this->AddPhysicsBody(world);
+	this->SetTranslation(_posX, _posY, _posZ);
+	if ( world != nullptr)
+		this->AddPhysicsBody(world, isDynamic, _sizeX, _sizeY);
+	
 }
 
 Entity::~Entity()
@@ -103,16 +105,17 @@ XMFLOAT4X4& Entity::GetWorldMatrix()
 	return worldMatrix;
 }
 
-void Entity::AddPhysicsBody(b2World *world)
+void Entity::AddPhysicsBody(b2World *world, bool isDynamic, float _sizeX, float _sizeY)
 {
 	b2BodyDef PhysicsBodyDef;
-	PhysicsBodyDef.type = b2_dynamicBody;
+	if (isDynamic)
+		PhysicsBodyDef.type = b2_dynamicBody;
 	PhysicsBodyDef.position.Set(position.x, position.y);
 
 	PhysicsBody = (*world).CreateBody(&PhysicsBodyDef);
 
 	b2PolygonShape PhysicsBox;
-	PhysicsBox.SetAsBox(1.0f, 1.0f);
+	PhysicsBox.SetAsBox(_sizeX, _sizeY);
 
 	b2FixtureDef FixDef;
 	FixDef.shape = &PhysicsBox;

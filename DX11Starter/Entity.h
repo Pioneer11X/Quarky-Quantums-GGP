@@ -35,7 +35,7 @@ private:
 
 public:
 	//Entity(Mesh* Object, Material* materialInput);
-	Entity(Mesh* Object, Material* materialInput, b2World *world = nullptr);
+	Entity(Mesh* Object, Material* materialInput, float _posX, float _posY, float _posz, b2World *world = nullptr, bool isDynamic = true, float _sizeX = 1.0f, float _sizeY = 1.0f);
 	~Entity();
 	XMFLOAT3 GetPosition();
 	void SetTranslation(float x, float y, float z);
@@ -48,7 +48,7 @@ public:
 
 	// Get Mesh
 	Mesh* GetMesh();
-	void AddPhysicsBody(b2World* world);
+	void AddPhysicsBody(b2World* world, bool isDynamic=true, float _sizeX = 1, float _sizeY = 1);
 	void UpdatePhysicsTick();
 
 	// Set WVP
@@ -56,6 +56,11 @@ public:
 
 	// Get material
 	Material* GetMaterial();
+
+	// Getter for Physics Body
+	b2Body* GetPhysicsBody() {
+		return PhysicsBody;
+	}
 };
 
 
