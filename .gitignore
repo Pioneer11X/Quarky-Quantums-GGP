@@ -7,7 +7,6 @@
 
 # User-specific files
 *.suo
-**/*.suo
 *.user
 *.sln.docstates
 
