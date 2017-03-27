@@ -332,7 +332,6 @@ void Game::Update(float deltaTime, float totalTime)
 	if (GetAsyncKeyState(VK_ESCAPE))
 		Quit();
 
-
 #pragma region EnitityUpdates
 
 	entities[0]->SetTranslation(0.0f, 0.0f, 0.0f);
