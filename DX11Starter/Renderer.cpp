@@ -31,7 +31,7 @@ void Renderer::DrawEntity(Entity* entity, ID3D11DeviceContext*	context)
 		0);    // Offset to add to each index when looking up vertices
 }
 
-void Renderer::Draw(std::vector<Entity*> entities, ID3D11DeviceContext * context, XMFLOAT4X4& viewMatrix, XMFLOAT4X4& projectionMatrix, DirectionalLight* dirLights, PointLight* pointLights)
+void Renderer::Draw(std::vector<Entity*> entities, ID3D11DeviceContext * context, XMFLOAT4X4& viewMatrix, XMFLOAT4X4& projectionMatrix, DirectionalLight* dirLights, PointLight* pointLights, SpotLight* spotLights)
 {
 #pragma region Setting the common data
 
@@ -51,6 +51,11 @@ void Renderer::Draw(std::vector<Entity*> entities, ID3D11DeviceContext * context
 			"pointLight",  // The name of the (eventual) variable in the shader
 			&pointLights[0],   // The address of the data to copy
 			sizeof(PointLight)); // The size of the data to copy
+
+		/*entities[0]->GetMaterial()->GetPixelShader()->SetData(
+			"spotLight",  // The name of the (eventual) variable in the shader
+			&spotLights[0],   // The address of the data to copy
+			sizeof(SpotLight)); // The size of the data to copy*/
 	};
 
 	SetGlobalData();

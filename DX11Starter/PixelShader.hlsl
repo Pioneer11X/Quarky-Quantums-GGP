@@ -38,11 +38,21 @@ struct PointLight
 	int isOn;
 };
 
+struct SpotLight
+{
+	float4 Color;
+	float3 Position;
+	float3 Direction;
+	float3 Angle;
+	int isOn;
+};
+
 cbuffer ExternalData : register(b0)
 {
 	DirectionalLight light;
 	DirectionalLight light2;
 	PointLight pointLight;
+	SpotLight spotLight;
 	float3 cameraPosition;
 };
 
@@ -98,6 +108,18 @@ float4 main(VertexToPixel input) : SV_TARGET
 
 		totalLight += (pointLight.Color * pointLightAmount);
 	}
+
+	/*if (spotLight.isOn == 1)
+	{
+		float3 dirToSpotLight = normalize(spotLight.Position - input.worldPos);
+		float spotLightAmount = saturate(dot(input.normal, dirToSpotLight));
+
+		float3 dirToCamera = normalize(cameraPosition - input.worldPos);
+		float3 reflectionVector = reflect(-dirToSpotLight, input.normal);
+		specularLight += pow(saturate(dot(reflectionVector, dirToCamera)), 128);
+
+		totalLight += (spotLight.Color * spotLightAmount);
+	}*/
 
 	return surfaceColor * 
 		(totalLight) +

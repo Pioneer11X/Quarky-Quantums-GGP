@@ -173,6 +173,16 @@ void Game::Init()
 	dirLights.push_back(light);
 	dirLights.push_back(light2);
 
+	// Init Spot Light 1
+	SpotLight spotLight;
+	spotLight.Color = XMFLOAT4(1.0f, 0.57f, 0.17f, 1.0f);
+	spotLight.Direction = XMFLOAT3(1.0f, 1.0f, 0.0f);
+	spotLight.Angle = XMFLOAT3(30.0f, 30.0f, 30.0f);
+	spotLight.Position = XMFLOAT3(2.0f, 0.0f, 0.0f);
+	spotLight.isOn = 1;
+
+	spotLights.push_back(spotLight);
+
 	//Init Point Light 1
 	PointLight pLight;
 	pLight.Color = XMFLOAT4(1.0f, 0.57f, 0.17f, 1.0f);
@@ -433,7 +443,7 @@ void Game::Draw(float deltaTime, float totalTime)
 	//		0);    // Offset to add to each index when looking up vertices
 	//}
 #pragma endregion
-	renderer->Draw(entities, context, camera->GetViewMatrix(), camera->GetProjectionMatrix(), &dirLights[0], &pointLights[0]);
+	renderer->Draw(entities, context, camera->GetViewMatrix(), camera->GetProjectionMatrix(), &dirLights[0], &pointLights[0], &spotLights[0]);
 
 	// Present the back buffer to the user
 	//  - Puts the final frame we're drawing into the window so the user can see it

@@ -97,6 +97,9 @@ private:
 	//Array of all point lights
 	std::vector<PointLight> pointLights;
 
+	// Array of all spot lights
+	std::vector<SpotLight> spotLights;
+
 	ControlledEntity* playerChar;
 };
 

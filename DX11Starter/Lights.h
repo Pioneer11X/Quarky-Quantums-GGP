@@ -24,6 +24,6 @@ struct SpotLight
 	XMFLOAT4 Color;
 	XMFLOAT3 Position;
 	XMFLOAT3 Direction;
-	XMFLOAT3 SpotPower;
+	XMFLOAT3 Angle;
 	int isOn;
 };
