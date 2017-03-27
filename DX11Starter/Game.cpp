@@ -196,12 +196,12 @@ void Game::Init()
 void Game::LoadShaders()
 {
 	vertexShader = new SimpleVertexShader(device, context);
-	if (!vertexShader->LoadShaderFile(L"Debug/VertexShader.cso"))
-		vertexShader->LoadShaderFile(L"VertexShader.cso");		
+	if (!vertexShader->LoadShaderFile(L"Assets/ShaderObjs/x86/VertexShader.cso"))
+		vertexShader->LoadShaderFile(L"Assets/ShaderObjs/x64/VertexShader.cso");		
 
 	pixelShader = new SimplePixelShader(device, context);
-	if(!pixelShader->LoadShaderFile(L"Debug/PixelShader.cso"))
-		pixelShader->LoadShaderFile(L"PixelShader.cso");
+	if(!pixelShader->LoadShaderFile(L"Assets/ShaderObjs/x86/PixelShader.cso"))
+		pixelShader->LoadShaderFile(L"Assets/ShaderObjs/x64/PixelShader.cso");
 
 	// You'll notice that the code above attempts to load each
 	// compiled shader file (.cso) from two different relative paths.
