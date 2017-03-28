@@ -91,7 +91,7 @@ void Camera::LerpToPosition(XMFLOAT3& lookAt, float deltaTime)
 	XMVECTOR target = XMLoadFloat3(&lookAt);
 	XMVECTOR result = XMVectorLerp(here, target, 2 * deltaTime);
 	XMStoreFloat3(&position, result);
-	position.z = lookAt.z - 20;
+	position.z = lookAt.z - 10;
 
 	isDirty = true;
 }
