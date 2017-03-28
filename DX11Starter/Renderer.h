@@ -12,6 +12,6 @@ private:
 public:
 	Renderer();
 	~Renderer();
-	void Draw(std::vector<Entity*> entities, ID3D11DeviceContext* context, XMFLOAT4X4& viewMatrix, XMFLOAT4X4& projectionMatrix, DirectionalLight* dirLights, PointLight* pointLights);
+	void Draw(std::vector<Entity*> entities, ID3D11DeviceContext* context, XMFLOAT4X4& viewMatrix, XMFLOAT4X4& projectionMatrix, DirectionalLight* dirLights, PointLight* pointLights, SpotLight* spotLights);
 };
 

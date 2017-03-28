@@ -14,19 +14,20 @@ ControlledEntity::~ControlledEntity()
 
 void ControlledEntity::HandleKeyboardInput(float moveSpeed)
 {
+
 	b2Vec2 tempImpulse = b2Vec2(0.0f, 0.0f);
 	//b2Vec2 zeroImpulse = b2Vec2(0.0f, 0.0f);
-	if (InputManager::Instance()->isLeftPressed())
+	if (InputManager::Instance()->GetKeyHolding(KeyPressed::LEFT))
 	{
 		tempImpulse = b2Vec2(-1 * moveSpeed, 0);
 	}
 
-	if (InputManager::Instance()->isRightPressed())
+	if (InputManager::Instance()->GetKeyHolding(KeyPressed::RIGHT))
 	{
 		tempImpulse = b2Vec2(moveSpeed, 0);
 	}
 
-	if (InputManager::Instance()->isUpPressed())
+	if (InputManager::Instance()->GetKeyDown(KeyPressed::UP))
 	{
 		tempImpulse = b2Vec2(0, moveSpeed * 3);
 	}
@@ -35,7 +36,7 @@ void ControlledEntity::HandleKeyboardInput(float moveSpeed)
 		this->GetPhysicsBody()->ApplyLinearImpulseToCenter(tempImpulse, true);
 	}
 
-	if (InputManager::Instance()->GetKeyDown(VK_RETURN))
+	if (InputManager::Instance()->GetKeyDown(KeyPressed::FORWARD))
 	{
 		lightIsOn = !lightIsOn;
 	}
