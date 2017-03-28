@@ -38,12 +38,14 @@ struct PointLight
 	int isOn;
 };
 
+// The order for these members matters
+// If two float3 values are by eachother then the data structure is unaligned.
 struct SpotLight
 {
 	float4 Color;
-	float3 Position;
 	float3 Direction;
 	float DotDist;
+	float3 Position;
 	int isOn;
 };
 
@@ -128,10 +130,14 @@ float4 main(VertexToPixel input) : SV_TARGET
 			// In other words is the point outside the spot light?
 			if (length(spotEffect) > spotLight.DotDist)
 			{
-				// If we are inside the arc then calculate the light term
+				// Right now we just do a normal point light calculation
+				float3 dirToSpotLight = normalize(spotLight.Position - input.worldPos);
+				float spotLightAmount = saturate(dot(input.normal, dirToSpotLight));
+
 				float3 dirToCamera = normalize(cameraPosition - input.worldPos);
 				float3 reflectionVector = reflect(-dirToSpotLight, input.normal);
 				specularLight += pow(saturate(dot(reflectionVector, dirToCamera)), 128);
+
 				totalLight += (spotLight.Color * spotLightAmount);
 			}
 		}
