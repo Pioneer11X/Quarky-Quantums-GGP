@@ -14,22 +14,22 @@ ControlledEntity::~ControlledEntity()
 
 void ControlledEntity::HandleKeyboardInput(float moveSpeed)
 {
-	if (InputManager::Instance()->isLeftPressed())
+	if (InputManager::Instance()->GetKeyHolding(KeyPressed::LEFT))
 	{
 		Move(-moveSpeed, 0, 0);
 	}
 
-	if (InputManager::Instance()->isRightPressed())
+	if (InputManager::Instance()->GetKeyHolding(KeyPressed::RIGHT))
 	{
 		Move(moveSpeed, 0, 0);
 	}
 
-	if (InputManager::Instance()->isUpPressed())
+	if (InputManager::Instance()->GetKeyDown(KeyPressed::UP))
 	{
-		Move(0, moveSpeed, 0);
+		Move(0, moveSpeed * 100, 0);
 	}
 
-	if (InputManager::Instance()->GetKeyDown(VK_RETURN))
+	if (InputManager::Instance()->GetKeyDown(KeyPressed::FORWARD))
 	{
 		lightIsOn = !lightIsOn;
 	}

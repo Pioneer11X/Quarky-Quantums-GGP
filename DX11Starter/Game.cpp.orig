@@ -173,16 +173,6 @@ void Game::Init()
 	dirLights.push_back(light);
 	dirLights.push_back(light2);
 
-	// Init Spot Light 1
-	SpotLight spotLight;
-	spotLight.Color = XMFLOAT4(1.0f, 0.57f, 0.17f, 1.0f);
-	spotLight.Direction = XMFLOAT3(1.0f, 1.0f, 0.0f);
-	spotLight.Angle = XMFLOAT3(30.0f, 30.0f, 30.0f);
-	spotLight.Position = XMFLOAT3(2.0f, 0.0f, 0.0f);
-	spotLight.isOn = 1;
-
-	spotLights.push_back(spotLight);
-
 	//Init Point Light 1
 	PointLight pLight;
 	pLight.Color = XMFLOAT4(1.0f, 0.57f, 0.17f, 1.0f);
@@ -206,12 +196,21 @@ void Game::Init()
 void Game::LoadShaders()
 {
 	vertexShader = new SimpleVertexShader(device, context);
+<<<<<<< HEAD
+	if (!vertexShader->LoadShaderFile(L"Debug/VertexShader.cso"))
+		vertexShader->LoadShaderFile(L"VertexShader.cso");		
+
+	pixelShader = new SimplePixelShader(device, context);
+	if(!pixelShader->LoadShaderFile(L"Debug/PixelShader.cso"))
+		pixelShader->LoadShaderFile(L"PixelShader.cso");
+=======
 	if (!vertexShader->LoadShaderFile(L"Assets/ShaderObjs/x86/VertexShader.cso"))
 		vertexShader->LoadShaderFile(L"Assets/ShaderObjs/x64/VertexShader.cso");		
 
 	pixelShader = new SimplePixelShader(device, context);
 	if(!pixelShader->LoadShaderFile(L"Assets/ShaderObjs/x86/PixelShader.cso"))
 		pixelShader->LoadShaderFile(L"Assets/ShaderObjs/x64/PixelShader.cso");
+>>>>>>> Akshay-Working
 
 	// You'll notice that the code above attempts to load each
 	// compiled shader file (.cso) from two different relative paths.
@@ -444,7 +443,7 @@ void Game::Draw(float deltaTime, float totalTime)
 	//		0);    // Offset to add to each index when looking up vertices
 	//}
 #pragma endregion
-	renderer->Draw(entities, context, camera->GetViewMatrix(), camera->GetProjectionMatrix(), &dirLights[0], &pointLights[0], &spotLights[0]);
+	renderer->Draw(entities, context, camera->GetViewMatrix(), camera->GetProjectionMatrix(), &dirLights[0], &pointLights[0]);
 
 	// Present the back buffer to the user
 	//  - Puts the final frame we're drawing into the window so the user can see it

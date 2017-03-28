@@ -1,33 +1,54 @@
 #pragma once
 #include <Windows.h>
+#include <vector>
+#include <string>
 
+#define NUM_KEYS	6
 
 enum KeyPressed
 {
-	NONE,
-	UP			= VK_SPACE,
-	DOWN		=	'X',
-	LEFT		=	'A',
-	RIGHT		=	'D',
-	FORWARD		=	'W',
-	BACKWARD	=	'S'
+	// Remember to update total number of keys if add add new
+	UP = 0,
+	DOWN,
+	LEFT,
+	RIGHT,
+	FORWARD,
+	BACKWARD
+};
+
+enum KeyStates
+{
+	RELEASED = 0,
+	PRESSED,
+	HELD
+};
+
+struct KeyInfo
+{
+	std::string name;
+	int vKey;
+	SHORT keyState;
 };
 
 class InputManager
 {
 	static InputManager* instance;
+	KeyInfo keys[NUM_KEYS];
+
 public:
 	InputManager();
 	~InputManager();
+	void InitKeys();
 	static InputManager* Instance();
-	bool isUpPressed();
-	bool isDownPressed();
-	bool isLeftPressed();
-	bool isRightPressed();
-	bool isForwardPressed();
-	bool isBackwardPressed();
+	//bool isUpPressed();
+	//bool isDownPressed();
+	//bool isLeftPressed();
+	//bool isRightPressed();
+	//bool isForwardPressed();
+	//bool isBackwardPressed();
 
 	bool GetKeyDown(int vKey);
 	bool GetKeyHolding(int vKey);
+	bool GetKeyUp(int vKey);
 };
 
