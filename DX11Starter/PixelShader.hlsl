@@ -43,7 +43,7 @@ struct SpotLight
 	float4 Color;
 	float3 Position;
 	float3 Direction;
-	float3 Angle;
+	float DotDist;
 	int isOn;
 };
 
@@ -109,17 +109,34 @@ float4 main(VertexToPixel input) : SV_TARGET
 		totalLight += (pointLight.Color * pointLightAmount);
 	}
 
-	/*if (spotLight.isOn == 1)
+	// Implementation example from: http://www.lighthouse3d.com/tutorials/glsl-12-tutorial/spot-light-per-pixel/
+	if (spotLight.isOn == 1)
 	{
-		float3 dirToSpotLight = normalize(spotLight.Position - input.worldPos);
-		float spotLightAmount = saturate(dot(input.normal, dirToSpotLight));
+		// Calculate the raw vector from spot light to the current pixel
+		float3 dirToSpotLight = spotLight.Position - input.worldPos;
 
-		float3 dirToCamera = normalize(cameraPosition - input.worldPos);
-		float3 reflectionVector = reflect(-dirToSpotLight, input.normal);
-		specularLight += pow(saturate(dot(reflectionVector, dirToCamera)), 128);
+		// Compute the NdotL for light amount given to the current pixel.
+		float spotLightAmount = saturate(dot(input.normal, normalize(dirToSpotLight)));
 
-		totalLight += (spotLight.Color * spotLightAmount);
-	}*/
+		// Saturate will clamp the value between 0 and 1. So if there is a light amount we continue.
+		if (spotLightAmount > 0.0)
+		{
+			// Calculate the vector between the light direction and the direction from thre spot
+			// light to the pixel
+			float spotEffect = dot(normalize(spotLight.Direction), normalize(-dirToSpotLight));
+			// Is this length greather than the what it should be based on the angle of our spot light?
+			// In other words is the point outside the spot light?
+			if (length(spotEffect) > spotLight.DotDist)
+			{
+				// If we are inside the arc then calculate the light term
+				float3 dirToCamera = normalize(cameraPosition - input.worldPos);
+				float3 reflectionVector = reflect(-dirToSpotLight, input.normal);
+				specularLight += pow(saturate(dot(reflectionVector, dirToCamera)), 128);
+				totalLight += (spotLight.Color * spotLightAmount);
+			}
+		}
+
+	}
 
 	return surfaceColor * 
 		(totalLight) +

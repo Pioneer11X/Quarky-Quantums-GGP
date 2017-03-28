@@ -177,9 +177,10 @@ void Game::Init()
 	SpotLight spotLight;
 	spotLight.Color = XMFLOAT4(1.0f, 0.57f, 0.17f, 1.0f);
 	spotLight.Direction = XMFLOAT3(1.0f, 1.0f, 0.0f);
-	spotLight.Angle = XMFLOAT3(30.0f, 30.0f, 30.0f);
+	// This is roughly spot light of 60 degrees total.
+	spotLight.DotDist = 0.52f;
 	spotLight.Position = XMFLOAT3(2.0f, 0.0f, 0.0f);
-	spotLight.isOn = 1;
+	spotLight.isOn = 0;
 
 	spotLights.push_back(spotLight);
 
@@ -187,7 +188,7 @@ void Game::Init()
 	PointLight pLight;
 	pLight.Color = XMFLOAT4(1.0f, 0.57f, 0.17f, 1.0f);
 	pLight.Position = XMFLOAT3(2.0f, 0.0f, 0.0f);
-	pLight.isOn = 1;
+	pLight.isOn = 0;
 
 	pointLights.push_back(pLight);
 

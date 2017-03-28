@@ -52,10 +52,10 @@ void Renderer::Draw(std::vector<Entity*> entities, ID3D11DeviceContext * context
 			&pointLights[0],   // The address of the data to copy
 			sizeof(PointLight)); // The size of the data to copy
 
-		/*entities[0]->GetMaterial()->GetPixelShader()->SetData(
+		entities[0]->GetMaterial()->GetPixelShader()->SetData(
 			"spotLight",  // The name of the (eventual) variable in the shader
 			&spotLights[0],   // The address of the data to copy
-			sizeof(SpotLight)); // The size of the data to copy*/
+			sizeof(SpotLight)); // The size of the data to copy
 	};
 
 	SetGlobalData();
