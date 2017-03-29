@@ -28,4 +28,8 @@ struct SpotLight
 	float DotDist;
 	XMFLOAT3 Position;
 	int isOn;
+	float SpotIntensity;
+	float ConstAtten;
+	float LinearAtten;
+	float ExpoAtten;
 };

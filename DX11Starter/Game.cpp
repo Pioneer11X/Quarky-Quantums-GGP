@@ -176,11 +176,15 @@ void Game::Init()
 	// Init Spot Light 1
 	SpotLight spotLight;
 	spotLight.Color = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
-	spotLight.Direction = XMFLOAT3(0.0f, -1.0f, 0.0f);
+	spotLight.Direction = XMFLOAT3(1.0f, -1.0f, 0.0f);
 	// This is roughly spot light of 60 degrees total.
 	spotLight.DotDist = 0.52f;
-	spotLight.Position = XMFLOAT3(-2.0f, 2.0f, 0.0f);
+	spotLight.Position = XMFLOAT3(-3.0f, 0.0f, 0.0f);
 	spotLight.isOn = 1;
+	spotLight.SpotIntensity = 0.5f;
+	spotLight.ConstAtten = 0.2f;
+	spotLight.LinearAtten = 0.2f;
+	spotLight.ExpoAtten = 0.01f;
 
 	spotLights.push_back(spotLight);
 
