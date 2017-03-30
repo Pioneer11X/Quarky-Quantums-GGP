@@ -7,8 +7,8 @@ class ControlledEntity :
 {
 public:
 	bool lightIsOn;
-	ControlledEntity(Mesh * Object, Material* materialInput, float _posX, float _posY, float _posZ, b2World* world = nullptr, bool isDynamic = true, float _sizeX = 1, float _sizeY = 1);
+	ControlledEntity(Mesh* Object, Material* materialInput);
 	~ControlledEntity();
 	void HandleKeyboardInput(float moveSpeed);
 };
- 
+

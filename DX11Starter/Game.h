@@ -12,7 +12,6 @@
 #include "Lights.h"
 #include "WICTextureLoader.h"
 #include "ControlledEntity.h"
-#include "Box2D\Box2D.h"
 
 class Camera;
 
@@ -49,15 +48,10 @@ public:
 
 	// Get Camera Position
 	XMFLOAT3& GetCameraPostion();
-
-	void InitBox2D();
-
 private:
 
 	// Game Instance
 	static Game* instance;
-	//static b2Vec2 gravity;
-	//static b2World world;
 
 	// Initialization helper methods - feel free to customize, combine, etc.
 	void LoadShaders(); 
@@ -107,15 +101,5 @@ private:
 	std::vector<SpotLight> spotLights;
 
 	ControlledEntity* playerChar;
-
-	// Box2D Shit.
-
-	float32 timeStep = 1.0f / 60.0f;
-	int32 velocityIterations = 6;
-	int32 positionIterations = 2;
-
-	b2Body* groundBody;
-	b2Body* playerBody;
-
 };
 
