@@ -100,5 +100,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
+    <None Include="lib\Box2D.idb" />
+  </ItemGroup>
+  <ItemGroup>
+    <Library Include="lib\Box2D.lib" />
   </ItemGroup>
 </Project>
