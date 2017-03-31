@@ -6,6 +6,8 @@ using namespace DirectX;
 
 // Initialize static variables
 Game* Game::instance;
+b2Vec2 gravity(0.0f, -10.0f);
+b2World world(gravity);
 
 // --------------------------------------------------------
 // Constructor
@@ -190,6 +192,7 @@ void Game::Init()
 	device->CreateRasterizerState(&rd, &rasterizerState);
 
 	CreateBasicGeometry();
+	//InitBox2D();
 	
 	//Init Light
 	DirectionalLight light;
@@ -211,11 +214,15 @@ void Game::Init()
 	// Init Spot Light 1
 	SpotLight spotLight;
 	spotLight.Color = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
-	spotLight.Direction = XMFLOAT3(0.0f, -1.0f, 0.0f);
+	spotLight.Direction = XMFLOAT3(1.0f, -1.0f, 0.0f);
 	// This is roughly spot light of 60 degrees total.
 	spotLight.DotDist = 0.52f;
-	spotLight.Position = XMFLOAT3(-2.0f, 2.0f, 0.0f);
+	spotLight.Position = XMFLOAT3(-3.0f, 0.0f, 0.0f);
 	spotLight.isOn = 1;
+	spotLight.SpotIntensity = 0.5f;
+	spotLight.ConstAtten = 0.2f;
+	spotLight.LinearAtten = 0.2f;
+	spotLight.ExpoAtten = 0.01f;
 
 	spotLights.push_back(spotLight);
 
@@ -277,40 +284,7 @@ void Game::LoadShaders()
 // --------------------------------------------------------
 void Game::CreateMatrices()
 {
-	//// Set up world matrix
-	//// - In an actual game, each object will need one of these and they should
-	////   update when/if the object moves (every frame)
-	//// - You'll notice a "transpose" happening below, which is redundant for
-	////   an identity matrix.  This is just to show that HLSL expects a different
-	////   matrix (column major vs row major) than the DirectX Math library
-	//XMMATRIX W = XMMatrixIdentity();
-	//XMStoreFloat4x4(&worldMatrix, XMMatrixTranspose(W)); // Transpose for HLSL!
 
-	//// Create the View matrix
-	//// - In an actual game, recreate this matrix every time the camera 
-	////    moves (potentially every frame)
-	//// - We're using the LOOK TO function, which takes the position of the
-	////    camera and the direction vector along which to look (as well as "up")
-	//// - Another option is the LOOK AT function, to look towards a specific
-	////    point in 3D space
-	//XMVECTOR pos = XMVectorSet(0, 0, -5, 0);
-	//XMVECTOR dir = XMVectorSet(0, 0, 1, 0);
-	//XMVECTOR up  = XMVectorSet(0, 1, 0, 0);
-	//XMMATRIX V   = XMMatrixLookToLH(
-	//	pos,     // The position of the "camera"
-	//	dir,     // Direction the camera is looking
-	//	up);     // "Up" direction in 3D space (prevents roll)
-	//XMStoreFloat4x4(&viewMatrix, XMMatrixTranspose(V)); // Transpose for HLSL!
-
-	//// Create the Projection matrix
-	//// - This should match the window's aspect ratio, and also update anytime
-	////   the window resizes (which is already happening in OnResize() below)
-	//XMMATRIX P = XMMatrixPerspectiveFovLH(
-	//	0.25f * 3.1415926535f,		// Field of View Angle
-	//	(float)width / height,		// Aspect ratio
-	//	0.1f,						// Near clip plane distance
-	//	100.0f);					// Far clip plane distance
-	//XMStoreFloat4x4(&projectionMatrix, XMMatrixTranspose(P)); // Transpose for HLSL!
 }
 
 
@@ -328,35 +302,44 @@ void Game::CreateBasicGeometry()
 
 	meshObjs.push_back(new Mesh(pathModifier + "sphere.obj", device));
 
-	entities.push_back(new Entity(meshObjs[0], materials[0]));
+	entities.push_back(new Entity(meshObjs[0], materials[0], 2.0f, 0.0f, 0.0f, &world, true, 0.5f, 0.5f));
 
 	meshObjs.push_back(new Mesh(pathModifier + "cone.obj", device));
 
-	entities.push_back(new Entity(meshObjs[1], materials[2]));
+	entities.push_back(new Entity(meshObjs[1], materials[2], 4.0f, 2.0f, 0.0f, &world, true, 0.5f, 0.5f));
 
 	meshObjs.push_back(new Mesh(pathModifier + "cylinder.obj", device));
 
-	entities.push_back(new Entity(meshObjs[2], materials[2]));
+	entities.push_back(new Entity(meshObjs[2], materials[2], -4.0f, -2.0f, 0.0f, &world, true, 0.5f, 0.5f));
 
-	meshObjs.push_back(new Mesh(pathModifier + "helix.obj", device));
-
-	entities.push_back(new Entity(meshObjs[3], materials[3]));
+	meshObjs.push_back(new Mesh(pathModifier + "Plane.obj", device));
+	// Dont pass world as this is the plane obj and not dynamic.
+	entities.push_back(new Entity(meshObjs[3], materials[3], 0.0f, -5.0f, 0.0f, &world, false, 10.0f, 0.1f ));
 
 	meshObjs.push_back(new Mesh(pathModifier + "torus.obj", device));
 
-	entities.push_back(new Entity(meshObjs[4], materials[2]));
+	entities.push_back(new Entity(meshObjs[4], materials[2], -6.0f, 0.0f, 2.0f, &world, true, 0.5f, 0.5f));
 
 	meshObjs.push_back(new Mesh(pathModifier + "cube.obj", device));
 
-	entities.push_back(new Entity(meshObjs[5], materials[1]));
+	entities.push_back(new Entity(meshObjs[5], materials[1], -2.0f, 0.0f, 0.0f, &world, true, 0.5f, 0.5f));
 
-	playerChar = new ControlledEntity(meshObjs[2], materials[2]);
+	playerChar = new ControlledEntity(meshObjs[2], materials[2], 0.0f, 0.0f, 0.0f, &world, true, 0.5f, 0.5f);
 	entities.push_back(playerChar);
 
 	skyMaterial = new Material(skyVertShader, skyPixShader, skyBox, sampler);
-	skyObject = new Entity(meshObjs[0], skyMaterial);
+	skyObject = new Entity(meshObjs[0], skyMaterial, 0.0f, 0.0f, 0.0f, nullptr, false);
 	skyObject->SetTranslation(camera->GetPosition().x, camera->GetPosition().y, camera->GetPosition().z);
 	skyObject->SetScale(200.0f, 200.0f, 200.0f);
+
+	// Initial Posture for the objects.
+	entities[0]->SetTranslation(2.0f, 0.0f, 0.0f);
+	entities[1]->SetTranslation(4.0f, 2.0f, 0.0f);
+	entities[2]->SetTranslation(-4.0f, -2.0f, 0.0f);
+	// Plane Obj.
+	entities[3]->SetTranslation(0.0f, -5.0f, 0.0f);
+	entities[4]->SetTranslation(0.0f, 0.0f, 2.0f);
+	entities[5]->SetTranslation(-2.0f, 0.0f, 0.0f);
 
 }
 
@@ -395,23 +378,49 @@ void Game::Update(float deltaTime, float totalTime)
 
 #pragma region EnitityUpdates
 
-	entities[0]->SetTranslation(0.0f, 0.0f, 0.0f);
-	entities[1]->SetTranslation(0.0f, 2.0f, 0.0f);
-	entities[2]->SetTranslation(0.0f, -2.0f, 0.0f);
-	entities[3]->SetTranslation(2.0f, 0.0f, 0.0f);
-	entities[4]->SetTranslation(0.0f, 0.0f, 2.0f);
-	entities[5]->SetTranslation(-2.0f, 0.0f, 0.0f);
+	world.Step(deltaTime, velocityIterations, positionIterations);
 
-	entities[0]->SetRotation(0.0f, sin(totalTime / 2), 0.0f, cos(totalTime / 2));
-	entities[1]->SetRotation(0.0f, sin(totalTime / 2), 0.0f, cos(totalTime / 2));
-	entities[2]->SetRotation(0.0f, sin(totalTime / 2), 0.0f, cos(totalTime / 2));
-	entities[3]->SetRotation(0.0f, sin(totalTime / 2), 0.0f, cos(totalTime / 2));
-	entities[4]->SetRotation(0.0f, sin(totalTime / 2), 0.0f, cos(totalTime / 2));
-	entities[5]->SetRotation(0.0f, sin(totalTime / 2), 0.0f, cos(totalTime / 2));
+	//printf("%f , %f", );
+	//entities[1]->SetTranslation( playerBody->GetPosition().x , playerBody->GetPosition().y + 3.0f, playerChar->GetPosition().z );
+
+	entities[0]->UpdatePhysicsTick();
+	entities[1]->UpdatePhysicsTick();
+	entities[2]->UpdatePhysicsTick();
+	//entities[3]->UpdatePhysicsTick();
+	entities[4]->UpdatePhysicsTick();
+	entities[5]->UpdatePhysicsTick();
+	playerChar->UpdatePhysicsTick();
+
+	//entities[0]->SetTranslation(0.0f, 0.0f, 0.0f);
+	//entities[1]->SetTranslation(0.0f, 2.0f, 0.0f);
+	//entities[2]->SetTranslation(0.0f, -2.0f, 0.0f);
+
+	// Plane Obj.
+	//entities[3]->SetTranslation(0.0f, -5.0f, 0.0f);
+	//entities[4]->SetTranslation(0.0f, 0.0f, 2.0f);
+	//entities[5]->SetTranslation(-2.0f, 0.0f, 0.0f);
+
+	//entities[0]->SetRotation(0.0f, sin(totalTime / 2), 0.0f, cos(totalTime / 2));
+	//entities[1]->SetRotation(0.0f, sin(totalTime / 2), 0.0f, cos(totalTime / 2));
+	//entities[2]->SetRotation(0.0f, sin(totalTime / 2), 0.0f, cos(totalTime / 2));
+	//entities[3]->SetRotation(0.0f, sin(totalTime / 2), 0.0f, cos(totalTime / 2));
+	//entities[4]->SetRotation(0.0f, sin(totalTime / 2), 0.0f, cos(totalTime / 2));
+	//entities[5]->SetRotation(0.0f, sin(totalTime / 2), 0.0f, cos(totalTime / 2));
 
 #pragma endregion
 
-	playerChar->HandleKeyboardInput(1.0f * deltaTime);
+	// Printing and debug.
+	//if ( float(totalTime) - int(totalTime) == 0.0f) {
+		// For one second, I'm assuming. 
+		printf("Entity 0: %f, %f, %f\n", entities[0]->GetPosition().x, entities[0]->GetPosition().y, entities[0]->GetPosition().z);
+		printf("Entity 1: %f, %f, %f\n", entities[1]->GetPosition().x, entities[1]->GetPosition().y, entities[1]->GetPosition().z);
+		printf("Entity 2: %f, %f, %f\n", entities[2]->GetPosition().x, entities[2]->GetPosition().y, entities[2]->GetPosition().z);
+		printf("Entity 3: %f, %f, %f\n", entities[3]->GetPosition().x, entities[3]->GetPosition().y, entities[3]->GetPosition().z);
+		printf("Entity 4: %f, %f, %f\n", entities[4]->GetPosition().x, entities[4]->GetPosition().y, entities[4]->GetPosition().z);
+		printf("Entity 5: %f, %f, %f\n", entities[5]->GetPosition().x, entities[5]->GetPosition().y, entities[5]->GetPosition().z);
+	//}
+
+	playerChar->HandleKeyboardInput(10.0f * deltaTime);
 
 	if (playerChar->lightIsOn != pointLights[0].isOn)
 		pointLights[0].isOn = playerChar->lightIsOn;
@@ -614,5 +623,35 @@ XMFLOAT3 & Game::GetCameraPostion()
 {
 	// TODO: insert return statement here
 	return camera->GetPosition();
+}
+
+void Game::InitBox2D()
+{
+	b2BodyDef groundBodyDef;
+	groundBodyDef.position.Set(0.0f, -5.0f);
+
+	groundBody = world.CreateBody(&groundBodyDef);
+
+	b2PolygonShape groundBox;
+	// X as 10 and Y as 1. No Z for Box2D
+	groundBox.SetAsBox(10.0f, 0.001f);
+	groundBody->CreateFixture(&groundBox, 0.0f);
+
+	b2BodyDef playerBodyDef;
+	playerBodyDef.type = b2_dynamicBody;
+	playerBodyDef.position.Set(0.0f, 0.0f);
+
+	playerBody = world.CreateBody(&playerBodyDef);
+
+	b2PolygonShape playerBox;
+	playerBox.SetAsBox(1.0f, 1.5f); // A Cylinders Projection in 2D Space.
+
+	b2FixtureDef fixDef;
+	fixDef.shape = &playerBox;
+	fixDef.density = 1.0f;
+	fixDef.friction = 0.3f;
+
+	playerBody->CreateFixture(&fixDef);
+
 }
 #pragma endregion

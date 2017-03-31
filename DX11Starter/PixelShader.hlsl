@@ -47,6 +47,10 @@ struct SpotLight
 	float DotDist;
 	float3 Position;
 	int isOn;
+	float SpotIntensity;
+	float ConstAtten;
+	float LinearAtten;
+	float ExpoAtten;
 };
 
 cbuffer ExternalData : register(b0)
@@ -123,6 +127,8 @@ float4 main(VertexToPixel input) : SV_TARGET
 		// Saturate will clamp the value between 0 and 1. So if there is a light amount we continue.
 		if (spotLightAmount > 0.0)
 		{
+			// Calculate the distance to the light source
+			float distance = length(dirToSpotLight);
 			// Calculate the vector between the light direction and the direction from thre spot
 			// light to the pixel
 			float spotEffect = dot(normalize(spotLight.Direction), normalize(-dirToSpotLight));
@@ -130,15 +136,21 @@ float4 main(VertexToPixel input) : SV_TARGET
 			// In other words is the point outside the spot light?
 			if (length(spotEffect) > spotLight.DotDist)
 			{
-				// Right now we just do a normal point light calculation
+				// Raise the intensity of the spot effect by a factor.
+				spotEffect = pow(spotEffect, spotLight.SpotIntensity);
+				// Attenuation equation for light dropoff.
+				float attenuationEffect = (spotEffect / (spotLight.ConstAtten + spotLight.LinearAtten * distance + spotLight.ExpoAtten * distance * distance));
+				
+				// Calculate diffuse light
 				float3 dirToSpotLight = normalize(spotLight.Position - input.worldPos);
 				float spotLightAmount = saturate(dot(input.normal, dirToSpotLight));
 
+				totalLight += attenuationEffect * (spotLight.Color * spotLightAmount);
+
+				// Calculate specular light
 				float3 dirToCamera = normalize(cameraPosition - input.worldPos);
 				float3 reflectionVector = reflect(-dirToSpotLight, input.normal);
-				specularLight += pow(saturate(dot(reflectionVector, dirToCamera)), 128);
-
-				totalLight += (spotLight.Color * spotLightAmount);
+				specularLight += attenuationEffect * pow(saturate(dot(reflectionVector, dirToCamera)), 128);
 			}
 		}
 
