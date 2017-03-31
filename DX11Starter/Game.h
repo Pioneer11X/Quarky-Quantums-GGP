@@ -10,6 +10,7 @@
 #include "Camera.h"
 #include "Material.h"
 #include "Lights.h"
+#include "DDSTextureLoader.h"
 #include "WICTextureLoader.h"
 #include "ControlledEntity.h"
 
@@ -61,6 +62,12 @@ private:
 	// Wrappers for DirectX shaders to provide simplified functionality
 	SimpleVertexShader* vertexShader;
 	SimplePixelShader* pixelShader;
+	SimpleVertexShader* skyVertShader;
+	SimplePixelShader* skyPixShader;
+
+	//DirectX related Buffers (for SkyBox)
+	ID3D11RasterizerState* rasterizerState;
+	ID3D11DepthStencilState* depthStencilState;
 
 	//Texture
 	ID3D11ShaderResourceView* earthSRV;
@@ -68,6 +75,9 @@ private:
 	ID3D11ShaderResourceView* metalRustSRV;
 	ID3D11ShaderResourceView* crateSRV;
 	ID3D11SamplerState* sampler;
+
+	//SkyBox
+	ID3D11ShaderResourceView* skyBox;
 
 	// Keeps track of the old mouse position.  Useful for 
 	// determining how far the mouse moved in a single frame.
@@ -77,9 +87,11 @@ private:
 	std::vector<Mesh*> meshObjs;
 
 	//Array of Entity pointers
+	Entity* skyObject;
 	std::vector<Entity*> entities;
 
 	//Array of materials
+	Material* skyMaterial;
 	std::vector<Material*> materials;
 
 	//Renderer object

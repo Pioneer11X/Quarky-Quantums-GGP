@@ -62,6 +62,8 @@ Game::~Game()
 	// will clean up their own internal DirectX stuff
 	delete vertexShader;
 	delete pixelShader;
+	delete skyVertShader;
+	delete skyPixShader;
 
 	//Release texture D3D resources
 	if (earthSRV) { earthSRV->Release(); }
@@ -69,6 +71,9 @@ Game::~Game()
 	if (metalSRV) { metalSRV->Release(); }
 	if (metalRustSRV) { metalRustSRV->Release(); }
 	if (sampler) { sampler->Release(); }
+	if (skyBox) { skyBox->Release(); }
+	if (rasterizerState) { rasterizerState->Release(); }
+	if (depthStencilState) { depthStencilState->Release(); }
 
 	// Delete renderer
 	delete renderer;
@@ -99,6 +104,7 @@ Game::~Game()
 	}
 
 	entities.clear();
+	delete skyObject;
 
 	// Delete Material Objs
 	for (Material* mat : materials)
@@ -108,6 +114,8 @@ Game::~Game()
 	}
 
 	materials.clear();
+
+	delete skyMaterial;
 }
 
 // --------------------------------------------------------
@@ -143,6 +151,19 @@ void Game::Init()
 	LoadTexture(L"./Assets/Textures/metalFloor.jpg", &metalSRV);
 	LoadTexture(L"./Assets/Textures/metalRust.jpg", &metalRustSRV);
 
+	//Reference: SkyMap retrieved from http://www.custommapmakers.org/skyboxes/zips/mp_met.zip
+	if (S_OK !=
+		CreateDDSTextureFromFile(
+			device,
+			context,
+			L"Assets/Textures/skyBox.dds",
+			0,
+			&skyBox)
+		)
+	{
+		return;
+	}
+
 	// Create a sampler decription
 	D3D11_SAMPLER_DESC sampDesc = {};
 	sampDesc.AddressU = D3D11_TEXTURE_ADDRESS_WRAP;
@@ -153,6 +174,20 @@ void Game::Init()
 
 	// Create sampler from description
 	device->CreateSamplerState(&sampDesc, &sampler);
+
+	D3D11_DEPTH_STENCIL_DESC lessEqualsDesc = {};
+	lessEqualsDesc.DepthEnable = true;
+	lessEqualsDesc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ALL;
+	lessEqualsDesc.DepthFunc = D3D11_COMPARISON_LESS_EQUAL;
+
+	device->CreateDepthStencilState(&lessEqualsDesc, &depthStencilState);
+
+	// Set up a rasterizer state with no culling
+	D3D11_RASTERIZER_DESC rd = {};
+	rd.CullMode = D3D11_CULL_FRONT;
+	rd.FillMode = D3D11_FILL_SOLID;
+	rd.DepthClipEnable = true;
+	device->CreateRasterizerState(&rd, &rasterizerState);
 
 	CreateBasicGeometry();
 	
@@ -213,6 +248,14 @@ void Game::LoadShaders()
 	pixelShader = new SimplePixelShader(device, context);
 	if(!pixelShader->LoadShaderFile(L"Assets/ShaderObjs/x86/PixelShader.cso"))
 		pixelShader->LoadShaderFile(L"Assets/ShaderObjs/x64/PixelShader.cso");
+
+	skyVertShader = new SimpleVertexShader(device, context);
+	if (!skyVertShader->LoadShaderFile(L"Assets/ShaderObjs/x86/VertexShaderSky.cso"))
+		skyVertShader->LoadShaderFile(L"Assets/ShaderObjs/x64/VertexShaderSky.cso");
+
+	skyPixShader = new SimplePixelShader(device, context);
+	if (!skyPixShader->LoadShaderFile(L"Assets/ShaderObjs/x86/PixelShaderSky.cso"))
+		skyPixShader->LoadShaderFile(L"Assets/ShaderObjs/x64/PixelShaderSky.cso");
 
 	// You'll notice that the code above attempts to load each
 	// compiled shader file (.cso) from two different relative paths.
@@ -310,6 +353,11 @@ void Game::CreateBasicGeometry()
 	playerChar = new ControlledEntity(meshObjs[2], materials[2]);
 	entities.push_back(playerChar);
 
+	skyMaterial = new Material(skyVertShader, skyPixShader, skyBox, sampler);
+	skyObject = new Entity(meshObjs[0], skyMaterial);
+	skyObject->SetTranslation(camera->GetPosition().x, camera->GetPosition().y, camera->GetPosition().z);
+	skyObject->SetScale(200.0f, 200.0f, 200.0f);
+
 }
 
 
@@ -342,6 +390,8 @@ void Game::Update(float deltaTime, float totalTime)
 	// Quit if the escape key is pressed
 	if (GetAsyncKeyState(VK_ESCAPE))
 		Quit();
+
+	skyObject->SetTranslation(camera->GetPosition().x, camera->GetPosition().y, camera->GetPosition().z);
 
 #pragma region EnitityUpdates
 
@@ -388,6 +438,8 @@ void Game::Draw(float deltaTime, float totalTime)
 		D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL,
 		1.0f,
 		0);
+
+	context->RSSetState(nullptr);
 
 #pragma region Old Code
 
@@ -446,6 +498,25 @@ void Game::Draw(float deltaTime, float totalTime)
 	//}
 #pragma endregion
 	renderer->Draw(entities, context, camera->GetViewMatrix(), camera->GetProjectionMatrix(), &dirLights[0], &pointLights[0], &spotLights[0]);
+
+#pragma region Draw Skybox
+	// Draw SkyBox after drawing all Opaque objects
+	context->RSSetState(rasterizerState);
+	context->OMSetDepthStencilState(depthStencilState, 1);
+
+	skyObject->PrepareMaterial(camera->GetViewMatrix(), camera->GetProjectionMatrix());
+	skyVertShader->CopyAllBufferData();
+	skyPixShader->CopyAllBufferData();
+	skyVertShader->SetShader();
+	skyPixShader->SetShader();
+
+	renderer->DrawEntity(skyObject, context);
+#pragma endregion
+
+	// TO-DO Here: Draw all objects with alpha values
+	// ...
+
+
 
 	// Present the back buffer to the user
 	//  - Puts the final frame we're drawing into the window so the user can see it
