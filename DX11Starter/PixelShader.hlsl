@@ -6,8 +6,8 @@
 // - Each variable must have a semantic, which defines its usage
 
 //Texture Vars
-Texture2D diffuseTexture	: register(t0);
-SamplerState basicSampler	: register(s0);
+Texture2D Texture	: register(t0);
+SamplerState Sampler	: register(s0);
 
 struct VertexToPixel
 {
@@ -60,6 +60,7 @@ cbuffer ExternalData : register(b0)
 	PointLight pointLight;
 	SpotLight spotLight;
 	float3 cameraPosition;
+	float alpha;
 };
 
 // --------------------------------------------------------
@@ -73,7 +74,7 @@ cbuffer ExternalData : register(b0)
 // --------------------------------------------------------
 float4 main(VertexToPixel input) : SV_TARGET
 {
-	float4 surfaceColor = diffuseTexture.Sample(basicSampler, input.uv);
+	float4 surfaceColor = Texture.Sample(Sampler, input.uv);
 	float4 specularLight = { 0.0f, 0.0f, 0.0f, 0.0f };
 
 	// Normalize the normal vector
@@ -156,7 +157,7 @@ float4 main(VertexToPixel input) : SV_TARGET
 
 	}
 
-	return surfaceColor * 
-		(totalLight) +
-		(specularLight);
+	float4 finalColor = surfaceColor * (totalLight) + (specularLight);
+
+	return float4(finalColor.rgb, alpha);
 }

@@ -72,6 +72,7 @@ void Renderer::Draw(std::vector<Entity*> entities, ID3D11DeviceContext * context
 		entity->GetMaterial()->GetVertexShader()->CopyAllBufferData();
 
 		entity->GetMaterial()->GetPixelShader()->SetFloat3("cameraPosition", Game::Instance()->GetCameraPostion());
+		entity->GetMaterial()->GetPixelShader()->SetFloat ("alpha", entity->GetAlpha());
 
 		entity->GetMaterial()->GetPixelShader()->CopyAllBufferData();
 

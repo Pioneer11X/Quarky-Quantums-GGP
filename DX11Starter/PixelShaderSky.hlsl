@@ -4,10 +4,10 @@ struct VertexToPixel
 	float3 uv			: TEXCOORD;
 };
 
-TextureCube diffuseTexture : register(t0);
-SamplerState basicSampler : register(s0);
+TextureCube Texture : register(t0);
+SamplerState Sampler : register(s0);
 
 float4 main(VertexToPixel input) : SV_TARGET
 {
-	return diffuseTexture.Sample(basicSampler, input.uv);
+	return Texture.Sample(Sampler, input.uv);
 }

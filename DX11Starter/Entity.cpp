@@ -8,6 +8,7 @@ Entity::Entity(Mesh * Object, Material* materialInput, float _posX, float _posY,
 	meshObj = Object;
 	material = materialInput;
 	SetScale(1.0f, 1.0f, 1.0f);
+	alpha = 1.0f;
 
 	XMStoreFloat4(&rotation, XMQuaternionIdentity());
 	XMStoreFloat4x4(&rotationMatrix, XMMatrixRotationQuaternion(XMQuaternionIdentity()));
@@ -134,6 +135,17 @@ void Entity::UpdatePhysicsTick()
 
 }
 
+void Entity::SetAlpha(float val)
+{
+	alpha = val;
+}
+
+float & Entity::GetAlpha()
+{
+	// TODO: insert return statement here
+	return alpha;
+}
+
 
 
 void Entity::PrepareMaterial(XMFLOAT4X4 camViewMatrix, XMFLOAT4X4 camProjectionMatrix)
@@ -142,9 +154,8 @@ void Entity::PrepareMaterial(XMFLOAT4X4 camViewMatrix, XMFLOAT4X4 camProjectionM
 	material->GetVertexShader()->SetMatrix4x4("world", worldMatrix);
 	material->GetVertexShader()->SetMatrix4x4("view", camViewMatrix);
 	material->GetVertexShader()->SetMatrix4x4("projection", camProjectionMatrix);
-	material->GetPixelShader()->SetShaderResourceView("diffuseTexture", material->GetSRV());
-	material->GetPixelShader()->SetSamplerState("basicSampler", material->GetSamplerState());
-
+	material->GetPixelShader()->SetShaderResourceView("Texture", material->GetSRV());
+	material->GetPixelShader()->SetSamplerState("Sampler", material->GetSamplerState());
 }
 
 Material * Entity::GetMaterial()

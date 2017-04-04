@@ -26,8 +26,8 @@ private:
 	// Material obj pointer
 	Material* material;
 
-	// RigidBody
-	
+	// Alpha value of the Entity
+	float alpha;
 
 	// Boolean to check if data has changed since previous frame
 	bool isDirty;
@@ -50,6 +50,12 @@ public:
 	Mesh* GetMesh();
 	void AddPhysicsBody(b2World* world, bool isDynamic=true, float _sizeX = 1, float _sizeY = 1);
 	void UpdatePhysicsTick();
+
+	// Set Alpha
+	void SetAlpha(float val);
+
+	// Get Alpha
+	float& GetAlpha();
 
 	// Set WVP
 	void PrepareMaterial(XMFLOAT4X4 camViewMatrix, XMFLOAT4X4 camProjectionMatrix);

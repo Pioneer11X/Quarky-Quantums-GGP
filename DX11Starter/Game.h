@@ -72,8 +72,10 @@ private:
 	SimplePixelShader* skyPixShader;
 
 	//DirectX related Buffers (for SkyBox)
-	ID3D11RasterizerState* rasterizerState;
+	ID3D11RasterizerState* rsCullFront;
+	ID3D11RasterizerState* rsCullBack;
 	ID3D11DepthStencilState* depthStencilState;
+	ID3D11BlendState* bsAlphaBlend;
 
 	//Texture
 	ID3D11ShaderResourceView* earthSRV;
@@ -94,6 +96,7 @@ private:
 
 	//Array of Entity pointers
 	Entity* skyObject;
+	Entity* test;
 	std::vector<Entity*> entities;
 
 	//Array of materials

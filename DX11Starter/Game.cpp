@@ -36,6 +36,8 @@ Game::Game(HINSTANCE hInstance)
 	// Initialize fields
 	vertexShader = 0;
 	pixelShader = 0;
+	skyVertShader = 0;
+	skyVertShader = 0;
 
 	// Initialize renderer
 	renderer = new Renderer();
@@ -74,8 +76,10 @@ Game::~Game()
 	if (metalRustSRV) { metalRustSRV->Release(); }
 	if (sampler) { sampler->Release(); }
 	if (skyBox) { skyBox->Release(); }
-	if (rasterizerState) { rasterizerState->Release(); }
+	if (rsCullFront) { rsCullFront->Release(); }
+	if (rsCullBack) { rsCullBack->Release(); }
 	if (depthStencilState) { depthStencilState->Release(); }
+	if (bsAlphaBlend) { bsAlphaBlend->Release(); }
 
 	// Delete renderer
 	delete renderer;
@@ -107,6 +111,7 @@ Game::~Game()
 
 	entities.clear();
 	delete skyObject;
+	delete test;
 
 	// Delete Material Objs
 	for (Material* mat : materials)
@@ -186,10 +191,33 @@ void Game::Init()
 
 	// Set up a rasterizer state with no culling
 	D3D11_RASTERIZER_DESC rd = {};
-	rd.CullMode = D3D11_CULL_FRONT;
+	rd.CullMode = D3D11_CULL_BACK;
 	rd.FillMode = D3D11_FILL_SOLID;
 	rd.DepthClipEnable = true;
-	device->CreateRasterizerState(&rd, &rasterizerState);
+	device->CreateRasterizerState(&rd, &rsCullBack);
+
+	// Set up a rasterizer state with front culling
+	D3D11_RASTERIZER_DESC rd2 = {};
+	rd2.CullMode = D3D11_CULL_FRONT;
+	rd2.FillMode = D3D11_FILL_SOLID;
+	rd2.DepthClipEnable = true;
+	device->CreateRasterizerState(&rd2, &rsCullFront);
+
+	D3D11_BLEND_DESC bd = {};
+	bd.AlphaToCoverageEnable = false;
+	bd.IndependentBlendEnable = false;
+	bd.RenderTarget[0].BlendEnable = true;
+	bd.RenderTarget[0].SrcBlend = D3D11_BLEND_SRC_ALPHA;
+	bd.RenderTarget[0].DestBlend = D3D11_BLEND_INV_SRC_ALPHA;
+	bd.RenderTarget[0].BlendOp = D3D11_BLEND_OP_ADD;
+
+	bd.RenderTarget[0].SrcBlendAlpha = D3D11_BLEND_ONE;
+	bd.RenderTarget[0].DestBlendAlpha = D3D11_BLEND_ONE;
+	bd.RenderTarget[0].BlendOpAlpha = D3D11_BLEND_OP_ADD;
+
+	bd.RenderTarget[0].RenderTargetWriteMask = D3D11_COLOR_WRITE_ENABLE_ALL;
+
+	device->CreateBlendState(&bd, &bsAlphaBlend);
 
 	CreateBasicGeometry();
 	//InitBox2D();
@@ -323,6 +351,9 @@ void Game::CreateBasicGeometry()
 	meshObjs.push_back(new Mesh(pathModifier + "cube.obj", device));
 
 	entities.push_back(new Entity(meshObjs[5], materials[1], -2.0f, 0.0f, 0.0f, &world, true, 0.5f, 0.5f));
+
+	test = new Entity(meshObjs[5], materials[1], 0.0f, 0.0f, -5.0f, &world, true, 0.5f, 0.5f);
+	test->SetAlpha(0.25f);
 
 	playerChar = new ControlledEntity(meshObjs[2], materials[2], 0.0f, 0.0f, 0.0f, &world, true, 0.5f, 0.5f);
 	entities.push_back(playerChar);
@@ -510,7 +541,7 @@ void Game::Draw(float deltaTime, float totalTime)
 
 #pragma region Draw Skybox
 	// Draw SkyBox after drawing all Opaque objects
-	context->RSSetState(rasterizerState);
+	context->RSSetState(rsCullFront);
 	context->OMSetDepthStencilState(depthStencilState, 1);
 
 	skyObject->PrepareMaterial(camera->GetViewMatrix(), camera->GetProjectionMatrix());
@@ -525,7 +556,21 @@ void Game::Draw(float deltaTime, float totalTime)
 	// TO-DO Here: Draw all objects with alpha values
 	// ...
 
+	// Turn on our custom blend state to enable alpha blending
+	context->RSSetState(rsCullBack);
+	context->OMSetBlendState(
+		bsAlphaBlend,
+		0, // Not using per-channel blend factors
+		0xFFFFFFFF); // Sample mask - Need all bits set (0xFFFFFFFF)
 
+	test->GetMaterial()->GetPixelShader()->SetFloat("alpha", test->GetAlpha());
+	test->PrepareMaterial(camera->GetViewMatrix(), camera->GetProjectionMatrix());
+	test->GetMaterial()->GetVertexShader()->CopyAllBufferData();
+	test->GetMaterial()->GetPixelShader()->CopyAllBufferData();
+	test->GetMaterial()->GetVertexShader()->SetShader();
+	test->GetMaterial()->GetPixelShader()->SetShader();
+
+	renderer->DrawEntity(test, context);
 
 	// Present the back buffer to the user
 	//  - Puts the final frame we're drawing into the window so the user can see it
