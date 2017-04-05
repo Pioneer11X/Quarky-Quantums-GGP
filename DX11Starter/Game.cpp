@@ -485,9 +485,12 @@ void Game::Draw(float deltaTime, float totalTime)
 	//		0);    // Offset to add to each index when looking up vertices
 	//}
 #pragma endregion
-	renderer->Draw(entities, skyObject, camera->GetViewMatrix(), camera->GetProjectionMatrix(), &dirLights[0], &pointLights[0], &spotLights[0]);
 
-	ImGui::Render();
+	if ( curScene == GameLevel)
+		renderer->Draw(entities, skyObject, camera->GetViewMatrix(), camera->GetProjectionMatrix(), &dirLights[0], &pointLights[0], &spotLights[0]);
+
+	if ( curScene == Menu)
+		ImGui::Render();
 
 	// Present the back buffer to the user
 	//  - Puts the final frame we're drawing into the window so the user can see it
@@ -616,4 +619,5 @@ void Game::InitBox2D()
 	playerBody->CreateFixture(&fixDef);
 
 }
+
 #pragma endregion
