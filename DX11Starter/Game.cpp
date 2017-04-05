@@ -487,6 +487,8 @@ void Game::Draw(float deltaTime, float totalTime)
 #pragma endregion
 	renderer->Draw(entities, skyObject, camera->GetViewMatrix(), camera->GetProjectionMatrix(), &dirLights[0], &pointLights[0], &spotLights[0]);
 
+	ImGui::Render();
+
 	// Present the back buffer to the user
 	//  - Puts the final frame we're drawing into the window so the user can see it
 	//  - Do this exactly ONCE PER FRAME (always at the very end of the frame)
