@@ -72,7 +72,7 @@ Game::~Game()
 	if (metalSRV) { metalSRV->Release(); }
 	if (metalRustSRV) { metalRustSRV->Release(); }
 	if (sampler) { sampler->Release(); }
-	if (skyBox) { skyBox->Release(); }
+if (skyBox) { skyBox->Release(); }
 
 	// Delete renderer
 	delete renderer;
@@ -489,8 +489,8 @@ void Game::Draw(float deltaTime, float totalTime)
 	if ( curScene == GameLevel)
 		renderer->Draw(entities, skyObject, camera->GetViewMatrix(), camera->GetProjectionMatrix(), &dirLights[0], &pointLights[0], &spotLights[0]);
 
-	if ( curScene == Menu)
-		ImGui::Render();
+	if (curScene == Menu)
+		GUI::instance().Draw();
 
 	// Present the back buffer to the user
 	//  - Puts the final frame we're drawing into the window so the user can see it
