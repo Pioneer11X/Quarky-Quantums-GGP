@@ -1,5 +1,4 @@
 #include "DXCore.h"
-
 #include <WindowsX.h>
 #include <sstream>
 
@@ -13,8 +12,13 @@ DXCore* DXCore::DXCoreInstance = 0;
 // This needs to be a global function (not part of a class), but we want
 // to forward the parameters to our class to properly handle them.
 // --------------------------------------------------------
+
+extern LRESULT ImGui_ImplDX11_WndProcHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 LRESULT DXCore::WindowProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
+	if (ImGui_ImplDX11_WndProcHandler(hWnd, uMsg, wParam, lParam))
+		return true;
+
 	return DXCoreInstance->ProcessMessage(hWnd, uMsg, wParam, lParam);
 }
 
@@ -264,6 +268,8 @@ HRESULT DXCore::InitDirectX()
 	viewport.MaxDepth	= 1.0f;
 	context->RSSetViewports(1, &viewport);
 
+	GUI::instance().Init(hWnd, device, context);
+
 	// Return the "everything is ok" HRESULT value
 	return S_OK;
 }
@@ -353,6 +359,10 @@ HRESULT DXCore::Run()
 	// Give subclass a chance to initialize
 	Init();
 
+	bool show_test_window = true;
+	bool show_another_window = false;
+	ImVec4 clear_col = ImColor(114, 144, 154);
+
 	// Our overall game and message loop
 	MSG msg = {};
 	while (msg.message != WM_QUIT)
@@ -371,6 +381,10 @@ HRESULT DXCore::Run()
 			UpdateTimer();
 			if(titleBarStats)
 				UpdateTitleBarStats();
+
+			GUI::instance().Update();
+			if (ImGui::Button("Start")) (curScene = GameLevel);
+			if (ImGui::Button("Quit")) (Quit());
 
 			// The game loop
 			Update(deltaTime, totalTime);

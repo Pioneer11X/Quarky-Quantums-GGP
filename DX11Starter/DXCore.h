@@ -3,10 +3,18 @@
 #include <Windows.h>
 #include <d3d11.h>
 #include <string>
+#include "GUI.h"
 
 // We can include the correct library files here
 // instead of in Visual Studio settings if we want
 #pragma comment(lib, "d3d11.lib")
+
+
+enum CurrentGameScene {
+	Menu,
+	GameLevel
+};
+
 
 class DXCore
 {
@@ -72,6 +80,8 @@ protected:
 	// Helper function for allocating a console window
 	void CreateConsoleWindow(int bufferLines, int bufferColumns, int windowLines, int windowColumns);
 
+	CurrentGameScene curScene = Menu;
+
 private:
 	// Timing related data
 	double perfCounterSeconds;
@@ -87,5 +97,8 @@ private:
 	
 	void UpdateTimer();			// Updates the timer for this frame
 	void UpdateTitleBarStats();	// Puts debug info in the title bar
+
+
+
 };
 
