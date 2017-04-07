@@ -156,6 +156,7 @@ void Entity::PrepareMaterial(XMFLOAT4X4 camViewMatrix, XMFLOAT4X4 camProjectionM
 	material->GetVertexShader()->SetMatrix4x4("projection", camProjectionMatrix);
 	material->GetPixelShader()->SetShaderResourceView("Texture", material->GetSRV());
 	material->GetPixelShader()->SetSamplerState("Sampler", material->GetSamplerState());
+	material->GetPixelShader()->SetFloat("alpha", alpha);
 }
 
 Material * Entity::GetMaterial()
