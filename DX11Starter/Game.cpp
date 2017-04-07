@@ -400,17 +400,6 @@ void Game::Update(float deltaTime, float totalTime)
 
 #pragma endregion
 
-	// Printing and debug.
-	//if ( float(totalTime) - int(totalTime) == 0.0f) {
-		// For one second, I'm assuming. 
-		printf("Entity 0: %f, %f, %f\n", entities[0]->GetPosition().x, entities[0]->GetPosition().y, entities[0]->GetPosition().z);
-		printf("Entity 1: %f, %f, %f\n", entities[1]->GetPosition().x, entities[1]->GetPosition().y, entities[1]->GetPosition().z);
-		printf("Entity 2: %f, %f, %f\n", entities[2]->GetPosition().x, entities[2]->GetPosition().y, entities[2]->GetPosition().z);
-		printf("Entity 3: %f, %f, %f\n", entities[3]->GetPosition().x, entities[3]->GetPosition().y, entities[3]->GetPosition().z);
-		printf("Entity 4: %f, %f, %f\n", entities[4]->GetPosition().x, entities[4]->GetPosition().y, entities[4]->GetPosition().z);
-		printf("Entity 5: %f, %f, %f\n", entities[5]->GetPosition().x, entities[5]->GetPosition().y, entities[5]->GetPosition().z);
-	//}
-
 	playerChar->HandleKeyboardInput(10.0f * deltaTime);
 
 	if (playerChar->lightIsOn != pointLights[0].isOn)
