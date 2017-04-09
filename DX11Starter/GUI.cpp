@@ -28,12 +28,12 @@ void GUI::Update()
 
 	// Use this to Update the frames. I.e, create new stuff I guess.
 	ImGui_ImplDX11_NewFrame();
-	//if (ImGui::IsItemHovered()) {
-	//	ImGui::CaptureMouseFromApp(true);
-	//}
-	//else {
-	//	ImGui::CaptureMouseFromApp(false);
-	//}
+	if (ImGui::IsItemHovered()) {
+		ImGui::CaptureMouseFromApp(true);
+	}
+	else {
+		ImGui::CaptureMouseFromApp(false);
+	}
 
 
 	//ImGui::Button("Start");
@@ -74,6 +74,7 @@ void GUI::Update()
 
 void GUI::End()
 {
+	ImGui_ImplDX11_InvalidateDeviceObjects();
 	ImGui::Shutdown();
 }
 
