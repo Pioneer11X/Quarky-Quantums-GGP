@@ -45,6 +45,14 @@ void InputManager::InitKeys()
 	keys[5].name = "BACKWARD";
 	keys[5].vKey = 'X';
 	keys[5].keyState = 0;
+
+	keys[6].name = "LEFTARROW";
+	keys[6].vKey = 0x25;
+	keys[6].keyState = 0;
+
+	keys[7].name = "RIGHTARROW";
+	keys[7].vKey = 0x27;
+	keys[7].keyState = 0;
 }
 
 InputManager * InputManager::Instance()

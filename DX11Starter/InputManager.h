@@ -3,7 +3,7 @@
 #include <vector>
 #include <string>
 
-#define NUM_KEYS	6
+#define NUM_KEYS	8
 
 enum KeyPressed
 {
@@ -13,7 +13,9 @@ enum KeyPressed
 	LEFT,
 	RIGHT,
 	FORWARD,
-	BACKWARD
+	BACKWARD,
+	LEFTARROW,
+	RIGHTARROW
 };
 
 enum KeyStates

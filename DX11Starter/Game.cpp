@@ -83,6 +83,9 @@ if (skyBox) { skyBox->Release(); }
 	// Delete Camera
 	delete camera;
 
+	// Delete our custom spotlight
+	delete spotLightEntity;
+
 	////Lambda function that deletes a Mesh pointer and sets it to NULL
 	//auto deleteAndSetToNull = [](void* x) { delete x; x = NULL; };
 
@@ -185,7 +188,7 @@ void Game::Init()
 	light.AmbientColor = XMFLOAT4(0.1f, 0.1f, 0.1f, 1.0f);
 	light.DiffuseColor = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
 	light.Direction = XMFLOAT3(1.0f, -1.0f, 0.0f);
-	light.isOn = 0;
+	light.isOn = 1;
 
 	//Init Light 2
 	DirectionalLight light2;
@@ -199,8 +202,9 @@ void Game::Init()
 
 	// Init Spot Light 1
 	SpotLight spotLight;
-	spotLight.Color = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
-	spotLight.Direction = XMFLOAT3(1.0f, -1.0f, 0.0f);
+	spotLight.AmbientColor = XMFLOAT4(0.01f, 0.01f, 0.01f, 0.01f);
+	spotLight.DiffuseColor = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
+	spotLight.Direction = XMFLOAT3(1.0f, 0.0f, 0.0f);
 	// This is roughly spot light of 60 degrees total.
 	spotLight.DotDist = 0.52f;
 	spotLight.Position = XMFLOAT3(-3.0f, 0.0f, 0.0f);
@@ -210,7 +214,7 @@ void Game::Init()
 	spotLight.LinearAtten = 0.2f;
 	spotLight.ExpoAtten = 0.01f;
 
-	spotLights.push_back(spotLight);
+	spotLightEntity = new SpotLightWrapper(spotLight, 1.0f);
 
 	//Init Point Light 1
 	PointLight pLight;
@@ -402,6 +406,8 @@ void Game::Update(float deltaTime, float totalTime)
 
 	playerChar->HandleKeyboardInput(10.0f * deltaTime);
 
+	spotLightEntity->HandleKeyboardInputs(deltaTime);
+
 	if (playerChar->lightIsOn != pointLights[0].isOn)
 		pointLights[0].isOn = playerChar->lightIsOn;
 
@@ -487,7 +493,7 @@ void Game::Draw(float deltaTime, float totalTime)
 #pragma endregion
 
 	if ( curScene == GameLevel)
-		renderer->Draw(entities, skyObject, camera->GetViewMatrix(), camera->GetProjectionMatrix(), &dirLights[0], &pointLights[0], &spotLights[0]);
+		renderer->Draw(entities, skyObject, camera->GetViewMatrix(), camera->GetProjectionMatrix(), &dirLights[0], &pointLights[0], &spotLightEntity->GetSpotLight());
 
 	if (curScene == Menu)
 		GUI::instance().Draw();
