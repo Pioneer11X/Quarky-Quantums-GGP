@@ -34,6 +34,8 @@ void GUI::Update()
 	else {
 		ImGui::CaptureMouseFromApp(false);
 	}
+
+
 	//ImGui::Button("Start");
 	//ImGui::Button("Quit");
 
@@ -68,6 +70,12 @@ void GUI::Update()
 	//	ImGui::ShowTestWindow(&show_test_window);
 	//}
 
+}
+
+void GUI::End()
+{
+	ImGui_ImplDX11_InvalidateDeviceObjects();
+	ImGui::Shutdown();
 }
 
 GUI::~GUI()

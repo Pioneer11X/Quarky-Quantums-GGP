@@ -314,10 +314,10 @@ void Game::CreateBasicGeometry()
 
 	entities.push_back(new Entity(meshObjs[5], materials[1], -2.0f, 0.0f, 0.0f, &world, true, 0.5f, 0.5f));
 
-	entities.push_back(new Entity(meshObjs[5], materials[1], 0.0f, -4.5f, 5.0f, &world, true, 0.5f, 0.5f));
+	entities.push_back(new Entity(meshObjs[5], materials[1], 0.0f, -4.5f, 5.0f));
 	entities.back()->SetAlpha(0.35f);
 
-	entities.push_back(new Entity(meshObjs[0], materials[0], 0.0f, -4.5f, 3.0f, &world, true, 0.5f, 0.5f));
+	entities.push_back(new Entity(meshObjs[0], materials[0], 0.0f, -4.5f, 3.0f));
 	entities.back()->SetAlpha(0.25f);
 
 	playerChar = new ControlledEntity(meshObjs[2], materials[2], 0.0f, 0.0f, 0.0f, &world, true, 0.5f, 0.5f);
