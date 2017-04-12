@@ -115,6 +115,7 @@ float4 main(VertexToPixel input) : SV_TARGET
 		specularLight += pow(saturate(dot(reflectionVector, dirToCamera)), 128);
 
 		totalLight += (pointLight.Color * pointLightAmount);
+	}
 
 	// Implementation example from: http://www.lighthouse3d.com/tutorials/glsl-12-tutorial/spot-light-per-pixel/
 	if (spotLight.isOn == 1)
@@ -132,7 +133,7 @@ float4 main(VertexToPixel input) : SV_TARGET
 			float distance = length(dirToSpotLight);
 			// Calculate the vector between the light direction and the direction from the spot
 			// light to the pixel
-			float spotEffect = dot(normalize(spotLight.Direction), normalize(-dirToSpotLight));
+			float spotEffect = max(dot(normalize(-dirToSpotLight), normalize(spotLight.Direction)), 0.0f);
 			// Is this length greather than the what it should be based on the angle of our spot light?
 			// In other words is the point outside the spot light?
 			if (length(spotEffect) > spotLight.DotDist)
