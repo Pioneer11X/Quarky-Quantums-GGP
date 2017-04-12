@@ -373,8 +373,8 @@ void Game::Update(float deltaTime, float totalTime)
 	skyObject->SetTranslation(camera->GetPosition().x, camera->GetPosition().y, camera->GetPosition().z);
 
 #pragma region EnitityUpdates
-
-	world.Step(deltaTime, velocityIterations, positionIterations);
+	if ( IsPhysicsRunning() )
+		world.Step(deltaTime, velocityIterations, positionIterations);
 
 	//printf("%f , %f", );
 	//entities[1]->SetTranslation( playerBody->GetPosition().x , playerBody->GetPosition().y + 3.0f, playerChar->GetPosition().z );

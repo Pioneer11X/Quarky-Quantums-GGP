@@ -53,6 +53,18 @@ public:
 
 	void InitBox2D();
 
+	bool IsPhysicsRunning() {
+		return PhysicsRunning;
+	}
+
+	void StartPhysics() {
+		PhysicsRunning = true;
+	}
+
+	void PausePhysics() {
+		PhysicsRunning = false;
+	}
+
 private:
 
 	// Game Instance
@@ -124,6 +136,8 @@ private:
 
 	b2Body* groundBody;
 	b2Body* playerBody;
+
+	bool PhysicsRunning = false;
 
 };
 

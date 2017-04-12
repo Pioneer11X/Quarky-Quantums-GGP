@@ -156,7 +156,8 @@ void Renderer::Draw(std::vector<Entity*> entities, Entity* skyBox, XMFLOAT4X4& v
 
 	auto sortBlendObjsByZVal = [&]() {
 		bool sorted = false;
-		int i = 0, j = 1;
+		size_t i = 0;
+		int j = 1;
 
 		while (!sorted)
 		{
