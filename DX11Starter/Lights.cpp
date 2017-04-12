@@ -17,6 +17,11 @@ SpotLightWrapper::~SpotLightWrapper()
 	}*/
 }
 
+void SpotLightWrapper::UpdateLightPoistion(XMFLOAT3 newPos)
+{
+	myLight.Position = newPos;
+}
+
 void SpotLightWrapper::HandleKeyboardInputs(float deltaTime)
 {
 	// Rotate Counter Clockwise

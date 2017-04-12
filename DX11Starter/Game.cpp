@@ -200,22 +200,6 @@ void Game::Init()
 	dirLights.push_back(light);
 	dirLights.push_back(light2);
 
-	// Init Spot Light 1
-	SpotLight spotLight;
-	spotLight.AmbientColor = XMFLOAT4(0.01f, 0.01f, 0.01f, 0.01f);
-	spotLight.DiffuseColor = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
-	spotLight.Direction = XMFLOAT3(1.0f, 0.0f, 0.0f);
-	// This is roughly spot light of 60 degrees total.
-	spotLight.DotDist = 0.52f;
-	spotLight.Position = XMFLOAT3(-3.0f, 0.0f, 0.0f);
-	spotLight.isOn = 1;
-	spotLight.SpotIntensity = 0.5f;
-	spotLight.ConstAtten = 0.2f;
-	spotLight.LinearAtten = 0.2f;
-	spotLight.ExpoAtten = 0.01f;
-
-	spotLightEntity = new SpotLightWrapper(spotLight, 1.0f);
-
 	//Init Point Light 1
 	PointLight pLight;
 	pLight.Color = XMFLOAT4(1.0f, 0.57f, 0.17f, 1.0f);
@@ -320,7 +304,24 @@ void Game::CreateBasicGeometry()
 	entities.push_back(new Entity(meshObjs[0], materials[0], 0.0f, -4.5f, 3.0f));
 	entities.back()->SetAlpha(0.25f);
 
-	playerChar = new ControlledEntity(meshObjs[2], materials[2], 0.0f, 0.0f, 0.0f, &world, true, 0.5f, 0.5f);
+
+	// Init Spot Light for the player
+	SpotLight spotLight;
+	spotLight.AmbientColor = XMFLOAT4(0.01f, 0.01f, 0.01f, 0.01f);
+	spotLight.DiffuseColor = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
+	spotLight.Direction = XMFLOAT3(1.0f, 0.0f, 0.0f);
+	// This is roughly spot light of 60 degrees total.
+	spotLight.DotDist = 0.52f;
+	spotLight.Position = XMFLOAT3(-3.0f, 0.0f, 0.0f);
+	spotLight.isOn = 1;
+	spotLight.SpotIntensity = 0.5f;
+	spotLight.ConstAtten = 0.2f;
+	spotLight.LinearAtten = 0.2f;
+	spotLight.ExpoAtten = 0.01f;
+
+	spotLightEntity = new SpotLightWrapper(spotLight, 2.5f);
+
+	playerChar = new ControlledEntity(meshObjs[2], materials[2], 0.0f, 0.0f, 0.0f, spotLightEntity, &world, true, 0.5f, 0.5f);
 	entities.push_back(playerChar);
 
 	skyMaterial = new Material(skyVertShader, skyPixShader, skyBox, sampler);
@@ -405,6 +406,7 @@ void Game::Update(float deltaTime, float totalTime)
 #pragma endregion
 
 	playerChar->HandleKeyboardInput(10.0f * deltaTime);
+	playerChar->UpdateSpotLightPosition();
 
 	spotLightEntity->HandleKeyboardInputs(deltaTime);
 

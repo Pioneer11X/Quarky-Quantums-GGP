@@ -43,6 +43,7 @@ public:
 	SpotLightWrapper(SpotLight newLight,float newSpeed);
 	~SpotLightWrapper();
 	void HandleKeyboardInputs(float deltaTime);
+	void UpdateLightPoistion(XMFLOAT3 newPos);
 	inline SpotLight& GetSpotLight() { return myLight; }
 	/*void CalculateWorldMatrix();
 	XMFLOAT4X4& GetWorldMatrix();
