@@ -4,6 +4,7 @@
 
 Entity::Entity(Mesh * Object, Material* materialInput, float _posX, float _posY, float _posZ, b2World* world, bool isDynamic, float _sizeX, float _sizeY)
 {
+	pb = nullptr;		// Need this I guess.
 	isDirty = true;
 	meshObj = Object;
 	material = materialInput;
@@ -17,13 +18,14 @@ Entity::Entity(Mesh * Object, Material* materialInput, float _posX, float _posY,
 
 	XMStoreFloat4x4(&worldMatrix, XMMatrixTranspose(XMMatrixIdentity()));
 	this->SetTranslation(_posX, _posY, _posZ);
-	if ( world != nullptr)
-		this->AddPhysicsBody(world, isDynamic, _sizeX, _sizeY);
+	if (world != nullptr)
+		pb = new PhysicsObject(world, isDynamic, _posX, _posY, _sizeX, _sizeY);
 	
 }
 
 Entity::~Entity()
 {
+	if (pb != nullptr) delete pb;
 }
 
 XMFLOAT3 Entity::GetPosition()
@@ -106,31 +108,11 @@ XMFLOAT4X4& Entity::GetWorldMatrix()
 	return worldMatrix;
 }
 
-void Entity::AddPhysicsBody(b2World *world, bool isDynamic, float _sizeX, float _sizeY)
-{
-	b2BodyDef PhysicsBodyDef;
-	if (isDynamic)
-		PhysicsBodyDef.type = b2_dynamicBody;
-	PhysicsBodyDef.position.Set(position.x, position.y);
-
-	PhysicsBody = (*world).CreateBody(&PhysicsBodyDef);
-
-	b2PolygonShape PhysicsBox;
-	PhysicsBox.SetAsBox(_sizeX, _sizeY);
-
-	b2FixtureDef FixDef;
-	FixDef.shape = &PhysicsBox;
-	FixDef.density = 1.0f;
-	FixDef.friction = 0.3f;
-
-	PhysicsBody->CreateFixture(&FixDef);
-}
-
 void Entity::UpdatePhysicsTick()
 {
 
-	if (PhysicsBody != nullptr) {
-		SetTranslation(PhysicsBody->GetPosition().x, PhysicsBody->GetPosition().y, GetPosition().z);
+	if (pb != nullptr) {
+		SetTranslation(pb->GetPhysicsBody()->GetPosition().x, pb->GetPhysicsBody()->GetPosition().y, GetPosition().z);
 	}
 
 }

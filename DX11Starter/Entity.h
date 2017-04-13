@@ -3,7 +3,7 @@
 #include <math.h>
 #include "Mesh.h"
 #include "Material.h"
-#include "Box2D\Box2D.h"
+#include "PhysicsObject.h"
 
 // For the DirectX Math library
 using namespace DirectX;
@@ -31,7 +31,7 @@ private:
 
 	// Boolean to check if data has changed since previous frame
 	bool isDirty;
-	b2Body* PhysicsBody;
+	PhysicsObject* pb = nullptr; // For some reason, it doesn't default to this?
 
 public:
 	//Entity(Mesh* Object, Material* materialInput);
@@ -48,7 +48,6 @@ public:
 
 	// Get Mesh
 	Mesh* GetMesh();
-	void AddPhysicsBody(b2World* world, bool isDynamic=true, float _sizeX = 1, float _sizeY = 1);
 	void UpdatePhysicsTick();
 
 	// Set Alpha
@@ -64,8 +63,8 @@ public:
 	Material* GetMaterial();
 
 	// Getter for Physics Body
-	b2Body* GetPhysicsBody() {
-		return PhysicsBody;
+	PhysicsObject* GetPhysicsObject() {
+		return pb;
 	}
 };
 

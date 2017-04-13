@@ -390,7 +390,8 @@ HRESULT DXCore::Run()
 			if (ImGui::Button("Quit")) (Quit());
 
 			// The game loop
-			Update(deltaTime, totalTime);
+			if ( curScene == GameLevel)
+				Update(deltaTime, totalTime);
 			Draw(deltaTime, totalTime);
 		}
 	}

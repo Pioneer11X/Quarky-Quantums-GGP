@@ -53,17 +53,19 @@ public:
 
 	void InitBox2D();
 
-	bool IsPhysicsRunning() {
-		return PhysicsRunning;
-	}
+	// Working -- A Way to Pause Physics to do stuff like Level Transition and Pausing the Game.
 
-	void StartPhysics() {
-		PhysicsRunning = true;
-	}
+	//bool IsPhysicsRunning() {
+	//	return PhysicsRunning;
+	//}
 
-	void PausePhysics() {
-		PhysicsRunning = false;
-	}
+	//void StartPhysics() {
+	//	PhysicsRunning = true;
+	//}
+
+	//void PausePhysics() {
+	//	PhysicsRunning = false;
+	//}
 
 private:
 

@@ -37,11 +37,11 @@ void ControlledEntity::HandleKeyboardInput(float moveSpeed)
 
 	if (InputManager::Instance()->GetKeyDown(KeyPressed::UP))
 	{
-		tempImpulse = b2Vec2(0, moveSpeed * 100);
+		tempImpulse = b2Vec2(0, moveSpeed * 300);
 	}
 	// TODO: Need to add Raycast or something to check for the player if they are actually on the ground
-	if (!(tempImpulse.x == 0 && tempImpulse.y == 0)) {
-		this->GetPhysicsBody()->ApplyLinearImpulseToCenter(tempImpulse, true);
+	if ( !(tempImpulse.x == 0 && tempImpulse.y == 0) ) {
+		this->GetPhysicsObject()->GetPhysicsBody()->ApplyLinearImpulseToCenter(tempImpulse, true);
 	}
 	if (InputManager::Instance()->GetKeyDown(KeyPressed::FORWARD))
 	{
