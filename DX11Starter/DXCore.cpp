@@ -383,11 +383,15 @@ HRESULT DXCore::Run()
 				UpdateTitleBarStats();
 
 			GUI::instance().Update();
-			if (ImGui::Button("Start")) (curScene = GameLevel);
+			if (ImGui::Button("Start")) {
+				curScene = GameLevel;
+			}
+
 			if (ImGui::Button("Quit")) (Quit());
 
 			// The game loop
-			Update(deltaTime, totalTime);
+			if ( curScene == GameLevel)
+				Update(deltaTime, totalTime);
 			Draw(deltaTime, totalTime);
 		}
 	}
