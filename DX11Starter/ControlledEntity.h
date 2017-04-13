@@ -12,7 +12,9 @@ public:
 	~ControlledEntity();
 	void HandleKeyboardInput(float moveSpeed);
 	void UpdateSpotLightPosition();
+	void CheckForCollisions();
 private:
 	SpotLightWrapper* mySpotLight;
+	bool canJump;
 };
  

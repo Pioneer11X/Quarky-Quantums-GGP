@@ -51,6 +51,26 @@ void PhysicsObject::ReactivatePhysicsObject()
 	isActive = true;
 }
 
+float PhysicsObject::GetPosX()
+{
+	return posX;
+}
+
+float PhysicsObject::GetPosY()
+{
+	return posY;
+}
+
+
+float PhysicsObject::GetSizeX()
+{
+	return sizeX;
+}
+
+float PhysicsObject::GetSizeY()
+{
+	return sizeY;
+}
 
 PhysicsObject::~PhysicsObject()
 {

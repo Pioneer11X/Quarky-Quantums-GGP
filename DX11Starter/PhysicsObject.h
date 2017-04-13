@@ -14,6 +14,13 @@ public:
 
 	void DeactivatePhysicsObject();
 	void ReactivatePhysicsObject();
+
+	float GetPosX();
+	float GetPosY();
+
+	float GetSizeX();
+	float GetSizeY();
+
 	~PhysicsObject();
 
 
