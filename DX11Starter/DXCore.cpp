@@ -383,7 +383,7 @@ HRESULT DXCore::Run()
 				UpdateTitleBarStats();
 
 			GUI::instance().Update();
-			if (ImGui::Button("Start")) {
+			if (ImGui::Button("Start") || (InputManager::Instance()->GetKeyDown(KeyPressed::SPACEBAR))) {
 				curScene = GameLevel;
 			}
 

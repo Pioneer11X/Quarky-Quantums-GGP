@@ -53,6 +53,10 @@ void InputManager::InitKeys()
 	keys[7].name = "RIGHTARROW";
 	keys[7].vKey = 0x27;
 	keys[7].keyState = 0;
+
+	keys[8].name = "SPACEBAR";
+	keys[8].vKey = 0x20;
+	keys[8].keyState = 0;
 }
 
 InputManager * InputManager::Instance()

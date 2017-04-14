@@ -16,5 +16,7 @@ public:
 private:
 	SpotLightWrapper* mySpotLight;
 	bool canJump;
+	float jumpHeight;
+	float32 maxSpeed;
 };
  

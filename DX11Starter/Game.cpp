@@ -413,7 +413,7 @@ void Game::Update(float deltaTime, float totalTime)
 
 #pragma endregion
 
-	playerChar->HandleKeyboardInput(10.0f * deltaTime);
+	playerChar->HandleKeyboardInput(deltaTime);
 	playerChar->UpdateSpotLightPosition();
 
 	spotLightEntity->HandleKeyboardInputs(deltaTime);
