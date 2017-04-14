@@ -421,7 +421,10 @@ void Game::Update(float deltaTime, float totalTime)
 	if (playerChar->lightIsOn != pointLights[0].isOn)
 		pointLights[0].isOn = playerChar->lightIsOn;
 
-	camera->LerpToPosition(playerChar->GetPosition(), deltaTime);
+	XMFLOAT3 temp;
+	float camOffset = 6.5f;
+	XMStoreFloat3(&temp, XMVectorSet(playerChar->GetPosition().x, playerChar->GetPosition().y + camOffset, playerChar->GetPosition().z, 0.0f));
+	camera->LerpToPosition(temp, deltaTime);
 	
 	camera->Update(deltaTime, totalTime);
 }

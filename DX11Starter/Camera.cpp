@@ -1,7 +1,6 @@
 #include "Camera.h"
 
 
-
 void Camera::Update(float deltaTime, float totalTime)
 {
 	//HandleKeyboardInput(deltaTime);
@@ -100,11 +99,12 @@ Camera::Camera()
 {
 	isDirty = true;
 
-	rotationX = 0.0f;
+	rotationX = -50.0f;
 	rotationY = 0.0f;
 	position = { 0.0f, 0.0f, -5.0f };
 	direction = { 0.0f, 0.0f, -1.0f };
 	up = { 0.0f, 1.0f, 0.0f };
+
 
 	SetProjectionMatrix();
 }
