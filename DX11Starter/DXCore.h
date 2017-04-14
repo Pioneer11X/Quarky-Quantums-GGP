@@ -4,6 +4,7 @@
 #include <d3d11.h>
 #include <string>
 #include "GUI.h"
+#include "InputManager.h"
 
 // We can include the correct library files here
 // instead of in Visual Studio settings if we want
