@@ -41,13 +41,15 @@ b2Body * PhysicsObject::GetPhysicsBody()
 
 void PhysicsObject::DeactivatePhysicsObject()
 {
-	(*world).DestroyBody(PhysicsBodyPtr);
+	//(*world).DestroyBody(PhysicsBodyPtr);
+	PhysicsBodyPtr->SetActive(false);
 	isActive = false;
 }
 
 void PhysicsObject::ReactivatePhysicsObject()
 {
-	InitPhysicsObject();
+	//InitPhysicsObject();
+	PhysicsBodyPtr->SetActive(true);
 	isActive = true;
 }
 

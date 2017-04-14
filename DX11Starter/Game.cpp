@@ -379,6 +379,14 @@ void Game::Update(float deltaTime, float totalTime)
 	//printf("%f , %f", );
 	//entities[1]->SetTranslation( playerBody->GetPosition().x , playerBody->GetPosition().y + 3.0f, playerChar->GetPosition().z );
 
+	if (InputManager::Instance()->GetKeyDown(KeyPressed::LEFTARROW)) {
+		entities[0]->GetPhysicsObject()->DeactivatePhysicsObject();
+	}
+
+	if (InputManager::Instance()->GetKeyDown(KeyPressed::RIGHTARROW)) {
+		entities[0]->GetPhysicsObject()->ReactivatePhysicsObject();
+	}
+
 	entities[0]->UpdatePhysicsTick();
 	entities[1]->UpdatePhysicsTick();
 	entities[2]->UpdatePhysicsTick();
