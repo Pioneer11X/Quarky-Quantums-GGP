@@ -7,6 +7,8 @@ ControlledEntity::ControlledEntity(Mesh * Object, Material* materialInput, float
 	lightIsOn = true;
 	mySpotLight = newSpotLight;
 	canJump = false;
+	jumpHeight = 10.0;
+	maxSpeed = 10;
 }
 
 
@@ -53,31 +55,40 @@ void ControlledEntity::CheckForCollisions()
 
 
 
-void ControlledEntity::HandleKeyboardInput(float moveSpeed)
+void ControlledEntity::HandleKeyboardInput(float deltaTime)
 {
-
 	b2Vec2 tempImpulse = b2Vec2(0.0f, 0.0f);
-	//b2Vec2 zeroImpulse = b2Vec2(0.0f, 0.0f);
+
 	if (InputManager::Instance()->GetKeyHolding(KeyPressed::LEFT))
 	{
-		tempImpulse = b2Vec2(-1 * moveSpeed, 0);
+		tempImpulse = b2Vec2(-.01, 0);
 	}
 
 	if (InputManager::Instance()->GetKeyHolding(KeyPressed::RIGHT))
 	{
-		tempImpulse = b2Vec2(moveSpeed, 0);
+		tempImpulse = b2Vec2(.01, 0);
 	}
 
 	if (InputManager::Instance()->GetKeyDown(KeyPressed::UP))
 	{
 		if (canJump) {
-			tempImpulse = b2Vec2(0, moveSpeed * 400);
+			tempImpulse = b2Vec2(0, jumpHeight);
 			canJump = false;
 		}
 	}
+
 	// TODO: Need to add Raycast or something to check for the player if they are actually on the ground
 	if ( !(tempImpulse.x == 0 && tempImpulse.y == 0) ) {
 		this->GetPhysicsObject()->GetPhysicsBody()->ApplyLinearImpulseToCenter(tempImpulse, true);
+		
+		//Set max for velocity
+		b2Vec2 velocity = this->GetPhysicsObject()->GetPhysicsBody()->GetLinearVelocity();
+		if (velocity.Length() > maxSpeed) {
+			velocity.Normalize();
+			velocity *= maxSpeed;
+			this->GetPhysicsObject()->GetPhysicsBody()->SetLinearVelocity(velocity);
+		};
+
 	}
 	if (InputManager::Instance()->GetKeyDown(KeyPressed::FORWARD))
 	{
