@@ -61,12 +61,12 @@ void ControlledEntity::HandleKeyboardInput(float deltaTime)
 
 	if (InputManager::Instance()->GetKeyHolding(KeyPressed::LEFT))
 	{
-		tempImpulse = b2Vec2(-.01, 0);
+		tempImpulse = b2Vec2(-.02, 0);
 	}
 
 	if (InputManager::Instance()->GetKeyHolding(KeyPressed::RIGHT))
 	{
-		tempImpulse = b2Vec2(.01, 0);
+		tempImpulse = b2Vec2(.02, 0);
 	}
 
 	if (InputManager::Instance()->GetKeyDown(KeyPressed::UP))
