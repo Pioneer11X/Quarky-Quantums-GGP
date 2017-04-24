@@ -203,7 +203,7 @@ void Game::Init()
 	//Init Point Light 1
 	PointLight pLight;
 	pLight.Color = XMFLOAT4(1.0f, 0.57f, 0.17f, 1.0f);
-	pLight.Position = XMFLOAT3(2.0f, 0.0f, 0.0f);
+	pLight.Position = XMFLOAT3(0, 5, -5);
 	pLight.isOn = 0;
 
 	pointLights.push_back(pLight);
@@ -442,7 +442,7 @@ void Game::Draw(float deltaTime, float totalTime)
 	//  - At the beginning of Draw (before drawing *anything*)
 	context->ClearRenderTargetView(backBufferRTV, color);
 	context->ClearDepthStencilView(
-		depthStencilView, 
+		depthStencilView,
 		D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL,
 		1.0f,
 		0);
@@ -607,6 +607,16 @@ XMFLOAT3 & Game::GetCameraPostion()
 {
 	// TODO: insert return statement here
 	return camera->GetPosition();
+}
+
+ID3D11RenderTargetView * Game::GetBackBufferRTV()
+{
+	return backBufferRTV;
+}
+
+ID3D11DepthStencilView * Game::GetDSV()
+{
+	return depthStencilView;
 }
 
 void Game::InitBox2D()

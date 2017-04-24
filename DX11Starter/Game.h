@@ -51,6 +51,13 @@ public:
 	// Get Camera Position
 	XMFLOAT3& GetCameraPostion();
 
+	/// Required for shadows. Used in Renderer
+	// Get BackBufferRTV
+	ID3D11RenderTargetView* GetBackBufferRTV();
+
+	// Get DepthStencil View
+	ID3D11DepthStencilView* GetDSV();
+
 	void InitBox2D();
 
 	// Working -- A Way to Pause Physics to do stuff like Level Transition and Pausing the Game.

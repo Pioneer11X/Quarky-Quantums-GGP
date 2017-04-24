@@ -8,6 +8,8 @@
 //Texture Vars
 Texture2D Texture	: register(t0);
 SamplerState Sampler	: register(s0);
+Texture2D ShadowMap		: register(t3);
+SamplerComparisonState ShadowSampler : register(s1);
 
 struct VertexToPixel
 {
@@ -21,6 +23,7 @@ struct VertexToPixel
 	float3 normal		: NORMAL;
 	float3 worldPos		: WORLDPOS;
 	float2 uv			: TEXCOORD;
+	float4 posForShadow : POSITION1;
 };
 
 struct DirectionalLight
@@ -155,7 +158,23 @@ float4 main(VertexToPixel input) : SV_TARGET
 
 	}
 
-	float4 finalColor = surfaceColor * (totalLight) + (specularLight);
+	// Shadow mapping
+
+	// Calculate this pixel's UV on the shadow map
+	float2 shadowUV = input.posForShadow.xy / input.posForShadow.w * 0.5f + 0.5f;
+
+	// Flip the Y's because the NDC and UV's are upside down
+	shadowUV.y = 1.0f - shadowUV.y;
+
+	// Get the actual depth from the light's position
+	float depthFromLight = input.posForShadow.z / input.posForShadow.w;
+
+	float shadowAmount = ShadowMap.SampleCmpLevelZero(
+		ShadowSampler,
+		shadowUV,
+		depthFromLight);
+
+	float4 finalColor = surfaceColor * (totalLight) * shadowAmount + (specularLight);
 
 	return float4(finalColor.rgb, alpha);
 }

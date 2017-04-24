@@ -12,11 +12,26 @@ class Renderer
 	ID3D11DepthStencilState* depthStencilState;
 	ID3D11BlendState* bsAlphaBlend;
 
+	// Shadow stuff
+	int shadowMapSize;
+	ID3D11DepthStencilView* shadowDSV;
+	ID3D11ShaderResourceView* shadowSRV;
+	ID3D11SamplerState* shadowSampler;
+	ID3D11RasterizerState* shadowRasterizer;
+	SimpleVertexShader* shadowVS;
+	DirectX::XMFLOAT4X4 shadowViewMatrix;
+	DirectX::XMFLOAT4X4 shadowProjectionMatrix;
+
+	// Needed for shadow stuff
+	ID3D11RenderTargetView* backbufferRTV;
+	ID3D11DepthStencilView* depthStencilView;
+
 	// Pointer for device and context
 	ID3D11Device* device;
 	ID3D11DeviceContext* context;
 	void DrawEntity(Entity* entity);
 	void DrawSkyBox(Entity * skyBox, XMFLOAT4X4& viewMatrix, XMFLOAT4X4& projectionMatrix);
+	void RenderShadowMap(std::vector<Entity*> entities);
 
 public:
 	Renderer(ID3D11Device * deviceIn, ID3D11DeviceContext * contextIn);
