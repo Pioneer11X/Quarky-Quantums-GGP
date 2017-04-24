@@ -223,8 +223,8 @@ void Renderer::Draw(std::vector<Entity*> entities, Entity* skyBox, XMFLOAT4X4& v
 {
 	// Shadow view matrix (where the light is looking from)
 	XMMATRIX shView = XMMatrixLookAtLH(
-		XMVectorSet(0, 5, -5, 0), // Eye position
-		XMVectorSet(0, 0, 0, 0),		// Look at pos
+		XMVectorSet(Game::Instance()->GetCameraPostion().x, 5, -5, 0), // Eye position
+		XMVectorSet(Game::Instance()->GetCameraPostion().x, 0, 0, 0),		// Look at pos
 		XMVectorSet(0, 1, 0, 0));		// Up
 	XMStoreFloat4x4(&shadowViewMatrix, XMMatrixTranspose(shView));
 
