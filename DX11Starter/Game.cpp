@@ -280,7 +280,8 @@ void Game::CreateBasicGeometry()
 
 	meshObjs.push_back(new Mesh(pathModifier + "cone.obj", device));
 
-	entities.push_back(new Entity(meshObjs[1], materials[2], 4.0f, 2.0f, 0.0f, &world, true, 3.0f, 4.0f, 6.0f, 8.0f, 6.0f));
+	entities.push_back(new Entity(meshObjs[1], materials[2], 0.0f, 0.0f, 0.0f, nullptr, true, 0.0f, 0.0f, 6.0f, 8.0f, 6.0f));
+	entities.back()->SetAlpha(0.35f);
 
 	meshObjs.push_back(new Mesh(pathModifier + "cylinder.obj", device));
 
@@ -319,7 +320,7 @@ void Game::CreateBasicGeometry()
 	spotLight.LinearAtten = 0.4f;
 	spotLight.ExpoAtten = 0.6f;
 
-	spotLightEntity = new SpotLightWrapper(spotLight, 2.5f);
+	spotLightEntity = new SpotLightWrapper(spotLight, 2.5f, entities[1]);
 
 	playerChar = new ControlledEntity(meshObjs[2], materials[2], 0.0f, 0.0f, 0.0f, spotLightEntity, &world, true, 0.5f, 0.5f);
 	entities.push_back(playerChar);
@@ -331,7 +332,7 @@ void Game::CreateBasicGeometry()
 
 	// Initial Posture for the objects.
 	entities[0]->SetTranslation(2.0f, 0.0f, 0.0f);
-	entities[1]->SetTranslation(4.0f, 2.0f, 0.0f);
+	entities[1]->SetTranslation(0.0f, 0.0f, 0.0f);
 	entities[2]->SetTranslation(-4.0f, -2.0f, 0.0f);
 	// Plane Obj.
 	entities[3]->SetTranslation(0.0f, -5.0f, 0.0f);
@@ -405,7 +406,7 @@ void Game::Update(float deltaTime, float totalTime)
 	//entities[5]->SetTranslation(-2.0f, 0.0f, 0.0f);
 
 	//entities[0]->SetRotation(0.0f, sin(totalTime / 2), 0.0f, cos(totalTime / 2));
-	//entities[1]->SetRotation(0.0f, sin(totalTime / 2), 0.0f, cos(totalTime / 2));
+	//entities[1]->SetRotation(0.0f, 0.0f, 0.78539f);
 	//entities[2]->SetRotation(0.0f, sin(totalTime / 2), 0.0f, cos(totalTime / 2));
 	//entities[3]->SetRotation(0.0f, sin(totalTime / 2), 0.0f, cos(totalTime / 2));
 	//entities[4]->SetRotation(0.0f, sin(totalTime / 2), 0.0f, cos(totalTime / 2));

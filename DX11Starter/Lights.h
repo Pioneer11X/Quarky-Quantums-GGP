@@ -40,28 +40,16 @@ struct SpotLight
 class SpotLightWrapper
 {
 public:
-	SpotLightWrapper(SpotLight newLight,float newSpeed);
+	SpotLightWrapper(SpotLight newLight, float newSpeed, Entity* spotLightEnt);
 	~SpotLightWrapper();
 	void HandleKeyboardInputs(float deltaTime);
 	void UpdateLightPoistion(XMFLOAT3 newPos);
 	inline SpotLight& GetSpotLight() { return myLight; }
-	/*void CalculateWorldMatrix();
-	XMFLOAT4X4& GetWorldMatrix();
-	Mesh* GetMesh();
-	void SetAlpha(float val);
-
-	// Get Alpha
-	float& GetAlpha();
-
-	// Set WVP
-	void PrepareMaterial(XMFLOAT4X4 camViewMatrix, XMFLOAT4X4 camProjectionMatrix);
-
-	// Get material
-	Material* GetMaterial();*/
+	inline Entity* GetEntity() { return myEntity; }
 private:
 	SpotLight myLight;
 	float speed;
 	float yawAngle;
 	void SetRotation(float angle);
-	//Entity* myEntity;
+	Entity* myEntity;
 };

@@ -11,13 +11,15 @@ Entity::Entity(Mesh * Object, Material* materialInput, float _posX, float _posY,
 	SetScale(_scaleX, _scaleY, _scaleZ);
 	alpha = 1.0f;
 
-	XMStoreFloat4(&rotation, XMQuaternionIdentity());
+	rotation.x = 0.0f;
+	rotation.y = 0.0f;
+	rotation.z = 0.0f;
+
 	XMStoreFloat4x4(&rotationMatrix, XMMatrixRotationQuaternion(XMQuaternionIdentity()));
 
-	SetTranslation(0.0f, 0.0f, 0.0f);
+	SetTranslation(_posX, _posY, _posZ);
 
 	XMStoreFloat4x4(&worldMatrix, XMMatrixTranspose(XMMatrixIdentity()));
-	this->SetTranslation(_posX, _posY, _posZ);
 	if (world != nullptr)
 		pb = new PhysicsObject(world, isDynamic, _posX, _posY, _sizeX, _sizeY);
 	
@@ -44,14 +46,13 @@ void Entity::SetTranslation(float x, float y, float z)
 	isDirty = true;
 }
 
-void Entity::SetRotation(float x, float y, float z, float w)
+void Entity::SetRotation(float x, float y, float z)
 {
 	rotation.x = x;
 	rotation.y = y;
 	rotation.z = z;
-	rotation.w = w;
-	
-	XMVECTOR quaternion = XMVectorSet(x, y, z, w);
+
+	XMVECTOR quaternion = XMQuaternionRotationRollPitchYaw(rotation.x, rotation.y, rotation.z);
 	XMQuaternionNormalize(quaternion);
 
 	XMStoreFloat4x4(&rotationMatrix, XMMatrixRotationQuaternion(quaternion));

@@ -1,11 +1,12 @@
 #include "Lights.h"
 
-SpotLightWrapper::SpotLightWrapper(SpotLight newLight, float newSpeed) 
+SpotLightWrapper::SpotLightWrapper(SpotLight newLight, float newSpeed, Entity* spotLightEnt) 
 {
 	myLight = newLight;
 	speed = newSpeed;
 	yawAngle = 0.0f;
-	//myEntity = newEntity;
+	myEntity = spotLightEnt;
+	myEntity->SetRotation(0.0f, 0.0f, XM_PIDIV2);
 }
 
 SpotLightWrapper::~SpotLightWrapper()
@@ -20,6 +21,7 @@ SpotLightWrapper::~SpotLightWrapper()
 void SpotLightWrapper::UpdateLightPoistion(XMFLOAT3 newPos)
 {
 	myLight.Position = newPos;
+	myEntity->SetTranslation(newPos.x, newPos.y, newPos.z);
 }
 
 void SpotLightWrapper::HandleKeyboardInputs(float deltaTime)
@@ -39,6 +41,8 @@ void SpotLightWrapper::HandleKeyboardInputs(float deltaTime)
 
 void SpotLightWrapper::SetRotation(float deltaAngle)
 {
+	XMFLOAT3 currentRotation = myEntity->GetRotation();
+	myEntity->SetRotation(currentRotation.x, currentRotation.y, currentRotation.z + deltaAngle);
 	XMVECTOR rotationQuat = XMQuaternionRotationRollPitchYaw(0.0f, 0.0f, deltaAngle);
 	XMVECTOR rotatedVector = XMVector3Rotate(XMLoadFloat3(&myLight.Direction), rotationQuat);
 	rotatedVector = XMQuaternionNormalize(rotatedVector);

@@ -18,7 +18,7 @@ private:
 	XMFLOAT4X4 translationMatrix;
 	XMFLOAT3 position;
 	XMFLOAT3 scale;
-	XMFLOAT4 rotation;
+	XMFLOAT3 rotation;
 
 	// Mesh obj pointer
 	Mesh* meshObj;
@@ -39,7 +39,8 @@ public:
 	~Entity();
 	XMFLOAT3 GetPosition();
 	void SetTranslation(float x, float y, float z);
-	void SetRotation(float x, float y, float z, float w);
+	void SetRotation(float x, float y, float z);
+	inline XMFLOAT3 GetRotation() { return rotation; };
 	void SetRotationAboutZ(float angle);
 	void SetScale(float x, float y, float z);
 	void Move(float x, float y, float z);
