@@ -28,7 +28,7 @@ struct SpotLight
 	XMFLOAT4 AmbientColor;
 	XMFLOAT4 DiffuseColor;
 	XMFLOAT3 Direction;
-	float DotDist;
+	float AngleRads;
 	XMFLOAT3 Position;
 	int isOn;
 	float SpotIntensity;

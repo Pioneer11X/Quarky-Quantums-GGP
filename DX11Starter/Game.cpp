@@ -280,7 +280,7 @@ void Game::CreateBasicGeometry()
 
 	meshObjs.push_back(new Mesh(pathModifier + "cone.obj", device));
 
-	entities.push_back(new Entity(meshObjs[1], materials[2], 4.0f, 2.0f, 0.0f, &world, true, 0.5f, 0.5f));
+	entities.push_back(new Entity(meshObjs[1], materials[2], 4.0f, 2.0f, 0.0f, &world, true, 3.0f, 4.0f, 6.0f, 8.0f, 6.0f));
 
 	meshObjs.push_back(new Mesh(pathModifier + "cylinder.obj", device));
 
@@ -310,14 +310,14 @@ void Game::CreateBasicGeometry()
 	spotLight.AmbientColor = XMFLOAT4(0.01f, 0.01f, 0.01f, 0.01f);
 	spotLight.DiffuseColor = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
 	spotLight.Direction = XMFLOAT3(1.0f, 0.0f, 0.0f);
-	// This is roughly spot light of 60 degrees total.
-	spotLight.DotDist = 0.52f;
+	// Roughly 40 degree spread.
+	spotLight.AngleRads = 0.3587f;
 	spotLight.Position = XMFLOAT3(-3.0f, 0.0f, 0.0f);
 	spotLight.isOn = 1;
-	spotLight.SpotIntensity = 0.5f;
-	spotLight.ConstAtten = 0.2f;
-	spotLight.LinearAtten = 0.2f;
-	spotLight.ExpoAtten = 0.01f;
+	spotLight.SpotIntensity = 15.0f;
+	spotLight.ConstAtten = 0.01f;
+	spotLight.LinearAtten = 0.4f;
+	spotLight.ExpoAtten = 0.6f;
 
 	spotLightEntity = new SpotLightWrapper(spotLight, 2.5f);
 

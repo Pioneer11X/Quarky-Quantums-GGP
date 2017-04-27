@@ -48,7 +48,7 @@ struct SpotLight
 	float4 AmbientColor;
 	float4 DiffuseColor;
 	float3 Direction;
-	float DotDist;
+	float AngleRads;
 	float3 Position;
 	int isOn;
 	float SpotIntensity;
@@ -125,6 +125,7 @@ float4 main(VertexToPixel input) : SV_TARGET
 	{
 		// Calculate the raw vector from spot light to the current pixel
 		float3 dirToSpotLight = normalize(spotLight.Position - input.worldPos);
+		float3 normalSpotDirection = normalize(spotLight.Direction);
 
 		// Compute the NdotL for light amount given to the current pixel.
 		float spotLightAmount = saturate(dot(input.normal, dirToSpotLight));
@@ -134,18 +135,23 @@ float4 main(VertexToPixel input) : SV_TARGET
 		{
 			// Calculate the distance to the light source
 			float distance = length(dirToSpotLight);
+
 			// Calculate the vector between the light direction and the direction from the spot
 			// light to the pixel
-			float spotEffect = max(dot(normalize(-dirToSpotLight), normalize(spotLight.Direction)), 0.0f);
+			float spotEffect = max(dot(-dirToSpotLight, normalSpotDirection), 0.0f);
+
+			// Calculate the angle between two vectors
+			float angle = acos(spotEffect);
+
 			// Is this length greather than the what it should be based on the angle of our spot light?
 			// In other words is the point outside the spot light?
-			if (length(spotEffect) > spotLight.DotDist)
+			if (angle <= spotLight.AngleRads)
 			{
 				// Raise the intensity of the spot effect by a factor.
 				spotEffect = pow(spotEffect, spotLight.SpotIntensity);
 				// Attenuation equation for light dropoff.
-				float attenuationEffect = saturate(spotEffect / (spotLight.ConstAtten + spotLight.LinearAtten * distance + spotLight.ExpoAtten * distance * distance));
-				
+				float attenuationEffect = spotEffect / (spotLight.ConstAtten + spotLight.LinearAtten * distance + spotLight.ExpoAtten * distance * distance);
+
 				// Calculate diffuse light
 				totalLight += (attenuationEffect * spotLight.DiffuseColor * spotLightAmount) + (spotLight.AmbientColor);
 

@@ -2,13 +2,13 @@
 
 
 
-Entity::Entity(Mesh * Object, Material* materialInput, float _posX, float _posY, float _posZ, b2World* world, bool isDynamic, float _sizeX, float _sizeY)
+Entity::Entity(Mesh * Object, Material* materialInput, float _posX, float _posY, float _posZ, b2World* world, bool isDynamic, float _sizeX, float _sizeY, float _scaleX, float _scaleY, float _scaleZ)
 {
 	pb = nullptr;		// Need this I guess.
 	isDirty = true;
 	meshObj = Object;
 	material = materialInput;
-	SetScale(1.0f, 1.0f, 1.0f);
+	SetScale(_scaleX, _scaleY, _scaleZ);
 	alpha = 1.0f;
 
 	XMStoreFloat4(&rotation, XMQuaternionIdentity());
