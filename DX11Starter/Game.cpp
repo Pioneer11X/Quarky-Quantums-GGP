@@ -72,7 +72,7 @@ Game::~Game()
 	if (metalSRV) { metalSRV->Release(); }
 	if (metalRustSRV) { metalRustSRV->Release(); }
 	if (sampler) { sampler->Release(); }
-if (skyBox) { skyBox->Release(); }
+	if (skyBox) { skyBox->Release(); }
 
 	// Delete renderer
 	delete renderer;
@@ -104,7 +104,7 @@ if (skyBox) { skyBox->Release(); }
 		delete entity;
 		entity = NULL;
 	}
-
+	
 	entities.clear();
 	delete skyObject;
 
@@ -118,6 +118,8 @@ if (skyBox) { skyBox->Release(); }
 	materials.clear();
 
 	delete skyMaterial;
+
+	delete mapLoader;
 }
 
 // --------------------------------------------------------
@@ -276,52 +278,61 @@ void Game::CreateBasicGeometry()
 
 	meshObjs.push_back(new Mesh(pathModifier + "sphere.obj", device));
 
-	entities.push_back(new Entity(meshObjs[0], materials[0], 2.0f, 0.0f, 0.0f, &world, true, 0.5f, 0.5f));
+	//entities.push_back(new Entity(meshObjs[0], materials[0], 2.0f, 0.0f, 0.0f, &world, true, 0.5f, 0.5f));
 
 	meshObjs.push_back(new Mesh(pathModifier + "cone.obj", device));
 
-	entities.push_back(new Entity(meshObjs[1], materials[2], 4.0f, 2.0f, 0.0f, &world, true, 0.5f, 0.5f));
+	//entities.push_back(new Entity(meshObjs[1], materials[2], 0.0f, 0.0f, 0.0f, nullptr, true, 0.0f, 0.0f, 6.0f, 8.0f, 6.0f));
+	//entities.back()->SetAlpha(0.35f);
 
 	meshObjs.push_back(new Mesh(pathModifier + "cylinder.obj", device));
 
-	entities.push_back(new Entity(meshObjs[2], materials[2], -4.0f, -2.0f, 0.0f, &world, true, 0.5f, 0.5f));
+	//entities.push_back(new Entity(meshObjs[2], materials[2], -4.0f, -2.0f, 0.0f, &world, true, 0.5f, 0.5f));
 
 	meshObjs.push_back(new Mesh(pathModifier + "Plane.obj", device));
-	// Dont pass world as this is the plane obj and not dynamic.
-	entities.push_back(new Entity(meshObjs[3], materials[3], 0.0f, -5.0f, 0.0f, &world, false, 10.0f, 0.1f ));
+	//// Dont pass world as this is the plane obj and not dynamic.
+	//entities.push_back(new Entity(meshObjs[3], materials[3], 0.0f, -5.0f, 0.0f, &world, false, 10.0f, 0.1f ));
 
 	meshObjs.push_back(new Mesh(pathModifier + "torus.obj", device));
 
-	entities.push_back(new Entity(meshObjs[4], materials[2], -6.0f, 0.0f, 2.0f, &world, true, 0.5f, 0.5f));
+	//entities.push_back(new Entity(meshObjs[4], materials[2], -6.0f, 0.0f, 2.0f, &world, true, 0.5f, 0.5f));
 
 	meshObjs.push_back(new Mesh(pathModifier + "cube.obj", device));
 
-	entities.push_back(new Entity(meshObjs[5], materials[1], -2.0f, 0.0f, 0.0f, &world, true, 0.5f, 0.5f));
-
-	entities.push_back(new Entity(meshObjs[5], materials[1], 0.0f, -4.5f, 5.0f));
-	entities.back()->SetAlpha(0.35f);
-
-	entities.push_back(new Entity(meshObjs[0], materials[0], 0.0f, -4.5f, 3.0f));
-	entities.back()->SetAlpha(0.25f);
-
+	//entities.push_back(new Entity(meshObjs[5], materials[1], -2.0f, 0.0f, 0.0f, &world, true, 0.5f, 0.5f));
+	//
+	//entities.push_back(new Entity(meshObjs[5], materials[1], 0.0f, -4.5f, 5.0f));
+	//entities.back()->SetAlpha(0.35f);
+	//
+	//entities.push_back(new Entity(meshObjs[0], materials[0], 0.0f, -4.5f, 3.0f));
+	//entities.back()->SetAlpha(0.25f);
 
 	// Init Spot Light for the player
 	SpotLight spotLight;
 	spotLight.AmbientColor = XMFLOAT4(0.01f, 0.01f, 0.01f, 0.01f);
 	spotLight.DiffuseColor = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
 	spotLight.Direction = XMFLOAT3(1.0f, 0.0f, 0.0f);
-	// This is roughly spot light of 60 degrees total.
-	spotLight.DotDist = 0.52f;
+	// Roughly 40 degree spread.
+	spotLight.AngleRads = 0.3587f;
 	spotLight.Position = XMFLOAT3(-3.0f, 0.0f, 0.0f);
-	spotLight.isOn = 1;
-	spotLight.SpotIntensity = 0.5f;
-	spotLight.ConstAtten = 0.2f;
-	spotLight.LinearAtten = 0.2f;
-	spotLight.ExpoAtten = 0.01f;
+	spotLight.isOn = 0;
+	spotLight.SpotIntensity = 15.0f;
+	spotLight.ConstAtten = 0.01f;
+	spotLight.LinearAtten = 0.4f;
+	spotLight.ExpoAtten = 0.6f;
 
-	spotLightEntity = new SpotLightWrapper(spotLight, 2.5f);
+	Entity* spotlightEnt = new Entity(meshObjs[1], materials[2], 0.0f, 0.0f, 0.0f, nullptr, true, 0.0f, 0.0f, 6.0f, 8.0f, 6.0f);
+	spotlightEnt->SetAlpha(0.35f);
+	spotLightEntity = new SpotLightWrapper(spotLight, 2.5f, spotlightEnt);
+	entities.push_back(spotlightEnt);
 
-	playerChar = new ControlledEntity(meshObjs[2], materials[2], 0.0f, 0.0f, 0.0f, spotLightEntity, &world, true, 0.5f, 0.5f);
+	mapLoader = new MapLoader(device, 2.0f, materials, meshObjs, &world);
+	mapLoader->LoadLevel("Level1.txt");
+	for each (Entity* ent in mapLoader->GetLevelEntities()) {
+		entities.push_back(ent);
+	}
+
+	playerChar = new ControlledEntity(meshObjs[2], materials[2], mapLoader->GetPlayerSpawnLocationX(), mapLoader->GetPlayerSpawnLocationY(), 0.0f, spotLightEntity, &world, true, 0.5f, 0.5f);
 	entities.push_back(playerChar);
 
 	skyMaterial = new Material(skyVertShader, skyPixShader, skyBox, sampler);
@@ -330,13 +341,13 @@ void Game::CreateBasicGeometry()
 	skyObject->SetScale(200.0f, 200.0f, 200.0f);
 
 	// Initial Posture for the objects.
-	entities[0]->SetTranslation(2.0f, 0.0f, 0.0f);
-	entities[1]->SetTranslation(4.0f, 2.0f, 0.0f);
-	entities[2]->SetTranslation(-4.0f, -2.0f, 0.0f);
-	// Plane Obj.
-	entities[3]->SetTranslation(0.0f, -5.0f, 0.0f);
-	entities[4]->SetTranslation(0.0f, 0.0f, 2.0f);
-	entities[5]->SetTranslation(-2.0f, 0.0f, 0.0f);
+	//entities[0]->SetTranslation(2.0f, 0.0f, 0.0f);
+	//entities[1]->SetTranslation(0.0f, 0.0f, 0.0f);
+	//entities[2]->SetTranslation(-4.0f, -2.0f, 0.0f);
+	//// Plane Obj.
+	//entities[3]->SetTranslation(0.0f, -5.0f, 0.0f);
+	//entities[4]->SetTranslation(0.0f, 0.0f, 2.0f);
+	//entities[5]->SetTranslation(-2.0f, 0.0f, 0.0f);
 }
 
 
@@ -379,21 +390,27 @@ void Game::Update(float deltaTime, float totalTime)
 	//printf("%f , %f", );
 	//entities[1]->SetTranslation( playerBody->GetPosition().x , playerBody->GetPosition().y + 3.0f, playerChar->GetPosition().z );
 
-	if (InputManager::Instance()->GetKeyDown(KeyPressed::LEFTARROW)) {
-		entities[0]->GetPhysicsObject()->DeactivatePhysicsObject();
-	}
+	//if (InputManager::Instance()->GetKeyDown(KeyPressed::LEFTARROW)) {
+	//	entities[0]->GetPhysicsObject()->DeactivatePhysicsObject();
+	//}
+	//
+	//if (InputManager::Instance()->GetKeyDown(KeyPressed::RIGHTARROW)) {
+	//	entities[0]->GetPhysicsObject()->ReactivatePhysicsObject();
+	//}
 
-	if (InputManager::Instance()->GetKeyDown(KeyPressed::RIGHTARROW)) {
-		entities[0]->GetPhysicsObject()->ReactivatePhysicsObject();
-	}
-
-	entities[0]->UpdatePhysicsTick();
-	entities[1]->UpdatePhysicsTick();
-	entities[2]->UpdatePhysicsTick();
+	//entities[0]->UpdatePhysicsTick();
+	//entities[1]->UpdatePhysicsTick();
+	//entities[2]->UpdatePhysicsTick();
 	//entities[3]->UpdatePhysicsTick();
-	entities[4]->UpdatePhysicsTick();
-	entities[5]->UpdatePhysicsTick();
-	playerChar->UpdatePhysicsTick();
+	//entities[4]->UpdatePhysicsTick();
+	//entities[5]->UpdatePhysicsTick();
+
+	for each (Entity* ent in entities) {
+		if (ent->NeedsPhysicsUpdate()) {
+			ent->UpdatePhysicsTick();
+		}
+	}
+	//playerChar->UpdatePhysicsTick();
 
 	//entities[0]->SetTranslation(0.0f, 0.0f, 0.0f);
 	//entities[1]->SetTranslation(0.0f, 2.0f, 0.0f);
@@ -405,7 +422,7 @@ void Game::Update(float deltaTime, float totalTime)
 	//entities[5]->SetTranslation(-2.0f, 0.0f, 0.0f);
 
 	//entities[0]->SetRotation(0.0f, sin(totalTime / 2), 0.0f, cos(totalTime / 2));
-	//entities[1]->SetRotation(0.0f, sin(totalTime / 2), 0.0f, cos(totalTime / 2));
+	//entities[1]->SetRotation(0.0f, 0.0f, 0.78539f);
 	//entities[2]->SetRotation(0.0f, sin(totalTime / 2), 0.0f, cos(totalTime / 2));
 	//entities[3]->SetRotation(0.0f, sin(totalTime / 2), 0.0f, cos(totalTime / 2));
 	//entities[4]->SetRotation(0.0f, sin(totalTime / 2), 0.0f, cos(totalTime / 2));

@@ -61,12 +61,14 @@ void ControlledEntity::HandleKeyboardInput(float deltaTime)
 
 	if (InputManager::Instance()->GetKeyHolding(KeyPressed::LEFT))
 	{
-		tempImpulse = b2Vec2(-.02, 0);
+		this->GetPhysicsObject()->GetPhysicsBody()->SetLinearVelocity(
+			this->GetPhysicsObject()->GetPhysicsBody()->GetLinearVelocity() + b2Vec2(-maxSpeed * deltaTime, 0));
 	}
 
 	if (InputManager::Instance()->GetKeyHolding(KeyPressed::RIGHT))
 	{
-		tempImpulse = b2Vec2(.02, 0);
+		this->GetPhysicsObject()->GetPhysicsBody()->SetLinearVelocity(
+			this->GetPhysicsObject()->GetPhysicsBody()->GetLinearVelocity() + b2Vec2(maxSpeed * deltaTime, 0));
 	}
 
 	if (InputManager::Instance()->GetKeyDown(KeyPressed::UP))
@@ -77,9 +79,10 @@ void ControlledEntity::HandleKeyboardInput(float deltaTime)
 		}
 	}
 
+	this->GetPhysicsObject()->GetPhysicsBody()->ApplyLinearImpulseToCenter(tempImpulse, true);
+
 	// TODO: Need to add Raycast or something to check for the player if they are actually on the ground
-	if ( !(tempImpulse.x == 0 && tempImpulse.y == 0) ) {
-		this->GetPhysicsObject()->GetPhysicsBody()->ApplyLinearImpulseToCenter(tempImpulse, true);
+	if (this->GetPhysicsObject()->GetPhysicsBody()->GetLinearVelocity().Length() > 0) {
 		
 		//Set max for velocity
 		b2Vec2 velocity = this->GetPhysicsObject()->GetPhysicsBody()->GetLinearVelocity();

@@ -14,6 +14,7 @@
 #include "WICTextureLoader.h"
 #include "ControlledEntity.h"
 #include "Box2D\Box2D.h"
+#include "MapLoader.h"
 
 class Camera;
 
@@ -147,6 +148,9 @@ private:
 	b2Body* playerBody;
 
 	bool PhysicsRunning = false;
+
+	//Map Loader
+	MapLoader* mapLoader;
 
 };
 

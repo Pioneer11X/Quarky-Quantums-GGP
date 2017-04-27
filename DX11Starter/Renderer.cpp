@@ -332,19 +332,21 @@ void Renderer::Draw(std::vector<Entity*> entities, Entity* skyBox, XMFLOAT4X4& v
 		while (!sorted)
 		{
 			sorted = true;
-			for (i = 0; i < blendEntities.size() - j; i++)
-			{
-				if (blendEntities[i]->GetPosition().z < blendEntities[i + 1]->GetPosition().z)
+			if (blendEntities.size() > 0) {
+				for (i = 0; i < blendEntities.size() - j; i++)
 				{
-					Entity* temp;
-					temp = blendEntities[i];
-					blendEntities[i] = blendEntities[i + 1];
-					blendEntities[i + 1] = temp;
+					if (blendEntities[i]->GetPosition().z < blendEntities[i + 1]->GetPosition().z)
+					{
+						Entity* temp;
+						temp = blendEntities[i];
+						blendEntities[i] = blendEntities[i + 1];
+						blendEntities[i + 1] = temp;
 
-					sorted = false;
+						sorted = false;
+					}
 				}
+				j++;
 			}
-			j++;
 		}
 	};
 
