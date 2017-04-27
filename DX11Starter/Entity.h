@@ -32,6 +32,7 @@ private:
 	// Boolean to check if data has changed since previous frame
 	bool isDirty;
 	PhysicsObject* pb = nullptr; // For some reason, it doesn't default to this?
+	bool hasPhysics;
 
 public:
 	//Entity(Mesh* Object, Material* materialInput);
@@ -67,6 +68,8 @@ public:
 	PhysicsObject* GetPhysicsObject() {
 		return pb;
 	}
+
+	bool NeedsPhysicsUpdate();
 };
 
 

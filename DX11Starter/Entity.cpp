@@ -10,6 +10,7 @@ Entity::Entity(Mesh * Object, Material* materialInput, float _posX, float _posY,
 	material = materialInput;
 	SetScale(_scaleX, _scaleY, _scaleZ);
 	alpha = 1.0f;
+	hasPhysics = isDynamic;
 
 	rotation.x = 0.0f;
 	rotation.y = 0.0f;
@@ -145,4 +146,9 @@ void Entity::PrepareMaterial(XMFLOAT4X4 camViewMatrix, XMFLOAT4X4 camProjectionM
 Material * Entity::GetMaterial()
 {
 	return material;
+}
+
+bool Entity::NeedsPhysicsUpdate()
+{
+	return hasPhysics;
 }

@@ -72,7 +72,7 @@ Game::~Game()
 	if (metalSRV) { metalSRV->Release(); }
 	if (metalRustSRV) { metalRustSRV->Release(); }
 	if (sampler) { sampler->Release(); }
-if (skyBox) { skyBox->Release(); }
+	if (skyBox) { skyBox->Release(); }
 
 	// Delete renderer
 	delete renderer;
@@ -104,7 +104,7 @@ if (skyBox) { skyBox->Release(); }
 		delete entity;
 		entity = NULL;
 	}
-
+	
 	entities.clear();
 	delete skyObject;
 
@@ -118,6 +118,8 @@ if (skyBox) { skyBox->Release(); }
 	materials.clear();
 
 	delete skyMaterial;
+
+	delete mapLoader;
 }
 
 // --------------------------------------------------------
@@ -288,7 +290,7 @@ void Game::CreateBasicGeometry()
 	entities.push_back(new Entity(meshObjs[2], materials[2], -4.0f, -2.0f, 0.0f, &world, true, 0.5f, 0.5f));
 
 	meshObjs.push_back(new Mesh(pathModifier + "Plane.obj", device));
-	// Dont pass world as this is the plane obj and not dynamic.
+	//// Dont pass world as this is the plane obj and not dynamic.
 	entities.push_back(new Entity(meshObjs[3], materials[3], 0.0f, -5.0f, 0.0f, &world, false, 10.0f, 0.1f ));
 
 	meshObjs.push_back(new Mesh(pathModifier + "torus.obj", device));
@@ -305,7 +307,6 @@ void Game::CreateBasicGeometry()
 	entities.push_back(new Entity(meshObjs[0], materials[0], 0.0f, -4.5f, 3.0f));
 	entities.back()->SetAlpha(0.25f);
 
-
 	// Init Spot Light for the player
 	SpotLight spotLight;
 	spotLight.AmbientColor = XMFLOAT4(0.01f, 0.01f, 0.01f, 0.01f);
@@ -314,7 +315,7 @@ void Game::CreateBasicGeometry()
 	// Roughly 40 degree spread.
 	spotLight.AngleRads = 0.3587f;
 	spotLight.Position = XMFLOAT3(-3.0f, 0.0f, 0.0f);
-	spotLight.isOn = 1;
+	spotLight.isOn = 0;
 	spotLight.SpotIntensity = 15.0f;
 	spotLight.ConstAtten = 0.01f;
 	spotLight.LinearAtten = 0.4f;
@@ -322,7 +323,14 @@ void Game::CreateBasicGeometry()
 
 	spotLightEntity = new SpotLightWrapper(spotLight, 2.5f, entities[1]);
 
-	playerChar = new ControlledEntity(meshObjs[2], materials[2], 0.0f, 0.0f, 0.0f, spotLightEntity, &world, true, 0.5f, 0.5f);
+	//UNCOMMENT TO LOAD MAP IN FROM FILE
+	mapLoader = new MapLoader(device, 2.0f, materials, meshObjs, &world, 10.0f, 10.0f);
+	mapLoader->LoadLevel("Level1.txt");
+	for each (Entity* ent in mapLoader->GetLevelEntities()) {
+		entities.push_back(ent);
+	}
+
+	playerChar = new ControlledEntity(meshObjs[2], materials[2], mapLoader->GetPlayerSpawnLocationX(), mapLoader->GetPlayerSpawnLocationY(), 0.0f, spotLightEntity, &world, true, 0.5f, 0.5f);
 	entities.push_back(playerChar);
 
 	skyMaterial = new Material(skyVertShader, skyPixShader, skyBox, sampler);
@@ -383,18 +391,24 @@ void Game::Update(float deltaTime, float totalTime)
 	if (InputManager::Instance()->GetKeyDown(KeyPressed::LEFTARROW)) {
 		entities[0]->GetPhysicsObject()->DeactivatePhysicsObject();
 	}
-
+	
 	if (InputManager::Instance()->GetKeyDown(KeyPressed::RIGHTARROW)) {
 		entities[0]->GetPhysicsObject()->ReactivatePhysicsObject();
 	}
 
-	entities[0]->UpdatePhysicsTick();
-	entities[1]->UpdatePhysicsTick();
-	entities[2]->UpdatePhysicsTick();
+	//entities[0]->UpdatePhysicsTick();
+	//entities[1]->UpdatePhysicsTick();
+	//entities[2]->UpdatePhysicsTick();
 	//entities[3]->UpdatePhysicsTick();
-	entities[4]->UpdatePhysicsTick();
-	entities[5]->UpdatePhysicsTick();
-	playerChar->UpdatePhysicsTick();
+	//entities[4]->UpdatePhysicsTick();
+	//entities[5]->UpdatePhysicsTick();
+
+	for each (Entity* ent in entities) {
+		if (ent->NeedsPhysicsUpdate()) {
+			ent->UpdatePhysicsTick();
+		}
+	}
+	//playerChar->UpdatePhysicsTick();
 
 	//entities[0]->SetTranslation(0.0f, 0.0f, 0.0f);
 	//entities[1]->SetTranslation(0.0f, 2.0f, 0.0f);
