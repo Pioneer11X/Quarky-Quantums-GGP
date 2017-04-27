@@ -1,14 +1,12 @@
 #include "MapLoader.h"
 
-MapLoader::MapLoader(ID3D11Device* dev, float objScale, vector<Material*> mats, vector<Mesh*> meshes, b2World* physWorld, float globalXOffset, float globalYOffset)
+MapLoader::MapLoader(ID3D11Device* dev, float objScale, vector<Material*> mats, vector<Mesh*> meshes, b2World* physWorld)
 {
 	device = dev;
 	scale = objScale;
 	materials = mats;
 	meshObjs = meshes;
 	world = physWorld;
-	globalXOff = globalXOffset;
-	globalYOff = globalYOffset;
 }
 
 
@@ -56,23 +54,23 @@ void MapLoader::CreateEntity(char identifier, int xOffset, int yOffset)
 		case 'P': //Basic Platform
 		{
 			Entity* newEntity = new Entity(meshObjs[5], materials[1], 
-				xOffset * scale + globalXOff, 
-				yOffset * scale + globalYOff, 
+				xOffset * scale, 
+				yOffset * scale, 
 				0.0f, world, false, 
 				0.5f * scale, 0.5f * scale, 
 				scale, scale, scale);
-			newEntity->SetTranslation(xOffset * scale + globalXOff, yOffset * scale + globalYOff, 0.0f);
+			newEntity->SetTranslation(xOffset * scale, yOffset * scale, 0.0f);
 			levelEntities.push_back(newEntity);
 		} break;
 		case 'T': //Transparent Platform (Fades in in light)
 		{
 			Entity* newEntity = new Entity(meshObjs[5], materials[1], 
-				xOffset * scale + globalXOff, 
-				yOffset * scale + globalYOff, 
+				xOffset * scale, 
+				yOffset * scale, 
 				0.0f, world, false, 
 				0.5f * scale, 0.5f * scale, 
 				scale, scale, scale);
-			newEntity->SetTranslation(xOffset * scale + globalXOff, yOffset * scale + globalYOff, 0.0f);
+			newEntity->SetTranslation(xOffset * scale, yOffset * scale, 0.0f);
 			newEntity->SetAlpha(0.25f);
 			levelEntities.push_back(newEntity);
 			}break;
@@ -84,8 +82,8 @@ void MapLoader::CreateEntity(char identifier, int xOffset, int yOffset)
 			}break;
 		case 'X': //X marks the spot (where the player spawns)
 		{
-			playerSpawnX = xOffset * scale + globalXOff;
-			playerSpawnY = yOffset * scale + globalYOff;
+			playerSpawnX = xOffset * scale;
+			playerSpawnY = yOffset * scale;
 			}break;
 		default: {} break;
 	}

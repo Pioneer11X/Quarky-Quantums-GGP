@@ -8,7 +8,7 @@ using namespace std;
 class MapLoader
 {
 public:
-	MapLoader(ID3D11Device* dev, float objScale, vector<Material*> mats, vector<Mesh*> meshes, b2World* physWorld, float globalXOffset, float globalYOffset);
+	MapLoader(ID3D11Device* dev, float objScale, vector<Material*> mats, vector<Mesh*> meshes, b2World* physWorld);
 	~MapLoader();
 	void LoadLevel(string fileName);
 	vector<Entity*> GetLevelEntities();
@@ -27,9 +27,6 @@ private:
 	
 	float playerSpawnX;
 	float playerSpawnY;
-
-	float globalXOff;
-	float globalYOff;
 
 	void CreateEntity(char identifier, int xOffset, int yOffset);
 };
