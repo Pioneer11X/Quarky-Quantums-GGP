@@ -23,7 +23,6 @@ void SpotLightWrapper::UpdateLightPoistion(XMFLOAT3 newPos)
 	myLight.Position = newPos;
 	newPos.x += myLight.Direction.x * (myEntity->GetScale().y/2);
 	newPos.y += (myLight.Direction.y * (myEntity->GetScale().y / 2));
-	newPos.y += 0.3f;
 	myEntity->SetTranslation(newPos.x, newPos.y, newPos.z);
 }
 
@@ -32,13 +31,13 @@ void SpotLightWrapper::HandleKeyboardInputs(float deltaTime)
 	// Rotate Counter Clockwise
 	if (InputManager::Instance()->GetKeyHolding(KeyPressed::LEFTARROW))
 	{
-		SetRotation(-speed * deltaTime);
+		SetRotation(speed * deltaTime);
 	}
 
 	// Rotate Clockwise
 	if (InputManager::Instance()->GetKeyHolding(KeyPressed::RIGHTARROW))
 	{
-		SetRotation(speed * deltaTime);
+		SetRotation(-speed * deltaTime);
 	}
 }
 
