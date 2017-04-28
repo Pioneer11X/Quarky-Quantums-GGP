@@ -35,6 +35,7 @@ private:
 	bool isDirty;
 	bool customPivot;
 	PhysicsObject* pb = nullptr; // For some reason, it doesn't default to this?
+	bool hasPhysics;
 
 public:
 	//Entity(Mesh* Object, Material* materialInput);
@@ -70,6 +71,8 @@ public:
 	PhysicsObject* GetPhysicsObject() {
 		return pb;
 	}
+
+	bool NeedsPhysicsUpdate();
 };
 
 

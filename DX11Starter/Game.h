@@ -14,13 +14,15 @@
 #include "WICTextureLoader.h"
 #include "ControlledEntity.h"
 #include "Box2D\Box2D.h"
+#include "MapLoader.h"
+#include "Renderer.h"
 
 class Camera;
 
 class Game 
 	: public DXCore
 {
-
+	friend class Renderer;
 public:
 	Game(HINSTANCE hInstance);
 	~Game();
@@ -147,6 +149,9 @@ private:
 	b2Body* playerBody;
 
 	bool PhysicsRunning = false;
+
+	//Map Loader
+	MapLoader* mapLoader;
 
 };
 

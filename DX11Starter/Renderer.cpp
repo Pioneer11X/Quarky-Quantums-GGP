@@ -197,6 +197,8 @@ void Renderer::RenderShadowMap(std::vector<Entity*> entities)
 	{
 		// Grab the data from the first entity's mesh
 		Entity* ge = entities[i];
+		if (ge->GetAlpha() < 1.0f)
+			continue;
 		ID3D11Buffer* vb = ge->GetMesh()->GetVertexBuffer();
 		ID3D11Buffer* ib = ge->GetMesh()->GetIndexBuffer();
 
@@ -221,10 +223,12 @@ void Renderer::RenderShadowMap(std::vector<Entity*> entities)
 
 void Renderer::Draw(std::vector<Entity*> entities, Entity* skyBox, XMFLOAT4X4& viewMatrix, XMFLOAT4X4& projectionMatrix, DirectionalLight* dirLights, PointLight* pointLights, SpotLight* spotLights)
 {
+	XMFLOAT3 dir = Game::Instance()->playerChar->GetLightDir();
+	XMFLOAT3 playerPos = Game::Instance()->playerChar->GetPosition();
 	// Shadow view matrix (where the light is looking from)
-	XMMATRIX shView = XMMatrixLookAtLH(
-		XMVectorSet(0, 5, -5, 0), // Eye position
-		XMVectorSet(0, 0, 0, 0),		// Look at pos
+	XMMATRIX shView = XMMatrixLookToLH(
+		XMVectorSet(playerPos.x, playerPos.y, playerPos.z, 0), // Eye position
+		XMVectorSet(dir.x, dir.y, dir.z, 0),		// Look at pos
 		XMVectorSet(0, 1, 0, 0));		// Up
 	XMStoreFloat4x4(&shadowViewMatrix, XMMatrixTranspose(shView));
 
@@ -330,19 +334,21 @@ void Renderer::Draw(std::vector<Entity*> entities, Entity* skyBox, XMFLOAT4X4& v
 		while (!sorted)
 		{
 			sorted = true;
-			for (i = 0; i < blendEntities.size() - j; i++)
-			{
-				if (blendEntities[i]->GetPosition().z < blendEntities[i + 1]->GetPosition().z)
+			if (blendEntities.size() > 0) {
+				for (i = 0; i < blendEntities.size() - j; i++)
 				{
-					Entity* temp;
-					temp = blendEntities[i];
-					blendEntities[i] = blendEntities[i + 1];
-					blendEntities[i + 1] = temp;
+					if (blendEntities[i]->GetPosition().z < blendEntities[i + 1]->GetPosition().z)
+					{
+						Entity* temp;
+						temp = blendEntities[i];
+						blendEntities[i] = blendEntities[i + 1];
+						blendEntities[i + 1] = temp;
 
-					sorted = false;
+						sorted = false;
+					}
 				}
+				j++;
 			}
-			j++;
 		}
 	};
 
@@ -351,7 +357,11 @@ void Renderer::Draw(std::vector<Entity*> entities, Entity* skyBox, XMFLOAT4X4& v
 	for (Entity* entity : blendEntities)
 	{
 		entity->PrepareMaterial(viewMatrix, projectionMatrix);
+		entity->GetMaterial()->GetVertexShader()->SetMatrix4x4("shadowView", shadowViewMatrix);
+		entity->GetMaterial()->GetVertexShader()->SetMatrix4x4("shadowProj", shadowProjectionMatrix);
 		entity->GetMaterial()->GetPixelShader()->SetFloat3("cameraPosition", Game::Instance()->GetCameraPostion());
+		entity->GetMaterial()->GetPixelShader()->SetShaderResourceView("ShadowMap", shadowSRV);
+		entity->GetMaterial()->GetPixelShader()->SetSamplerState("ShadowSampler", shadowSampler);
 
 		entity->GetMaterial()->GetVertexShader()->CopyAllBufferData();
 		entity->GetMaterial()->GetPixelShader()->CopyAllBufferData();
@@ -359,6 +369,7 @@ void Renderer::Draw(std::vector<Entity*> entities, Entity* skyBox, XMFLOAT4X4& v
 		entity->GetMaterial()->GetPixelShader()->SetShader();
 
 		DrawEntity(entity);
+		entity->GetMaterial()->GetPixelShader()->SetShaderResourceView("ShadowMap", 0);
 	}
 #pragma endregion
 

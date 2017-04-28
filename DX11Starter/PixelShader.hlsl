@@ -180,7 +180,12 @@ float4 main(VertexToPixel input) : SV_TARGET
 		shadowUV,
 		depthFromLight);
 
-	float4 finalColor = surfaceColor * (totalLight) * shadowAmount + (specularLight);
+	float4 finalColor;
+
+	if (alpha != 1.0f)
+		finalColor = surfaceColor * (totalLight) + (specularLight);
+	else
+		finalColor = surfaceColor * (totalLight) * shadowAmount + (specularLight);
 
 	return float4(finalColor.rgb, alpha);
 }

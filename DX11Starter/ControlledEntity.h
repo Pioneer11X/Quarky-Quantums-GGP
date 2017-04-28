@@ -12,7 +12,10 @@ public:
 	~ControlledEntity();
 	void HandleKeyboardInput(float moveSpeed);
 	void UpdateSpotLightPosition();
+	void UpdateLightState();
 	void CheckForCollisions();
+	XMFLOAT3 GetLightDir();
+	
 private:
 	SpotLightWrapper* mySpotLight;
 	bool canJump;
