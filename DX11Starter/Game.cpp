@@ -277,35 +277,11 @@ void Game::CreateBasicGeometry()
 	materials.push_back(new Material(vertexShader, pixelShader, metalRustSRV, sampler));//3
 
 	meshObjs.push_back(new Mesh(pathModifier + "sphere.obj", device));
-
-	//entities.push_back(new Entity(meshObjs[0], materials[0], 2.0f, 0.0f, 0.0f, &world, true, 0.5f, 0.5f));
-
 	meshObjs.push_back(new Mesh(pathModifier + "cone.obj", device));
-
-	//entities.push_back(new Entity(meshObjs[1], materials[2], 0.0f, 0.0f, 0.0f, nullptr, true, 0.0f, 0.0f, 6.0f, 8.0f, 6.0f));
-	//entities.back()->SetAlpha(0.35f);
-
 	meshObjs.push_back(new Mesh(pathModifier + "cylinder.obj", device));
-
-	//entities.push_back(new Entity(meshObjs[2], materials[2], -4.0f, -2.0f, 0.0f, &world, true, 0.5f, 0.5f));
-
 	meshObjs.push_back(new Mesh(pathModifier + "Plane.obj", device));
-	//// Dont pass world as this is the plane obj and not dynamic.
-	//entities.push_back(new Entity(meshObjs[3], materials[3], 0.0f, -5.0f, 0.0f, &world, false, 10.0f, 0.1f ));
-
 	meshObjs.push_back(new Mesh(pathModifier + "torus.obj", device));
-
-	//entities.push_back(new Entity(meshObjs[4], materials[2], -6.0f, 0.0f, 2.0f, &world, true, 0.5f, 0.5f));
-
 	meshObjs.push_back(new Mesh(pathModifier + "cube.obj", device));
-
-	//entities.push_back(new Entity(meshObjs[5], materials[1], -2.0f, 0.0f, 0.0f, &world, true, 0.5f, 0.5f));
-	//
-	//entities.push_back(new Entity(meshObjs[5], materials[1], 0.0f, -4.5f, 5.0f));
-	//entities.back()->SetAlpha(0.35f);
-	//
-	//entities.push_back(new Entity(meshObjs[0], materials[0], 0.0f, -4.5f, 3.0f));
-	//entities.back()->SetAlpha(0.25f);
 
 	// Init Spot Light for the player
 	SpotLight spotLight;
@@ -339,15 +315,6 @@ void Game::CreateBasicGeometry()
 	skyObject = new Entity(meshObjs[0], skyMaterial, 0.0f, 0.0f, 0.0f, nullptr, false);
 	skyObject->SetTranslation(camera->GetPosition().x, camera->GetPosition().y, camera->GetPosition().z);
 	skyObject->SetScale(200.0f, 200.0f, 200.0f);
-
-	// Initial Posture for the objects.
-	//entities[0]->SetTranslation(2.0f, 0.0f, 0.0f);
-	//entities[1]->SetTranslation(0.0f, 0.0f, 0.0f);
-	//entities[2]->SetTranslation(-4.0f, -2.0f, 0.0f);
-	//// Plane Obj.
-	//entities[3]->SetTranslation(0.0f, -5.0f, 0.0f);
-	//entities[4]->SetTranslation(0.0f, 0.0f, 2.0f);
-	//entities[5]->SetTranslation(-2.0f, 0.0f, 0.0f);
 }
 
 
@@ -359,14 +326,6 @@ void Game::OnResize()
 {
 	// Handle base-level DX resize stuff
 	DXCore::OnResize();
-
-	//// Update our projection matrix since the window size changed
-	//XMMATRIX P = XMMatrixPerspectiveFovLH(
-	//	0.25f * 3.1415926535f,	// Field of View Angle
-	//	(float)width / height,	// Aspect ratio
-	//	0.1f,				  	// Near clip plane distance
-	//	100.0f);			  	// Far clip plane distance
-	//XMStoreFloat4x4(&projectionMatrix, XMMatrixTranspose(P)); // Transpose for HLSL!
 
 	// Set projection matrix in camera
 	camera->SetProjectionMatrix();
@@ -384,50 +343,13 @@ void Game::Update(float deltaTime, float totalTime)
 	skyObject->SetTranslation(camera->GetPosition().x, camera->GetPosition().y, camera->GetPosition().z);
 
 #pragma region EnitityUpdates
-
 	world.Step(deltaTime, velocityIterations, positionIterations);
-
-	//printf("%f , %f", );
-	//entities[1]->SetTranslation( playerBody->GetPosition().x , playerBody->GetPosition().y + 3.0f, playerChar->GetPosition().z );
-
-	//if (InputManager::Instance()->GetKeyDown(KeyPressed::LEFTARROW)) {
-	//	entities[0]->GetPhysicsObject()->DeactivatePhysicsObject();
-	//}
-	//
-	//if (InputManager::Instance()->GetKeyDown(KeyPressed::RIGHTARROW)) {
-	//	entities[0]->GetPhysicsObject()->ReactivatePhysicsObject();
-	//}
-
-	//entities[0]->UpdatePhysicsTick();
-	//entities[1]->UpdatePhysicsTick();
-	//entities[2]->UpdatePhysicsTick();
-	//entities[3]->UpdatePhysicsTick();
-	//entities[4]->UpdatePhysicsTick();
-	//entities[5]->UpdatePhysicsTick();
 
 	for each (Entity* ent in entities) {
 		if (ent->NeedsPhysicsUpdate()) {
 			ent->UpdatePhysicsTick();
 		}
 	}
-	//playerChar->UpdatePhysicsTick();
-
-	//entities[0]->SetTranslation(0.0f, 0.0f, 0.0f);
-	//entities[1]->SetTranslation(0.0f, 2.0f, 0.0f);
-	//entities[2]->SetTranslation(0.0f, -2.0f, 0.0f);
-
-	// Plane Obj.
-	//entities[3]->SetTranslation(0.0f, -5.0f, 0.0f);
-	//entities[4]->SetTranslation(0.0f, 0.0f, 2.0f);
-	//entities[5]->SetTranslation(-2.0f, 0.0f, 0.0f);
-
-	//entities[0]->SetRotation(0.0f, sin(totalTime / 2), 0.0f, cos(totalTime / 2));
-	//entities[1]->SetRotation(0.0f, 0.0f, 0.78539f);
-	//entities[2]->SetRotation(0.0f, sin(totalTime / 2), 0.0f, cos(totalTime / 2));
-	//entities[3]->SetRotation(0.0f, sin(totalTime / 2), 0.0f, cos(totalTime / 2));
-	//entities[4]->SetRotation(0.0f, sin(totalTime / 2), 0.0f, cos(totalTime / 2));
-	//entities[5]->SetRotation(0.0f, sin(totalTime / 2), 0.0f, cos(totalTime / 2));
-
 #pragma endregion
 
 	playerChar->HandleKeyboardInput(deltaTime);
@@ -461,64 +383,6 @@ void Game::Draw(float deltaTime, float totalTime)
 		D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL,
 		1.0f,
 		0);
-
-
-#pragma region Old Code
-
-	//// Send data to shader variables
-	////  - Do this ONCE PER OBJECT you're drawing
-	////  - This is actually a complex process of copying data to a local buffer
-	////    and then copying that entire buffer to the GPU.  
-	////  - The "SimpleShader" class handles all of that for you.
-	//renderer->SetWorldMatrices(entities, vertexShader);		// SETS ONLY WORLD MATRIX for all entities
-	//renderer->SetWorldMatrix(entities[0], vertexShader);
-
-	//for (std::vector<Entity*>::iterator it = entities.begin(); it != entities.end(); ++it)
-	//{
-	//	vertexShader->SetMatrix4x4("world", worldMatrix);
-	//	vertexShader->SetMatrix4x4("view", viewMatrix);
-	//	vertexShader->SetMatrix4x4("projection", projectionMatrix);
-	//}
-
-	//// Once you've set all of the data you care to change for
-	//// the next draw call, you need to actually send it to the GPU
-	////  - If you skip this, the "SetMatrix" calls above won't make it to the GPU!
-	//vertexShader->CopyAllBufferData();
-
-	//// Set the vertex and pixel shaders to use for the next Draw() command
-	////  - These don't technically need to be set every frame...YET
-	////  - Once you start applying different shaders to different objects,
-	////    you'll need to swap the current shaders before each draw
-	//vertexShader->SetShader();
-	//pixelShader->SetShader();
-
-	//for (std::vector<Entity*>::iterator it = entities.begin(); it != entities.end(); ++it)
-	//{
-	//	// Set buffers in the input assembler
-	//	//  - Do this ONCE PER OBJECT you're drawing, since each object might
-	//	//    have different geometry.
-	//	UINT stride = sizeof(Vertex);
-	//	UINT offset = 0;
-
-	//	ID3D11Buffer* vPointer = nullptr;
-	//	if (*it == nullptr)
-	//		continue;
-
-	//	vPointer = (*it)->GetMesh()->GetVertexBuffer();
-	//	context->IASetVertexBuffers(0, 1, &vPointer, &stride, &offset);
-	//	context->IASetIndexBuffer((*it)->GetMesh()->GetIndexBuffer(), DXGI_FORMAT_R32_UINT, 0);
-
-	//	// Finally do the actual drawing
-	//	//  - Do this ONCE PER OBJECT you intend to draw
-	//	//  - This will use all of the currently set DirectX "stuff" (shaders, buffers, etc)
-	//	//  - DrawIndexed() uses the currently set INDEX BUFFER to look up corresponding
-	//	//     vertices in the currently set VERTEX BUFFER
-	//	context->DrawIndexed(
-	//		(*it)->GetMesh()->GetIndexCount(),     // The number of indices to use (we could draw a subset if we wanted)
-	//		0,     // Offset to the first index we want to use
-	//		0);    // Offset to add to each index when looking up vertices
-	//}
-#pragma endregion
 
 	if ( curScene == GameLevel)
 		renderer->Draw(entities, skyObject, camera->GetViewMatrix(), camera->GetProjectionMatrix(), &dirLights[0], &pointLights[0], &spotLightEntity->GetSpotLight());
@@ -573,18 +437,6 @@ void Game::OnMouseUp(WPARAM buttonState, int x, int y)
 // --------------------------------------------------------
 void Game::OnMouseMove(WPARAM buttonState, int x, int y)
 {
-	// Add any custom code here...
-	//if (buttonState & 0x0001)	// Left button is down
-	//{
-	//	camera->MoveSideways((x - prevMousePos.x) * 0.005f);
-	//	camera->MoveVertical((y - prevMousePos.y) * 0.005f);
-	//}
-	//if (buttonState & 0x0002)	// Right button is down
-	//{
-	//	camera->SetRotationY(x - prevMousePos.x);
-	//	camera->SetRotationX(y - prevMousePos.y);
-	//}
-
 	// Save the previous mouse position, so we have it for the future
 	prevMousePos.x = x;
 	prevMousePos.y = y;
