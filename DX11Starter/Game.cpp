@@ -197,7 +197,7 @@ void Game::Init()
 	light2.AmbientColor = XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f);
 	light2.DiffuseColor = XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f);
 	light2.Direction = XMFLOAT3(1.0f, 1.0f, 0.0f);
-	light2.isOn = 1;
+	light2.isOn = 0;
 
 	dirLights.push_back(light);
 	dirLights.push_back(light2);

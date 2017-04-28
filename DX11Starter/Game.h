@@ -15,13 +15,14 @@
 #include "ControlledEntity.h"
 #include "Box2D\Box2D.h"
 #include "MapLoader.h"
+#include "Renderer.h"
 
 class Camera;
 
 class Game 
 	: public DXCore
 {
-
+	friend class Renderer;
 public:
 	Game(HINSTANCE hInstance);
 	~Game();

@@ -13,6 +13,7 @@ public:
 	void HandleKeyboardInput(float moveSpeed);
 	void UpdateSpotLightPosition();
 	void CheckForCollisions();
+	XMFLOAT3 GetLightDir();
 private:
 	SpotLightWrapper* mySpotLight;
 	bool canJump;

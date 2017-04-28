@@ -53,6 +53,11 @@ void ControlledEntity::CheckForCollisions()
 	}
 }
 
+XMFLOAT3 ControlledEntity::GetLightDir()
+{
+	return mySpotLight->GetSpotLight().Direction;
+}
+
 
 
 void ControlledEntity::HandleKeyboardInput(float deltaTime)

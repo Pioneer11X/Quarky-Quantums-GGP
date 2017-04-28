@@ -223,10 +223,12 @@ void Renderer::RenderShadowMap(std::vector<Entity*> entities)
 
 void Renderer::Draw(std::vector<Entity*> entities, Entity* skyBox, XMFLOAT4X4& viewMatrix, XMFLOAT4X4& projectionMatrix, DirectionalLight* dirLights, PointLight* pointLights, SpotLight* spotLights)
 {
+	XMFLOAT3 dir = Game::Instance()->playerChar->GetLightDir();
+	XMFLOAT3 playerPos = Game::Instance()->playerChar->GetPosition();
 	// Shadow view matrix (where the light is looking from)
-	XMMATRIX shView = XMMatrixLookAtLH(
-		XMVectorSet(Game::Instance()->GetCameraPostion().x, 5, -5, 0), // Eye position
-		XMVectorSet(Game::Instance()->GetCameraPostion().x, 0, 0, 0),		// Look at pos
+	XMMATRIX shView = XMMatrixLookToLH(
+		XMVectorSet(playerPos.x, playerPos.y, playerPos.z, 0), // Eye position
+		XMVectorSet(dir.x, dir.y, dir.z, 0),		// Look at pos
 		XMVectorSet(0, 1, 0, 0));		// Up
 	XMStoreFloat4x4(&shadowViewMatrix, XMMatrixTranspose(shView));
 
