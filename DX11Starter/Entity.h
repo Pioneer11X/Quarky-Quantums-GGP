@@ -16,6 +16,8 @@ private:
 	XMFLOAT4X4 scaleMatrix;
 	XMFLOAT4X4 rotationMatrix;
 	XMFLOAT4X4 translationMatrix;
+	XMFLOAT4X4 customPivotMatrix;
+	XMFLOAT4X4 backToNormalPivot;
 	XMFLOAT3 position;
 	XMFLOAT3 scale;
 	XMFLOAT3 rotation;
@@ -31,11 +33,12 @@ private:
 
 	// Boolean to check if data has changed since previous frame
 	bool isDirty;
+	bool customPivot;
 	PhysicsObject* pb = nullptr; // For some reason, it doesn't default to this?
 
 public:
 	//Entity(Mesh* Object, Material* materialInput);
-	Entity(Mesh* Object, Material* materialInput, float _posX, float _posY, float _posz, b2World *world = nullptr, bool isDynamic = true, float _sizeX = 1.0f, float _sizeY = 1.0f, float _scaleX = 1.0f, float _scaleY = 1.0f, float _scaleZ = 1.0f);
+	Entity(Mesh* Object, Material* materialInput, float _posX, float _posY, float _posz, b2World *world = nullptr, bool isDynamic = true, float _sizeX = 1.0f, float _sizeY = 1.0f, float _scaleX = 1.0f, float _scaleY = 1.0f, float _scaleZ = 1.0f, bool customPivot = false);
 	~Entity();
 	XMFLOAT3 GetPosition();
 	void SetTranslation(float x, float y, float z);

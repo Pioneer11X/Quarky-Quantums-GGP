@@ -280,7 +280,7 @@ void Game::CreateBasicGeometry()
 
 	meshObjs.push_back(new Mesh(pathModifier + "cone.obj", device));
 
-	entities.push_back(new Entity(meshObjs[1], materials[2], 0.0f, 0.0f, 0.0f, nullptr, true, 0.0f, 0.0f, 6.0f, 8.0f, 6.0f));
+	entities.push_back(new Entity(meshObjs[1], materials[2], 0.0f, 0.0f, 0.0f, nullptr, true, 0.0f, 0.0f, 6.0f, 8.0f, 6.0f, true));
 	entities.back()->SetAlpha(0.35f);
 
 	meshObjs.push_back(new Mesh(pathModifier + "cylinder.obj", device));

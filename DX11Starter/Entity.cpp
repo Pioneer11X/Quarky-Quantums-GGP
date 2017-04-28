@@ -2,7 +2,7 @@
 
 
 
-Entity::Entity(Mesh * Object, Material* materialInput, float _posX, float _posY, float _posZ, b2World* world, bool isDynamic, float _sizeX, float _sizeY, float _scaleX, float _scaleY, float _scaleZ)
+Entity::Entity(Mesh * Object, Material* materialInput, float _posX, float _posY, float _posZ, b2World* world, bool isDynamic, float _sizeX, float _sizeY, float _scaleX, float _scaleY, float _scaleZ, bool customPivot)
 {
 	pb = nullptr;		// Need this I guess.
 	isDirty = true;
@@ -10,6 +10,7 @@ Entity::Entity(Mesh * Object, Material* materialInput, float _posX, float _posY,
 	material = materialInput;
 	SetScale(_scaleX, _scaleY, _scaleZ);
 	alpha = 1.0f;
+	this->customPivot = customPivot;
 
 	rotation.x = 0.0f;
 	rotation.y = 0.0f;
@@ -42,7 +43,11 @@ void Entity::SetTranslation(float x, float y, float z)
 	this->position.z = z;
 
 	XMStoreFloat4x4(&translationMatrix, XMMatrixTranslation(x, y, z));
-	
+	/*if (customPivot)
+	{
+		XMStoreFloat4x4(&customPivotMatrix, XMMatrixTranslation(4.0f, 0.0f, 0.0f));
+		XMStoreFloat4x4(&backToNormalPivot, XMMatrixTranslation(-4.0f, 0.0f, 0.0f));
+	}*/
 	isDirty = true;
 }
 
@@ -85,6 +90,10 @@ void Entity::Move(float x, float y, float z)
 	position.z += z;
 
 	XMStoreFloat4x4(&translationMatrix, XMMatrixTranslation(position.x, position.y, position.z));
+	/*if (customPivot)
+	{
+		XMStoreFloat4x4(&customPivotMatrix, XMMatrixTranslation(x - 4.0f * cos(rotation.z), y - 4.0f*sin(rotation.z), z));
+	}*/
 
 	isDirty = true;
 }
@@ -94,6 +103,10 @@ void Entity::CalculateWorldMatrix()
 	if (isDirty)
 	{
 		XMStoreFloat4x4(&worldMatrix, XMMatrixTranspose(XMLoadFloat4x4(&scaleMatrix) * XMLoadFloat4x4(&rotationMatrix) * XMLoadFloat4x4(&translationMatrix)));
+		/*if (customPivot)
+		{
+			XMStoreFloat4x4(&worldMatrix, XMMatrixTranspose(XMLoadFloat4x4(&scaleMatrix)  * XMLoadFloat4x4(&translationMatrix) * XMLoadFloat4x4(&rotationMatrix) * XMLoadFloat4x4(&customPivotMatrix)));
+		}*/			
 
 		isDirty = false;
 	}
