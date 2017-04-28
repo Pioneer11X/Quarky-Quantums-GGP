@@ -188,8 +188,8 @@ void Game::Init()
 	//Init Light
 	DirectionalLight light;
 	light.AmbientColor = XMFLOAT4(0.1f, 0.1f, 0.1f, 1.0f);
-	light.DiffuseColor = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
-	light.Direction = XMFLOAT3(1.0f, -1.0f, 0.0f);
+	light.DiffuseColor = XMFLOAT4(0.2f, 0.2f, 0.2f, 1.0f);
+	light.Direction = XMFLOAT3(0.0f, 0.0f, 1.0f);
 	light.isOn = 1;
 
 	//Init Light 2
@@ -315,7 +315,7 @@ void Game::CreateBasicGeometry()
 	// Roughly 40 degree spread.
 	spotLight.AngleRads = 0.3587f;
 	spotLight.Position = XMFLOAT3(-3.0f, 0.0f, 0.0f);
-	spotLight.isOn = 0;
+	spotLight.isOn = 1;
 	spotLight.SpotIntensity = 15.0f;
 	spotLight.ConstAtten = 0.01f;
 	spotLight.LinearAtten = 0.4f;
@@ -432,11 +432,9 @@ void Game::Update(float deltaTime, float totalTime)
 
 	playerChar->HandleKeyboardInput(deltaTime);
 	playerChar->UpdateSpotLightPosition();
+	playerChar->UpdateLightState();
 
 	spotLightEntity->HandleKeyboardInputs(deltaTime);
-
-	if (playerChar->lightIsOn != pointLights[0].isOn)
-		pointLights[0].isOn = playerChar->lightIsOn;
 
 	XMFLOAT3 temp;
 	float camOffset = 6.5f;

@@ -23,6 +23,20 @@ void ControlledEntity::UpdateSpotLightPosition()
 	mySpotLight->UpdateLightPoistion(newLightPos);
 }
 
+void ControlledEntity::UpdateLightState()
+{
+	if (lightIsOn)
+	{
+		if (!mySpotLight->GetSpotLight().isOn)
+			mySpotLight->GetSpotLight().isOn = true;
+	}
+	else
+	{
+		if (mySpotLight->GetSpotLight().isOn)
+			mySpotLight->GetSpotLight().isOn = false;
+	}
+}
+
 void ControlledEntity::CheckForCollisions()
 {
 	//If the player is flagged as "cant jump", and they are currently falling
