@@ -21,6 +21,9 @@ SpotLightWrapper::~SpotLightWrapper()
 void SpotLightWrapper::UpdateLightPoistion(XMFLOAT3 newPos)
 {
 	myLight.Position = newPos;
+	newPos.x += myLight.Direction.x * (myEntity->GetScale().y/2);
+	newPos.y += (myLight.Direction.y * (myEntity->GetScale().y / 2));
+	newPos.y += 0.3f;
 	myEntity->SetTranslation(newPos.x, newPos.y, newPos.z);
 }
 

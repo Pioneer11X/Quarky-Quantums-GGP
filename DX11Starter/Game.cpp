@@ -313,7 +313,7 @@ void Game::CreateBasicGeometry()
 	spotLight.DiffuseColor = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
 	spotLight.Direction = XMFLOAT3(1.0f, 0.0f, 0.0f);
 	// Roughly 40 degree spread.
-	spotLight.AngleRads = 0.3587f;
+	spotLight.AngleRads = 0.4087f;
 	spotLight.Position = XMFLOAT3(-3.0f, 0.0f, 0.0f);
 	spotLight.isOn = 1;
 	spotLight.SpotIntensity = 15.0f;
@@ -322,7 +322,7 @@ void Game::CreateBasicGeometry()
 	spotLight.ExpoAtten = 0.6f;
 
 	Entity* spotlightEnt = new Entity(meshObjs[1], materials[2], 0.0f, 0.0f, 0.0f, nullptr, true, 0.0f, 0.0f, 6.0f, 8.0f, 6.0f);
-	spotlightEnt->SetAlpha(0.35f);
+	spotlightEnt->SetAlpha(0.2f);
 	spotLightEntity = new SpotLightWrapper(spotLight, 2.5f, spotlightEnt);
 	entities.push_back(spotlightEnt);
 

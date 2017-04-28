@@ -43,7 +43,7 @@ void Entity::SetTranslation(float x, float y, float z)
 	this->position.z = z;
 
 	XMStoreFloat4x4(&translationMatrix, XMMatrixTranslation(x, y, z));
-	
+
 	isDirty = true;
 }
 

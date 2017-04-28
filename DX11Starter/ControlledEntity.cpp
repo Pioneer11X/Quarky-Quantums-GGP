@@ -19,7 +19,7 @@ ControlledEntity::~ControlledEntity()
 void ControlledEntity::UpdateSpotLightPosition()
 {
 	XMFLOAT3 newLightPos = this->GetPosition();
-	newLightPos.y += .02f;
+	newLightPos.y += 0.3f;
 	mySpotLight->UpdateLightPoistion(newLightPos);
 }
 

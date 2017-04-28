@@ -16,8 +16,6 @@ private:
 	XMFLOAT4X4 scaleMatrix;
 	XMFLOAT4X4 rotationMatrix;
 	XMFLOAT4X4 translationMatrix;
-	XMFLOAT4X4 customPivotMatrix;
-	XMFLOAT4X4 backToNormalPivot;
 	XMFLOAT3 position;
 	XMFLOAT3 scale;
 	XMFLOAT3 rotation;
@@ -39,7 +37,7 @@ private:
 
 public:
 	//Entity(Mesh* Object, Material* materialInput);
-	Entity(Mesh* Object, Material* materialInput, float _posX, float _posY, float _posz, b2World *world = nullptr, bool isDynamic = true, float _sizeX = 1.0f, float _sizeY = 1.0f, float _scaleX = 1.0f, float _scaleY = 1.0f, float _scaleZ = 1.0f, bool customPivot = false);
+	Entity(Mesh* Object, Material* materialInput, float _posX, float _posY, float _posz, b2World *world = nullptr, bool isDynamic = true, float _sizeX = 1.0f, float _sizeY = 1.0f, float _scaleX = 1.0f, float _scaleY = 1.0f, float _scaleZ = 1.0f);
 	~Entity();
 	XMFLOAT3 GetPosition();
 	void SetTranslation(float x, float y, float z);
@@ -47,6 +45,7 @@ public:
 	inline XMFLOAT3 GetRotation() { return rotation; };
 	void SetRotationAboutZ(float angle);
 	void SetScale(float x, float y, float z);
+	inline XMFLOAT3 GetScale() { return scale; }
 	void Move(float x, float y, float z);
 	void CalculateWorldMatrix();
 	XMFLOAT4X4& GetWorldMatrix();
