@@ -14,7 +14,7 @@ public:
 	void UpdateSpotLightPosition();
 	void UpdateLightState();
 	void CheckForCollisions();
-	XMFLOAT3 GetLightDir();
+	SpotLight& GetLight();
 	
 private:
 	SpotLightWrapper* mySpotLight;

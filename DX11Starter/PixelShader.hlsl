@@ -80,11 +80,12 @@ float4 main(VertexToPixel input) : SV_TARGET
 {
 	float4 surfaceColor = Texture.Sample(Sampler, input.uv);
 	float4 specularLight = { 0.0f, 0.0f, 0.0f, 0.0f };
+	float4 diffuseLight = { 0.0f, 0.0f, 0.0f, 0.0f };
+	float4 ambientLight = { 0.0f, 0.0f, 0.0f, 0.0f };
 
 	// Normalize the normal vector
 	input.normal = normalize(input.normal);
 
-	float4 totalLight = { 0.0f, 0.0f, 0.0f, 0.0f };
 
 	if (light.isOn == 1)
 	{
@@ -94,7 +95,8 @@ float4 main(VertexToPixel input) : SV_TARGET
 		// Calculate N dot L
 		float lightAmount = saturate(dot(input.normal, lightDir));
 
-		totalLight += (light.DiffuseColor * lightAmount) + (light.AmbientColor);
+		diffuseLight += (light.DiffuseColor * lightAmount);
+		ambientLight += (light.AmbientColor);
 	}
 
 	if (light2.isOn == 1)
@@ -105,7 +107,8 @@ float4 main(VertexToPixel input) : SV_TARGET
 		// Calculate N dot L
 		float light2Amount = saturate(dot(input.normal, light2Dir));
 
-		totalLight += (light2.DiffuseColor * light2Amount) + (light2.AmbientColor);
+		diffuseLight += (light2.DiffuseColor * light2Amount);
+		ambientLight += (light2.AmbientColor);
 	}
 
 	if (pointLight.isOn == 1)
@@ -117,7 +120,7 @@ float4 main(VertexToPixel input) : SV_TARGET
 		float3 reflectionVector = reflect(-dirToPointLight, input.normal);
 		specularLight += pow(saturate(dot(reflectionVector, dirToCamera)), 128);
 
-		totalLight += (pointLight.Color * pointLightAmount);
+		diffuseLight += (pointLight.Color * pointLightAmount);
 	}
 
 	// Implementation example from: http://www.lighthouse3d.com/tutorials/glsl-12-tutorial/spot-light-per-pixel/
@@ -153,7 +156,8 @@ float4 main(VertexToPixel input) : SV_TARGET
 				float attenuationEffect = spotEffect / (spotLight.ConstAtten + spotLight.LinearAtten * distance + spotLight.ExpoAtten * distance * distance);
 
 				// Calculate diffuse light
-				totalLight += (attenuationEffect * spotLight.DiffuseColor * spotLightAmount) + (spotLight.AmbientColor);
+				diffuseLight += (attenuationEffect * spotLight.DiffuseColor * spotLightAmount);
+				ambientLight += (spotLight.AmbientColor);
 
 				// Calculate specular light
 				float3 dirToCamera = normalize(cameraPosition - input.worldPos);
@@ -175,17 +179,16 @@ float4 main(VertexToPixel input) : SV_TARGET
 	// Get the actual depth from the light's position
 	float depthFromLight = input.posForShadow.z / input.posForShadow.w;
 
+	// Can be used to limit the lights travbel distance
+	//if (depthFromLight > 0.99)
+	//	diffuseLight = 0;
+
 	float shadowAmount = ShadowMap.SampleCmpLevelZero(
 		ShadowSampler,
 		shadowUV,
 		depthFromLight);
 
-	float4 finalColor;
-
-	if (alpha != 1.0f)
-		finalColor = surfaceColor * (totalLight) + (specularLight);
-	else
-		finalColor = surfaceColor * (totalLight) * shadowAmount + (specularLight);
+	float4 finalColor = surfaceColor * (ambientLight + (diffuseLight * shadowAmount)) + (specularLight);
 
 	return float4(finalColor.rgb, alpha);
 }

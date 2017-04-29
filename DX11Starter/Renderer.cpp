@@ -199,6 +199,9 @@ void Renderer::RenderShadowMap(std::vector<Entity*> entities)
 		Entity* ge = entities[i];
 		if (ge->GetAlpha() < 1.0f)
 			continue;
+
+		if (ge == Game::Instance()->playerChar)
+			continue;
 		ID3D11Buffer* vb = ge->GetMesh()->GetVertexBuffer();
 		ID3D11Buffer* ib = ge->GetMesh()->GetIndexBuffer();
 
@@ -223,21 +226,19 @@ void Renderer::RenderShadowMap(std::vector<Entity*> entities)
 
 void Renderer::Draw(std::vector<Entity*> entities, Entity* skyBox, XMFLOAT4X4& viewMatrix, XMFLOAT4X4& projectionMatrix, DirectionalLight* dirLights, PointLight* pointLights, SpotLight* spotLights)
 {
-	XMFLOAT3 dir = Game::Instance()->playerChar->GetLightDir();
-	XMFLOAT3 playerPos = Game::Instance()->playerChar->GetPosition();
+	SpotLight lt = Game::Instance()->playerChar->GetLight();
 	// Shadow view matrix (where the light is looking from)
 	XMMATRIX shView = XMMatrixLookToLH(
-		XMVectorSet(playerPos.x, playerPos.y, playerPos.z, 0), // Eye position
-		XMVectorSet(dir.x, dir.y, dir.z, 0),		// Look at pos
+		XMVectorSet(lt.Position.x, lt.Position.y, lt.Position.z, 0), // Eye position
+		XMVectorSet(lt.Direction.x, lt.Direction.y, lt.Direction.z, 0),		// Look at pos
 		XMVectorSet(0, 1, 0, 0));		// Up
 	XMStoreFloat4x4(&shadowViewMatrix, XMMatrixTranspose(shView));
 
-	// Shadow proj matrix
-	XMMATRIX shProj = XMMatrixOrthographicLH(
-		20.0f,		// Ortho width
-		10.0f,		// Ortho height
-		0.1f,		// Near plane
-		100.0f);	// Far plane
+	XMMATRIX shProj = XMMatrixPerspectiveFovLH(
+		0.25f * 3.1415926535f,		// Field of View Angle
+		1,//(float)Game::Instance()->GetScreenWidth() / Game::Instance()->GetScreenHeight(),		// Aspect ratio
+		0.1f,						// Near clip plane distance
+		100.0f);					// Far clip plane distance
 	XMStoreFloat4x4(&shadowProjectionMatrix, XMMatrixTranspose(shProj));
 
 	RenderShadowMap(entities);

@@ -187,8 +187,8 @@ void Game::Init()
 	
 	//Init Light
 	DirectionalLight light;
-	light.AmbientColor = XMFLOAT4(0.1f, 0.1f, 0.1f, 1.0f);
-	light.DiffuseColor = XMFLOAT4(0.2f, 0.2f, 0.2f, 1.0f);
+	light.AmbientColor = XMFLOAT4(0.15f, 0.15f, 0.15f, 1.0f);
+	light.DiffuseColor = XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f);
 	light.Direction = XMFLOAT3(0.0f, 0.0f, 1.0f);
 	light.isOn = 1;
 
@@ -285,7 +285,7 @@ void Game::CreateBasicGeometry()
 
 	// Init Spot Light for the player
 	SpotLight spotLight;
-	spotLight.AmbientColor = XMFLOAT4(0.01f, 0.01f, 0.01f, 0.01f);
+	spotLight.AmbientColor = XMFLOAT4(0.0f, 0.0f, 0.0f, 0.0f);
 	spotLight.DiffuseColor = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
 	spotLight.Direction = XMFLOAT3(1.0f, 0.0f, 0.0f);
 	// Roughly 40 degree spread.

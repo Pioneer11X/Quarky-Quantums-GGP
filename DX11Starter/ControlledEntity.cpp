@@ -67,9 +67,9 @@ void ControlledEntity::CheckForCollisions()
 	}
 }
 
-XMFLOAT3 ControlledEntity::GetLightDir()
+SpotLight& ControlledEntity::GetLight()
 {
-	return mySpotLight->GetSpotLight().Direction;
+	return mySpotLight->GetSpotLight();
 }
 
 
