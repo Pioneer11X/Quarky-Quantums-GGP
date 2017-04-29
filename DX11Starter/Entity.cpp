@@ -1,11 +1,10 @@
 #include "Entity.h"
 
 
-
-Entity::Entity(Mesh * Object, Material* materialInput, float _posX, float _posY, float _posZ, b2World* world, bool isDynamic, bool _CanBeTriggered, float _sizeX, float _sizeY, float _scaleX, float _scaleY, float _scaleZ)
+Entity::Entity(Mesh * Object, Material* materialInput, float _posX, float _posY, float _posZ, b2World* world, std::string _nameForPhysicsBody, bool isDynamic, bool _CanBeTriggered, float _sizeX, float _sizeY, float _scaleX, float _scaleY, float _scaleZ)
 {
 	pb = nullptr;		// Need this I guess.
-	CanBeTriggered = _CanBeTriggered;
+	hasTrigger = _CanBeTriggered;
 	isDirty = true;
 	meshObj = Object;
 	material = materialInput;
@@ -22,8 +21,9 @@ Entity::Entity(Mesh * Object, Material* materialInput, float _posX, float _posY,
 	SetTranslation(_posX, _posY, _posZ);
 
 	XMStoreFloat4x4(&worldMatrix, XMMatrixTranspose(XMMatrixIdentity()));
-	if (world != nullptr)
+	if (world != nullptr) {
 		pb = new PhysicsObject(world, isDynamic, _posX, _posY, _sizeX, _sizeY);
+	}
 	
 }
 
@@ -152,4 +152,9 @@ Material * Entity::GetMaterial()
 bool Entity::NeedsPhysicsUpdate()
 {
 	return hasPhysics;
+}
+
+bool Entity::CanBeTrigerred()
+{
+	return hasTrigger;
 }

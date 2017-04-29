@@ -56,7 +56,9 @@ void MapLoader::CreateEntity(char identifier, int xOffset, int yOffset)
 			Entity* newEntity = new Entity(meshObjs[5], materials[1], 
 				xOffset * scale, 
 				yOffset * scale, 
-				0.0f, world, false, true,
+				0.0f, world,
+				"BasicPlatform",
+				false, true,
 				0.5f * scale, 0.5f * scale, 
 				scale, scale, scale);
 			newEntity->SetTranslation(xOffset * scale, yOffset * scale, 0.0f);
@@ -67,7 +69,9 @@ void MapLoader::CreateEntity(char identifier, int xOffset, int yOffset)
 			Entity* newEntity = new Entity(meshObjs[5], materials[1], 
 				xOffset * scale, 
 				yOffset * scale, 
-				0.0f, world, false, 
+				0.0f, world,
+				"TransparentPlatform",
+				false, true,
 				0.5f * scale, 0.5f * scale, 
 				scale, scale, scale);
 			newEntity->SetTranslation(xOffset * scale, yOffset * scale, 0.0f);

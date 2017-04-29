@@ -2,6 +2,8 @@
 #include <vector>
 #include "Game.h"
 
+float CalcDistance(XMFLOAT3 l, XMFLOAT3 r);
+
 SpotLightWrapper::SpotLightWrapper(SpotLight newLight, float newSpeed, Entity* spotLightEnt) 
 {
 	myLight = newLight;
@@ -31,6 +33,8 @@ void SpotLightWrapper::UpdateLightPoistion(XMFLOAT3 newPos)
 void SpotLightWrapper::RayCastCheck()
 {
 
+	// ==== My Implementation ====
+
 	// 1. Get all the Entities.
 
 	std::vector<Entity *> entities = Game::Instance()->GetEntities();
@@ -57,6 +61,14 @@ void SpotLightWrapper::RayCastCheck()
 	}
 
 	// 3. Get the 4 Points ( Square ) on the same Z Plane as the spotlight.
+
+	// ==== End of My Implementation ====
+
+	// ==== Box2D Check ====
+
+
+
+	// ==== End of Box2D Check ====
 
 }
 

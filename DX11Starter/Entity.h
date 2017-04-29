@@ -1,6 +1,7 @@
 #pragma once
 #include <DirectXMath.h>
 #include <math.h>
+#include <string>
 #include "Mesh.h"
 #include "Material.h"
 #include "PhysicsObject.h"
@@ -34,11 +35,11 @@ private:
 	bool customPivot;
 	PhysicsObject* pb = nullptr; // For some reason, it doesn't default to this?
 	bool hasPhysics;
-	bool CanBeTriggered = false; // Can this entity be trigerred by the spotlight.
+	bool hasTrigger = false; // Can this entity be trigerred by the spotlight.
 
 public:
 	//Entity(Mesh* Object, Material* materialInput);
-	Entity(Mesh* Object, Material* materialInput, float _posX, float _posY, float _posz, b2World *world = nullptr, bool isDynamic = true, bool CanBeTriggered = false, float _sizeX = 1.0f, float _sizeY = 1.0f, float _scaleX = 1.0f, float _scaleY = 1.0f, float _scaleZ = 1.0f);
+	Entity(Mesh* Object, Material* materialInput, float _posX, float _posY, float _posz, b2World *world = nullptr, std::string _nameForPhysicsBody = "", bool isDynamic = true, bool CanBeTriggered = false, float _sizeX = 1.0f, float _sizeY = 1.0f, float _scaleX = 1.0f, float _scaleY = 1.0f, float _scaleZ = 1.0f);
 	~Entity();
 	XMFLOAT3 GetPosition();
 	void SetTranslation(float x, float y, float z);
@@ -73,7 +74,7 @@ public:
 	}
 
 	bool NeedsPhysicsUpdate();
-	inline bool CanBeTrigerred() { return CanBeTrigerred; }
+	bool CanBeTrigerred();
 };
 
 

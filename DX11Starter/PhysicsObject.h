@@ -1,15 +1,16 @@
 #pragma once
 
 #include "Box2D\Box2D.h"
+#include <string>
 
 class PhysicsObject
 {
 
 public:
 
-	PhysicsObject(b2World* _world, bool _isDynamic, float _posX, float _posY, float _sizeX, float _sizeY);
+	PhysicsObject(b2World* _world, bool _isDynamic, float _posX, float _posY, float _sizeX, float _sizeY, std::string _name = "");
 
-	void InitPhysicsObject();
+	void InitPhysicsObject(std::string _name);
 	b2Body* GetPhysicsBody();
 
 	void DeactivatePhysicsObject();
@@ -20,6 +21,8 @@ public:
 
 	float GetSizeX();
 	float GetSizeY();
+
+	std::string _physicsName;
 
 	~PhysicsObject();
 

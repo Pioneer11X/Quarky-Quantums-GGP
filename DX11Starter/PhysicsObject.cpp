@@ -1,6 +1,6 @@
 #include "PhysicsObject.h"
 
-PhysicsObject::PhysicsObject(b2World * _world, bool _isDynamic, float _posX, float _posY, float _sizeX, float _sizeY)
+PhysicsObject::PhysicsObject(b2World * _world, bool _isDynamic, float _posX, float _posY, float _sizeX, float _sizeY, std::string _name)
 {
 	world = _world;
 	isDynamic = _isDynamic;
@@ -9,12 +9,23 @@ PhysicsObject::PhysicsObject(b2World * _world, bool _isDynamic, float _posX, flo
 	sizeX = _sizeX;
 	sizeY = _sizeY;
 
-	InitPhysicsObject();
+	if ("" == _name) {
+		_name = "None";
+	}
+
+	InitPhysicsObject(_name);
 
 }
 
-void PhysicsObject::InitPhysicsObject()
+void PhysicsObject::InitPhysicsObject(std::string _name)
 {
+
+	if ("None" == _name) {
+		std::printf("Forgot to Name an Object\n");
+	}
+
+	_physicsName = _name;
+
 	b2BodyDef PhysicsBodyDef;
 	if (isDynamic)
 		PhysicsBodyDef.type = b2_dynamicBody;
@@ -31,6 +42,8 @@ void PhysicsObject::InitPhysicsObject()
 	FixDef.friction = 0.3f;
 
 	PhysicsBodyPtr->CreateFixture(&FixDef);
+	PhysicsBodyPtr->SetUserData(static_cast<void*>(&_physicsName));
+
 	isActive = true;
 }
 
