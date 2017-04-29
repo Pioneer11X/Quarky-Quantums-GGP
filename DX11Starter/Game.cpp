@@ -297,7 +297,7 @@ void Game::CreateBasicGeometry()
 	spotLight.LinearAtten = 0.4f;
 	spotLight.ExpoAtten = 0.6f;
 
-	Entity* spotlightEnt = new Entity(meshObjs[1], materials[2], 0.0f, 0.0f, 0.0f, nullptr, true, 0.0f, 0.0f, 6.0f, 8.0f, 6.0f);
+	Entity* spotlightEnt = new Entity(meshObjs[1], materials[2], 0.0f, 0.0f, 0.0f, nullptr, true, false, 0.0f, 0.0f, 6.0f, 8.0f, 6.0f);
 	spotlightEnt->SetAlpha(0.2f);
 	spotLightEntity = new SpotLightWrapper(spotLight, 2.5f, spotlightEnt);
 	entities.push_back(spotlightEnt);

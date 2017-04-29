@@ -2,9 +2,10 @@
 
 
 
-Entity::Entity(Mesh * Object, Material* materialInput, float _posX, float _posY, float _posZ, b2World* world, bool isDynamic, float _sizeX, float _sizeY, float _scaleX, float _scaleY, float _scaleZ)
+Entity::Entity(Mesh * Object, Material* materialInput, float _posX, float _posY, float _posZ, b2World* world, bool isDynamic, bool _CanBeTriggered, float _sizeX, float _sizeY, float _scaleX, float _scaleY, float _scaleZ)
 {
 	pb = nullptr;		// Need this I guess.
+	CanBeTriggered = _CanBeTriggered;
 	isDirty = true;
 	meshObj = Object;
 	material = materialInput;

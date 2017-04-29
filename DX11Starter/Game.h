@@ -76,6 +76,8 @@ public:
 	//	PhysicsRunning = false;
 	//}
 
+	inline vector<Entity *> GetEntities(){ return entities; }
+
 private:
 
 	// Game Instance
