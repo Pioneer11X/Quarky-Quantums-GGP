@@ -58,7 +58,7 @@ void MapLoader::CreateEntity(char identifier, int xOffset, int yOffset)
 				yOffset * scale, 
 				0.0f, world,
 				"BasicPlatform",
-				false, true,
+				false, false,
 				0.5f * scale, 0.5f * scale, 
 				scale, scale, scale);
 			newEntity->SetTranslation(xOffset * scale, yOffset * scale, 0.0f);
