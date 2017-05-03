@@ -44,6 +44,7 @@ public:
 	~SpotLightWrapper();
 	void HandleKeyboardInputs(float deltaTime);
 	void UpdateLightPoistion(XMFLOAT3 newPos);
+	void RayCastCheck();
 	inline SpotLight& GetSpotLight() { return myLight; }
 	inline Entity* GetEntity() { return myEntity; }
 private:
@@ -52,4 +53,6 @@ private:
 	float yawAngle;
 	void SetRotation(float angle);
 	Entity* myEntity;
+
+	float Range = 3.0f; // This might already exist somewhere else, but just in case.
 };

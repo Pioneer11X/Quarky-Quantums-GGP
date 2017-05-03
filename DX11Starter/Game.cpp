@@ -297,13 +297,15 @@ void Game::CreateBasicGeometry()
 	spotLight.LinearAtten = 0.4f;
 	spotLight.ExpoAtten = 0.6f;
 
-	Entity* spotlightEnt = new Entity(meshObjs[1], materials[2], 0.0f, 0.0f, 0.0f, nullptr, true, 0.0f, 0.0f, 6.0f, 8.0f, 6.0f);
+	// For a collider ( Sensor / Trigger to be valid, there needs to be some volume. So, no 0.0f in any dimension.
+	Entity* spotlightEnt = new Entity(meshObjs[1], materials[2], 0.0f, 0.0f, 0.0f, &world, "SpotLight" , true, true, 1.0f, 1.0f, 2.0f, 2.0f, 2.0f);
 	spotlightEnt->SetAlpha(0.2f);
 	spotLightEntity = new SpotLightWrapper(spotLight, 2.5f, spotlightEnt);
 	entities.push_back(spotlightEnt);
 
-	mapLoader = new MapLoader(device, 2.0f, materials, meshObjs, &world);
+	mapLoader = new MapLoader(device, 1.0f, materials, meshObjs, &world);
 	mapLoader->LoadLevel("Level1.txt");
+	//mapLoader->LoadLevel("Level1.txt");
 	for each (Entity* ent in mapLoader->GetLevelEntities()) {
 		entities.push_back(ent);
 	}
@@ -312,7 +314,7 @@ void Game::CreateBasicGeometry()
 	entities.push_back(playerChar);
 
 	skyMaterial = new Material(skyVertShader, skyPixShader, skyBox, sampler);
-	skyObject = new Entity(meshObjs[0], skyMaterial, 0.0f, 0.0f, 0.0f, nullptr, false);
+	skyObject = new Entity(meshObjs[0], skyMaterial, 0.0f, 0.0f, 0.0f, nullptr, "SkyBox", false);
 	skyObject->SetTranslation(camera->GetPosition().x, camera->GetPosition().y, camera->GetPosition().z);
 	skyObject->SetScale(200.0f, 200.0f, 200.0f);
 }
@@ -346,6 +348,36 @@ void Game::Update(float deltaTime, float totalTime)
 	world.Step(deltaTime, velocityIterations, positionIterations);
 
 	for each (Entity* ent in entities) {
+
+		// Collision Check
+		{
+			ent->GetMesh()->GetBounds().Center.x = ent->GetPosition().x;
+			ent->GetMesh()->GetBounds().Center.y = ent->GetPosition().y;
+			ent->GetMesh()->GetBounds().Center.z = ent->GetPosition().z;
+
+			if ( spotLightEntity->GetEntity()->GetMesh()->GetBounds().Intersects(ent->GetMesh()->GetBounds()) ){
+				if (
+					(ent->GetPhysicsObject()->_physicsName != "Player") &&
+					(ent->GetPhysicsObject()->_physicsName != "BasicPlatform") &&
+					(ent->GetPhysicsObject()->_physicsName != "SpotLight")
+					) {
+					std::cout << ent->GetPhysicsObject()->_physicsName << std::endl;
+					std::cout << ent->GetPosition().x << "," << ent->GetPosition().y << "," << ent->GetPosition().z << std::endl;
+					ent->GetPhysicsObject()->ReactivatePhysicsObject();
+				}
+			}
+			else {
+				if (
+					(ent->GetPhysicsObject()->_physicsName != "Player") &&
+					(ent->GetPhysicsObject()->_physicsName != "BasicPlatform") &&
+					(ent->GetPhysicsObject()->_physicsName != "SpotLight")
+					) {
+					ent->GetPhysicsObject()->DeactivatePhysicsObject();
+				}
+			}
+		}
+		// End Collision Check.
+
 		if (ent->NeedsPhysicsUpdate()) {
 			ent->UpdatePhysicsTick();
 		}

@@ -1,16 +1,23 @@
 #include "Entity.h"
 
 
-
-Entity::Entity(Mesh * Object, Material* materialInput, float _posX, float _posY, float _posZ, b2World* world, bool isDynamic, float _sizeX, float _sizeY, float _scaleX, float _scaleY, float _scaleZ)
+Entity::Entity(Mesh * Object, Material* materialInput, float _posX, float _posY, float _posZ, b2World* world, std::string _nameForPhysicsBody, bool isDynamic, bool _CanBeTriggered, float _sizeX, float _sizeY, float _scaleX, float _scaleY, float _scaleZ)
 {
 	pb = nullptr;		// Need this I guess.
+	hasTrigger = _CanBeTriggered;
 	isDirty = true;
 	meshObj = Object;
 	material = materialInput;
 	SetScale(_scaleX, _scaleY, _scaleZ);
 	alpha = 1.0f;
 	hasPhysics = isDynamic;
+
+	XMMATRIX BoundsTr = XMMATRIX();
+	BoundsTr = XMMatrixScaling(_scaleX, _scaleY, _scaleZ);
+
+	DirectX::BoundingBox& tempBounds = meshObj->GetBounds();
+
+	tempBounds.Transform(meshObj->GetBounds(), BoundsTr);
 
 	rotation.x = 0.0f;
 	rotation.y = 0.0f;
@@ -21,8 +28,9 @@ Entity::Entity(Mesh * Object, Material* materialInput, float _posX, float _posY,
 	SetTranslation(_posX, _posY, _posZ);
 
 	XMStoreFloat4x4(&worldMatrix, XMMatrixTranspose(XMMatrixIdentity()));
-	if (world != nullptr)
-		pb = new PhysicsObject(world, isDynamic, _posX, _posY, _sizeX, _sizeY);
+	if (world != nullptr) {
+		pb = new PhysicsObject(world, isDynamic, hasTrigger, _posX, _posY, _sizeX, _sizeY, _nameForPhysicsBody);
+	}
 	
 }
 
@@ -151,4 +159,9 @@ Material * Entity::GetMaterial()
 bool Entity::NeedsPhysicsUpdate()
 {
 	return hasPhysics;
+}
+
+bool Entity::CanBeTrigerred()
+{
+	return hasTrigger;
 }

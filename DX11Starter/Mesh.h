@@ -3,6 +3,7 @@
 #include <DirectXMath.h>
 #include "DXCore.h"
 #include "Vertex.h"
+#include <DirectXCollision.h>
 
 class Mesh
 {
@@ -14,6 +15,8 @@ public:
 	ID3D11Buffer* GetVertexBuffer() const;
 	ID3D11Buffer* GetIndexBuffer() const;
 	int GetIndexCount() const;
+
+	DirectX::BoundingBox& GetBounds()  { return bounds; }
 
 private:
 	// Buffers to hold actual geometry data
@@ -29,6 +32,6 @@ private:
 	//The number of indices in Mesh's Index Buffer
 	int indexCount;
 
-
+	DirectX::BoundingBox bounds;
 };
 

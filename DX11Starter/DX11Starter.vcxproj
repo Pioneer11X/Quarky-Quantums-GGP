@@ -125,6 +125,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="BoxListener.cpp" />
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="ControlledEntity.cpp" />
     <ClCompile Include="DXCore.cpp" />
@@ -146,6 +147,7 @@
     <ClCompile Include="SimpleShader.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="BoxListener.h" />
     <ClInclude Include="Camera.h" />
     <ClInclude Include="ControlledEntity.h" />
     <ClInclude Include="DXCore.h" />

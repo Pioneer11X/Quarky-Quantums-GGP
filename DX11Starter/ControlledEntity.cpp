@@ -2,7 +2,7 @@
 
 
 
-ControlledEntity::ControlledEntity(Mesh * Object, Material* materialInput, float _posX, float _posY, float _posZ, SpotLightWrapper* newSpotLight, b2World* world, bool isDynamic, float _sizeX, float _sizeY) : Entity(Object, materialInput, _posX, _posY, _posZ, world, isDynamic, _sizeX, _sizeY)
+ControlledEntity::ControlledEntity(Mesh * Object, Material* materialInput, float _posX, float _posY, float _posZ, SpotLightWrapper* newSpotLight, b2World* world, bool isDynamic, float _sizeX, float _sizeY) : Entity(Object, materialInput, _posX, _posY, _posZ, world, "Player", isDynamic, false, _sizeX, _sizeY)
 {
 	lightIsOn = true;
 	mySpotLight = newSpotLight;
@@ -90,7 +90,7 @@ void ControlledEntity::HandleKeyboardInput(float deltaTime)
 			this->GetPhysicsObject()->GetPhysicsBody()->GetLinearVelocity() + b2Vec2(maxSpeed * deltaTime, 0));
 	}
 
-	if (InputManager::Instance()->GetKeyDown(KeyPressed::UP))
+	if (InputManager::Instance()->GetKeyDown(KeyPressed::UP) || InputManager::Instance()->GetKeyDown(KeyPressed::SPACEBAR))
 	{
 		if (canJump) {
 			tempImpulse = b2Vec2(0, jumpHeight);

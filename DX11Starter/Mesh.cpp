@@ -12,6 +12,7 @@ Mesh::Mesh()
 
 Mesh::Mesh(Vertex * vertices, int indicesInVertexBuffer, int * indices, int indicesInIndexBuffer, ID3D11Device * device)
 {
+	// DirectX Collisions wont work if you use this constructor.
 	InitializeVertexBuffer(vertices, indicesInVertexBuffer, device);
 	InitializeIndexBuffer((UINT*)indices, indicesInIndexBuffer, device);
 }
@@ -204,6 +205,18 @@ Mesh::Mesh(std::string parameter, ID3D11Device* device)
 
 	InitializeVertexBuffer(&verts[0], vertCounter, device);
 	InitializeIndexBuffer(&indices[0], vertCounter, device);
+
+	DirectX::BoundingBox::CreateFromPoints(
+		bounds,
+		vertCounter,
+		reinterpret_cast<const DirectX::XMFLOAT3*>(&verts[0]),
+		sizeof(Vertex)
+	);
+
+	
+
+	//printf("blah");
+
 }
 
 Mesh::~Mesh()

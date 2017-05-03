@@ -1,6 +1,6 @@
 #include "PhysicsObject.h"
 
-PhysicsObject::PhysicsObject(b2World * _world, bool _isDynamic, float _posX, float _posY, float _sizeX, float _sizeY)
+PhysicsObject::PhysicsObject(b2World * _world, bool _isDynamic, bool IsTrigger, float _posX, float _posY, float _sizeX, float _sizeY, std::string _name)
 {
 	world = _world;
 	isDynamic = _isDynamic;
@@ -8,30 +8,70 @@ PhysicsObject::PhysicsObject(b2World * _world, bool _isDynamic, float _posX, flo
 	posY = _posY;
 	sizeX = _sizeX;
 	sizeY = _sizeY;
+	isTrigger = IsTrigger;
 
-	InitPhysicsObject();
+	if ("" == _name) {
+		_name = "None";
+	}
+
+	InitPhysicsObject(_name);
 
 }
 
-void PhysicsObject::InitPhysicsObject()
+void PhysicsObject::InitPhysicsObject(std::string _name)
 {
+
+	if ("None" == _name) {
+		std::printf("Forgot to Name an Object\n");
+	}
+
 	b2BodyDef PhysicsBodyDef;
 	if (isDynamic)
 		PhysicsBodyDef.type = b2_dynamicBody;
 	PhysicsBodyDef.position.Set(posX, posY);
+	_physicsName = _name;
 
 	PhysicsBodyPtr = (*world).CreateBody(&PhysicsBodyDef);
 
-	b2PolygonShape PhysicsBox;
-	PhysicsBox.SetAsBox(sizeX, sizeY);
+	//if (false == isTrigger) {
 
-	b2FixtureDef FixDef;
-	FixDef.shape = &PhysicsBox;
-	FixDef.density = 1.0f;
-	FixDef.friction = 0.3f;
+		b2PolygonShape PhysicsBox;
+		if ("Spotlight" == _name) {
+			
+		}
+		else {
+			PhysicsBox.SetAsBox(sizeX, sizeY);
+		}
 
-	PhysicsBodyPtr->CreateFixture(&FixDef);
-	isActive = true;
+		b2FixtureDef FixDef;
+		FixDef.shape = &PhysicsBox;
+		FixDef.density = 1.0f;
+		FixDef.friction = 0.3f;
+
+		PhysicsBodyPtr->CreateFixture(&FixDef);
+	/*}
+	else {
+		b2PolygonShape PhysicsBox;
+		PhysicsBox.SetAsBox(sizeX, sizeY);
+
+		b2FixtureDef FixDef;
+		FixDef.shape = &PhysicsBox;
+		FixDef.density = 1.0f;
+		FixDef.friction = 0.3f;
+		FixDef.isSensor = true;
+
+		PhysicsBodyPtr->CreateFixture(&FixDef);
+	}*/
+
+
+	PhysicsBodyPtr->SetUserData(static_cast<void*>(&_physicsName));
+
+	if ("TransparentPlatform" == _name) {
+		isActive = false;
+	}
+	else if ( "BasicPlatform" == _name ) {
+		isActive = true;
+	}
 }
 
 b2Body * PhysicsObject::GetPhysicsBody()
