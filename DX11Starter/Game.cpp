@@ -303,7 +303,7 @@ void Game::CreateBasicGeometry()
 	spotLightEntity = new SpotLightWrapper(spotLight, 2.5f, spotlightEnt);
 	entities.push_back(spotlightEnt);
 
-	mapLoader = new MapLoader(device, 1.0f, materials, meshObjs, &world);
+	mapLoader = new MapLoader(device, 2.0f, materials, meshObjs, &world);
 	mapLoader->LoadLevel("Level1.txt");
 	//mapLoader->LoadLevel("Level1.txt");
 	for each (Entity* ent in mapLoader->GetLevelEntities()) {

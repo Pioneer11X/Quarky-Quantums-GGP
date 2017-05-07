@@ -13,11 +13,8 @@ Entity::Entity(Mesh * Object, Material* materialInput, float _posX, float _posY,
 	hasPhysics = isDynamic;
 
 	XMMATRIX BoundsTr = XMMATRIX();
-	BoundsTr = XMMatrixScaling(_scaleX, _scaleY, _scaleZ);
-
-	DirectX::BoundingBox& tempBounds = meshObj->GetBounds();
-
-	tempBounds.Transform(meshObj->GetBounds(), BoundsTr);
+	// Get world matrix here.
+	
 
 	rotation.x = 0.0f;
 	rotation.y = 0.0f;
@@ -28,6 +25,12 @@ Entity::Entity(Mesh * Object, Material* materialInput, float _posX, float _posY,
 	SetTranslation(_posX, _posY, _posZ);
 
 	XMStoreFloat4x4(&worldMatrix, XMMatrixTranspose(XMMatrixIdentity()));
+
+	BoundsTr = XMLoadFloat4x4(&worldMatrix);
+
+	DirectX::BoundingBox& tempBounds = meshObj->GetBounds();
+
+	tempBounds.Transform(meshObj->GetBounds(), BoundsTr);
 	if (world != nullptr) {
 		pb = new PhysicsObject(world, isDynamic, hasTrigger, _posX, _posY, _sizeX, _sizeY, _nameForPhysicsBody);
 	}
