@@ -365,6 +365,7 @@ void Game::Update(float deltaTime, float totalTime)
 					std::cout << ent->GetPhysicsObject()->_physicsName << std::endl;
 					std::cout << ent->GetPosition().x << "," << ent->GetPosition().y << "," << ent->GetPosition().z << std::endl;
 					ent->GetPhysicsObject()->ReactivatePhysicsObject();
+					ent->SetAlpha(1.0f);
 				}
 			}
 			else {
@@ -375,6 +376,7 @@ void Game::Update(float deltaTime, float totalTime)
 					(ent->GetPhysicsObject()->_physicsName != "SpotLight")
 					) {
 					ent->GetPhysicsObject()->DeactivatePhysicsObject();
+					ent->SetAlpha(0.25f);
 				}
 			}
 		}
