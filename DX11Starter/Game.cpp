@@ -298,7 +298,7 @@ void Game::CreateBasicGeometry()
 	spotLight.ExpoAtten = 0.6f;
 
 	// For a collider ( Sensor / Trigger to be valid, there needs to be some volume. So, no 0.0f in any dimension.
-	Entity* spotlightEnt = new Entity(meshObjs[1], materials[2], 0.0f, 0.0f, 0.0f, &world, "SpotLight" , true, true, 1.0f, 1.0f, 2.0f, 2.0f, 2.0f);
+	Entity* spotlightEnt = new Entity(meshObjs[1], materials[2], 0.0f, 0.0f, 0.0f, &world, "SpotLight" , true, true, 1.0f, 1.0f, 2.5f, 2.5f, 2.5f);
 	spotlightEnt->SetAlpha(0.2f);
 	spotLightEntity = new SpotLightWrapper(spotLight, 2.5f, spotlightEnt);
 	entities.push_back(spotlightEnt);
@@ -349,6 +349,7 @@ void Game::Update(float deltaTime, float totalTime)
 
 	for each (Entity* ent in entities) {
 
+		
 		// Collision Check
 		{
 			ent->GetMesh()->GetBounds().Center.x = ent->GetPosition().x;
@@ -367,6 +368,7 @@ void Game::Update(float deltaTime, float totalTime)
 				}
 			}
 			else {
+				// Add a buffer between reactivating and deactivating objects.
 				if (
 					(ent->GetPhysicsObject()->_physicsName != "Player") &&
 					(ent->GetPhysicsObject()->_physicsName != "BasicPlatform") &&
