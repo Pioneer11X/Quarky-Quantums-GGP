@@ -375,8 +375,8 @@ void Game::Update(float deltaTime, float totalTime)
 					(ent->GetPhysicsObject()->_physicsName != "BasicPlatform") &&
 					(ent->GetPhysicsObject()->_physicsName != "SpotLight")
 					) {
-					ent->GetPhysicsObject()->DeactivatePhysicsObject();
 					ent->SetAlpha(0.25f);
+					ent->GetPhysicsObject()->DeactivatePhysicsObject();
 				}
 			}
 		}
