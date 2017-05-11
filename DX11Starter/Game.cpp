@@ -331,6 +331,9 @@ void Game::OnResize()
 
 	// Set projection matrix in camera
 	camera->SetProjectionMatrix();
+
+	// Update backbuffers in renderer
+	renderer->UpdateBuffers(backBufferRTV, depthStencilView);
 }
 
 // --------------------------------------------------------
