@@ -192,11 +192,11 @@ void Renderer::DrawBeam(XMFLOAT4X4& viewMatrix, XMFLOAT4X4& projectionMatrix)
 	Game::instance->vertexShader->SetMatrix4x4("shadowProj", shadowProjectionMatrix);
 
 	beamPS->SetShaderResourceView("ShadowMap", shadowSRV);
-	beamPS->SetSamplerState("ShadowSampler", shadowSampler);\
+	beamPS->SetSamplerState("ShadowSampler", shadowSampler);
 	beamPS->SetData("spotLight", &(Game::Instance()->playerChar->GetLight()), sizeof(SpotLight));
 	beamPS->SetFloat3("cameraPosition", Game::Instance()->GetCameraPostion());
 	beamPS->SetFloat("alpha", beam->GetAlpha());
-	beamPS->SetFloat("scatterAmount", 200.0f);
+	beamPS->SetFloat("scatterAmount", 1.0f);
 
 	Game::instance->vertexShader->CopyAllBufferData();
 	beamPS->CopyAllBufferData();

@@ -98,10 +98,6 @@ float4 main(VertexToPixel input, bool isFrontFace : SV_IsFrontFace) : SV_TARGET
 				diffuseLight += (attenuationEffect * spotLight.DiffuseColor * spotLightAmount);
 				ambientLight += (spotLight.AmbientColor);
 
-				//// Calculate specular light
-				//float3 dirToCamera = normalize(cameraPosition - input.worldPos);
-				//float3 reflectionVector = reflect(-dirToSpotLight, input.normal);
-				//specularLight += attenuationEffect * pow(saturate(dot(reflectionVector, dirToCamera)), 128);
 			}
 		}
 
@@ -118,21 +114,12 @@ float4 main(VertexToPixel input, bool isFrontFace : SV_IsFrontFace) : SV_TARGET
 	// Get the actual depth from the light's position
 	float depthFromLight = input.posForShadow.z / input.posForShadow.w;
 
-	//// Can be used to limit the lights travel distance
-	//if (depthFromLight > 0.99)
-	//	diffuseLight = 0;
-
-	float shadowAmount = ShadowMap.SampleCmpLevelZero(
-		ShadowSampler,
-		shadowUV,
-		depthFromLight);
-
 	float3 viewDir = normalize(input.worldPos - cameraPosition);
 
 	float inscattering = InScatter(cameraPosition, viewDir, spotLight.Position, depthFromLight) * scatterAmount; // Function from Macklin's blog.
 	inscattering *= isFrontFace ? -1.0f : 1.0f; // isFrontFace = SV_IsFrontFace
 
-	float4 finalColor = ambientLight + (diffuseLight * shadowAmount) + inscattering;
+	float4 finalColor = ambientLight + (diffuseLight) + inscattering;
 
 	finalColor.a *= alpha;
 

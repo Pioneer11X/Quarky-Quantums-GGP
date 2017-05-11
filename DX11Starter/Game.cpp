@@ -187,7 +187,7 @@ void Game::Init()
 	
 	//Init Light
 	DirectionalLight light;
-	light.AmbientColor = XMFLOAT4(0.15f, 0.15f, 0.15f, 1.0f);
+	light.AmbientColor = XMFLOAT4(0.05f, 0.05f, 0.05f, 1.0f);
 	light.DiffuseColor = XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f);
 	light.Direction = XMFLOAT3(0.0f, 0.0f, 1.0f);
 	light.isOn = 1;
@@ -292,10 +292,10 @@ void Game::CreateBasicGeometry()
 	spotLight.AngleRads = 0.3587f;
 	spotLight.Position = XMFLOAT3(-3.0f, 0.0f, 0.0f);
 	spotLight.isOn = 1;
-	spotLight.SpotIntensity = 0.1f;
+	spotLight.SpotIntensity = 1.0f;
 	spotLight.ConstAtten = 0.00f;
-	spotLight.LinearAtten = 1.0f;
-	spotLight.ExpoAtten = 0.3f;
+	spotLight.LinearAtten = 0.0f;
+	spotLight.ExpoAtten = 0.2f;
 
 	// For a collider ( Sensor / Trigger to be valid, there needs to be some volume. So, no 0.0f in any dimension.
 	Entity* spotlightEnt = new Entity(meshObjs[1], materials[2], 0.0f, 0.0f, 0.0f, &world, "SpotLight" , true, true, 1.0f, 1.0f, 13.5f, 18.0f, 13.5f);
