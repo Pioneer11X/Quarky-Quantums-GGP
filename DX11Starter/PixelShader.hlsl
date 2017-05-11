@@ -127,7 +127,7 @@ float4 main(VertexToPixel input) : SV_TARGET
 	if (spotLight.isOn == 1)
 	{
 		// Calculate the raw vector from spot light to the current pixel
-		float3 dirToSpotLight = normalize(spotLight.Position - input.worldPos);
+		float3 dirToSpotLight = (spotLight.Position - input.worldPos);
 		float3 normalSpotDirection = normalize(spotLight.Direction);
 
 		// Compute the NdotL for light amount given to the current pixel.
@@ -138,6 +138,8 @@ float4 main(VertexToPixel input) : SV_TARGET
 		{
 			// Calculate the distance to the light source
 			float distance = length(dirToSpotLight);
+
+			dirToSpotLight = normalize(dirToSpotLight);
 
 			// Calculate the vector between the light direction and the direction from the spot
 			// light to the pixel

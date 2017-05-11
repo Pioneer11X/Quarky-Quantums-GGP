@@ -132,7 +132,7 @@ float4 main(VertexToPixel input, bool isFrontFace : SV_IsFrontFace) : SV_TARGET
 
 	float4 finalColor = ambientLight + (diffuseLight * shadowAmount) + inscattering;
 
-	finalColor.a *= alpha;
+	finalColor.a = alpha * (1 - depthFromLight);
 
 	return finalColor;
 }
