@@ -299,9 +299,9 @@ void Game::CreateBasicGeometry()
 
 	// For a collider ( Sensor / Trigger to be valid, there needs to be some volume. So, no 0.0f in any dimension.
 	Entity* spotlightEnt = new Entity(meshObjs[1], materials[2], 0.0f, 0.0f, 0.0f, &world, "SpotLight" , true, true, 1.0f, 1.0f, 2.5f, 2.5f, 2.5f);
-	spotlightEnt->SetAlpha(0.2f);
+	spotlightEnt->SetAlpha(0.5f);
 	spotLightEntity = new SpotLightWrapper(spotLight, 2.5f, spotlightEnt);
-	entities.push_back(spotlightEnt);
+	//entities.push_back(spotlightEnt);
 
 	mapLoader = new MapLoader(device, 2.0f, materials, meshObjs, &world);
 	mapLoader->LoadLevel("Level1.txt");

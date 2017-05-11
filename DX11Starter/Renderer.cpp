@@ -10,6 +10,10 @@ Renderer::Renderer(ID3D11Device * deviceIn, ID3D11DeviceContext * contextIn)
 	shadowVS = new SimpleVertexShader(device, context);
 	if (!shadowVS->LoadShaderFile(L"Assets/ShaderObjs/x86/ShadowVS.cso"))
 		shadowVS->LoadShaderFile(L"Assets/ShaderObjs/x64/ShadowVS.cso");
+	
+	beamPS = new SimplePixelShader(device, context);
+	if (!beamPS->LoadShaderFile(L"Assets/ShaderObjs/x86/BeamPS.cso"))
+		beamPS->LoadShaderFile(L"Assets/ShaderObjs/x64/BeamPS.cso");
 
 	D3D11_DEPTH_STENCIL_DESC lessEqualsDesc = {};
 	lessEqualsDesc.DepthEnable = true;
@@ -31,6 +35,12 @@ Renderer::Renderer(ID3D11Device * deviceIn, ID3D11DeviceContext * contextIn)
 	rd2.FillMode = D3D11_FILL_SOLID;
 	rd2.DepthClipEnable = true;
 	device->CreateRasterizerState(&rd2, &rsCullFront);
+
+	D3D11_RASTERIZER_DESC rd3 = {};
+	rd3.CullMode = D3D11_CULL_NONE;
+	rd3.FillMode = D3D11_FILL_SOLID;
+	rd3.DepthClipEnable = true;
+	device->CreateRasterizerState(&rd2, &rsCullNone);
 
 	D3D11_BLEND_DESC bd = {};
 	bd.AlphaToCoverageEnable = false;
@@ -118,6 +128,7 @@ Renderer::~Renderer()
 {
 	if (rsCullFront) { rsCullFront->Release(); }
 	if (rsCullBack) { rsCullBack->Release(); }
+	if (rsCullNone) { rsCullNone->Release(); }
 	if (depthStencilState) { depthStencilState->Release(); }
 	if (bsAlphaBlend) { bsAlphaBlend->Release(); }
 	if (shadowVS) { delete shadowVS; }
@@ -127,6 +138,9 @@ Renderer::~Renderer()
 	shadowSRV->Release();
 	shadowRasterizer->Release();
 	shadowSampler->Release();
+
+	// Clean up Volumetric stuff
+	delete beamPS;
 }
 
 void Renderer::DrawEntity(Entity* entity)
@@ -162,6 +176,35 @@ void Renderer::DrawSkyBox(Entity * skyBox, XMFLOAT4X4& viewMatrix, XMFLOAT4X4& p
 	skyBox->GetMaterial()->GetPixelShader()->SetShader();
 
 	DrawEntity(skyBox);
+}
+
+void Renderer::DrawBeam(XMFLOAT4X4& viewMatrix, XMFLOAT4X4& projectionMatrix)
+{
+	context->OMSetDepthStencilState(nullptr, NULL);
+	context->RSSetState(rsCullNone);
+	Entity* beam = Game::instance->spotLightEntity->GetEntity();
+
+	beam->CalculateWorldMatrix();
+	Game::instance->vertexShader->SetMatrix4x4("world", beam->GetWorldMatrix());
+	Game::instance->vertexShader->SetMatrix4x4("view", viewMatrix);
+	Game::instance->vertexShader->SetMatrix4x4("projection", projectionMatrix);
+	Game::instance->vertexShader->SetMatrix4x4("shadowView", shadowViewMatrix);
+	Game::instance->vertexShader->SetMatrix4x4("shadowProj", shadowProjectionMatrix);
+
+	beamPS->SetShaderResourceView("ShadowMap", shadowSRV);
+	beamPS->SetSamplerState("ShadowSampler", shadowSampler);\
+	beamPS->SetData("spotLight", &(Game::Instance()->playerChar->GetLight()), sizeof(SpotLight));
+	beamPS->SetFloat3("cameraPosition", Game::Instance()->GetCameraPostion());
+	beamPS->SetFloat("alpha", beam->GetAlpha());
+	beamPS->SetFloat("scatterAmount", 200.0f);
+
+	Game::instance->vertexShader->CopyAllBufferData();
+	beamPS->CopyAllBufferData();
+	Game::instance->vertexShader->SetShader();
+	beamPS->SetShader();
+
+	DrawEntity(beam);
+	beamPS->SetShaderResourceView("ShadowMap", 0);
 }
 
 void Renderer::RenderShadowMap(std::vector<Entity*> entities)
@@ -373,6 +416,8 @@ void Renderer::Draw(std::vector<Entity*> entities, Entity* skyBox, XMFLOAT4X4& v
 		entity->GetMaterial()->GetPixelShader()->SetShaderResourceView("ShadowMap", 0);
 	}
 #pragma endregion
+
+	DrawBeam(viewMatrix, projectionMatrix);
 
 }
 

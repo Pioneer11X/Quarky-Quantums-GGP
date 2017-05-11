@@ -15,11 +15,11 @@ SpotLightWrapper::SpotLightWrapper(SpotLight newLight, float newSpeed, Entity* s
 
 SpotLightWrapper::~SpotLightWrapper()
 {
-	/*if (myEntity != NULL)
+	if (myEntity != NULL)
 	{
 		delete myEntity;
 		myEntity = NULL;
-	}*/
+	}
 }
 
 void SpotLightWrapper::UpdateLightPoistion(XMFLOAT3 newPos)

@@ -179,7 +179,7 @@ float4 main(VertexToPixel input) : SV_TARGET
 	// Get the actual depth from the light's position
 	float depthFromLight = input.posForShadow.z / input.posForShadow.w;
 
-	// Can be used to limit the lights travbel distance
+	//// Can be used to limit the lights travel distance
 	//if (depthFromLight > 0.99)
 	//	diffuseLight = 0;
 
@@ -190,5 +190,7 @@ float4 main(VertexToPixel input) : SV_TARGET
 
 	float4 finalColor = surfaceColor * (ambientLight + (diffuseLight * shadowAmount)) + (specularLight);
 
-	return float4(finalColor.rgb, alpha);
+	finalColor.a = alpha;
+
+	return finalColor;
 }
