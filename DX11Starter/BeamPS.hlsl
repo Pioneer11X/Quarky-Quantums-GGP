@@ -64,11 +64,12 @@ float4 main(VertexToPixel input, bool isFrontFace : SV_IsFrontFace) : SV_TARGET
 	if (spotLight.isOn == 1)
 	{
 		// Calculate the raw vector from spot light to the current pixel
-		float3 dirToSpotLight = normalize(spotLight.Position - input.worldPos);
+		float3 dirToSpotLight = spotLight.Position - input.worldPos;
+		float3 normalDirToSpotLight = normalize(dirToSpotLight);
 		float3 normalSpotDirection = normalize(spotLight.Direction);
 
 		// Compute the NdotL for light amount given to the current pixel.
-		float spotLightAmount = saturate(dot(input.normal, dirToSpotLight));
+		float spotLightAmount = saturate(dot(input.normal, normalDirToSpotLight));
 
 		// Saturate will clamp the value between 0 and 1. So if there is a light amount we continue.
 		if (spotLightAmount > 0.0)
@@ -78,7 +79,7 @@ float4 main(VertexToPixel input, bool isFrontFace : SV_IsFrontFace) : SV_TARGET
 
 			// Calculate the vector between the light direction and the direction from the spot
 			// light to the pixel
-			float spotEffect = max(dot(-dirToSpotLight, normalSpotDirection), 0.0f);
+			float spotEffect = max(dot(-normalDirToSpotLight, normalSpotDirection), 0.0f);
 
 			// Calculate the angle between two vectors
 			float angle = acos(spotEffect);
@@ -92,14 +93,11 @@ float4 main(VertexToPixel input, bool isFrontFace : SV_IsFrontFace) : SV_TARGET
 				// Attenuation equation for light dropoff.
 				float attenuationEffect = spotEffect / (spotLight.ConstAtten + spotLight.LinearAtten * distance + spotLight.ExpoAtten * distance * distance);
 
+
 				// Calculate diffuse light
 				diffuseLight += (attenuationEffect * spotLight.DiffuseColor * spotLightAmount);
 				ambientLight += (spotLight.AmbientColor);
 
-				//// Calculate specular light
-				//float3 dirToCamera = normalize(cameraPosition - input.worldPos);
-				//float3 reflectionVector = reflect(-dirToSpotLight, input.normal);
-				//specularLight += attenuationEffect * pow(saturate(dot(reflectionVector, dirToCamera)), 128);
 			}
 		}
 
@@ -116,21 +114,12 @@ float4 main(VertexToPixel input, bool isFrontFace : SV_IsFrontFace) : SV_TARGET
 	// Get the actual depth from the light's position
 	float depthFromLight = input.posForShadow.z / input.posForShadow.w;
 
-	//// Can be used to limit the lights travel distance
-	//if (depthFromLight > 0.99)
-	//	diffuseLight = 0;
-
-	float shadowAmount = ShadowMap.SampleCmpLevelZero(
-		ShadowSampler,
-		shadowUV,
-		depthFromLight);
-
 	float3 viewDir = normalize(input.worldPos - cameraPosition);
 
 	float inscattering = InScatter(cameraPosition, viewDir, spotLight.Position, depthFromLight) * scatterAmount; // Function from Macklin's blog.
 	inscattering *= isFrontFace ? -1.0f : 1.0f; // isFrontFace = SV_IsFrontFace
 
-	float4 finalColor = ambientLight + (diffuseLight * shadowAmount) + inscattering;
+	float4 finalColor = ambientLight + (diffuseLight) + inscattering;
 
 	finalColor.a = alpha * (1 - depthFromLight);
 
