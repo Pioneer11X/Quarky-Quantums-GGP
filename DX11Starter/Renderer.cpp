@@ -196,7 +196,7 @@ void Renderer::DrawBeam(XMFLOAT4X4& viewMatrix, XMFLOAT4X4& projectionMatrix)
 	beamPS->SetData("spotLight", &(Game::Instance()->playerChar->GetLight()), sizeof(SpotLight));
 	beamPS->SetFloat3("cameraPosition", Game::Instance()->GetCameraPostion());
 	beamPS->SetFloat("alpha", beam->GetAlpha());
-	beamPS->SetFloat("scatterAmount", 100.0f);
+	beamPS->SetFloat("scatterAmount", 500.0f);
 
 	Game::instance->vertexShader->CopyAllBufferData();
 	beamPS->CopyAllBufferData();

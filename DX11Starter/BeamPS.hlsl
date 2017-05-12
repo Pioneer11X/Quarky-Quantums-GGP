@@ -114,14 +114,20 @@ float4 main(VertexToPixel input, bool isFrontFace : SV_IsFrontFace) : SV_TARGET
 	// Get the actual depth from the light's position
 	float depthFromLight = input.posForShadow.z / input.posForShadow.w;
 
+	float shadowAmount = ShadowMap.SampleCmpLevelZero(
+		ShadowSampler,
+		shadowUV,
+		depthFromLight);
+
 	float3 viewDir = normalize(input.worldPos - cameraPosition);
 
+	// Reference: http://blog.mmacklin.com/2010/05/29/in-scattering-demo/
 	float inscattering = InScatter(cameraPosition, viewDir, spotLight.Position, depthFromLight) * scatterAmount; // Function from Macklin's blog.
 	inscattering *= isFrontFace ? -1.0f : 1.0f; // isFrontFace = SV_IsFrontFace
 
-	float4 finalColor = ambientLight + (diffuseLight) + inscattering;
+	float4 finalColor = ambientLight + diffuseLight + inscattering;
 
-	finalColor.a = alpha * (1 - depthFromLight);
-
+	finalColor.a = alpha * clamp(shadowAmount, 0, 1) * (1 - pow(depthFromLight, 2));
+	
 	return finalColor;
 }
