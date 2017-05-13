@@ -334,6 +334,10 @@ void Renderer::Draw(std::vector<Entity*> entities, Entity* skyBox, XMFLOAT4X4& v
 #pragma region Draw Opaque Objects
 	for (Entity* entity : entities)
 	{
+		if ("SpotLight" == entity->GetPhysicsObject()->_physicsName) {
+			continue;
+		}
+
 		if (entity->GetAlpha() < 1.0f)
 		{
 			blendEntities.push_back(entity);
