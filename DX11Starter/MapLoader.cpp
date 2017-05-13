@@ -102,6 +102,20 @@ void MapLoader::CreateEntity(char identifier, int xOffset, int yOffset)
 			playerSpawnX = xOffset * scale;
 			playerSpawnY = yOffset * scale;
 			}break;
+		case 'M':
+		{
+			Entity* newEntity = new Entity(meshObjs[5], materials[1],
+				xOffset * scale,
+				yOffset * scale,
+				0.0f, world,
+				"WeirdPlatform",
+				false, true,
+				0.5f * scale, 0.5f * scale,
+				scale, scale, scale);
+			newEntity->SetTranslation(xOffset * scale, yOffset * scale, 0.0f);
+			newEntity->SetAlpha(1.0f);
+			levelEntities.push_back(newEntity);
+		}break;
 		default: {} break;
 	}
 }

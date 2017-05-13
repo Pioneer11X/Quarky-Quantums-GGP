@@ -369,16 +369,35 @@ void Game::Update(float deltaTime, float totalTime)
 					) {
 					std::cout << ent->GetPhysicsObject()->_physicsName << std::endl;
 					std::cout << ent->GetPosition().x << "," << ent->GetPosition().y << "," << ent->GetPosition().z << std::endl;
-					ent->GetPhysicsObject()->ReactivatePhysicsObject();
-					ent->SetAlpha(1.0f);
+					if ("TransparentPlatform" == ent->GetPhysicsObject()->_physicsName) {
+						ent->GetPhysicsObject()->ReactivatePhysicsObject();
+						ent->SetAlpha(1.0f);
+					}
+					else if ("WeirdPlatform" == ent->GetPhysicsObject()->_physicsName) {
+						ent->GetPhysicsObject()->DeactivatePhysicsObject();
+						ent->SetAlpha(0.25f);
+					}
+					
 				}
 			}
 			// Reset any transparent blocks that are not being intersected
 			else {
 				// Add a buffer between reactivating and deactivating objects.
-				if (ent->GetPhysicsObject()->_physicsName == "TransparentPlatform") {
-					ent->SetAlpha(0.25f);
-					ent->GetPhysicsObject()->DeactivatePhysicsObject();
+				if (
+					(ent->GetPhysicsObject()->_physicsName != "Player") &&
+					(ent->GetPhysicsObject()->_physicsName != "BasicPlatform") &&
+					(ent->GetPhysicsObject()->_physicsName != "SpotLight")
+					) {
+					if ("Weird" == ent->GetPhysicsObject()->_physicsName)
+					{
+						ent->SetAlpha(1.0f);
+						ent->GetPhysicsObject()->ReactivatePhysicsObject();
+					}
+					else if ("TransparentPlatform" == ent->GetPhysicsObject()->_physicsName) {
+						ent->GetPhysicsObject()->DeactivatePhysicsObject();
+						ent->SetAlpha(0.25f);
+					}
+						
 				}
 			}
 		}	
