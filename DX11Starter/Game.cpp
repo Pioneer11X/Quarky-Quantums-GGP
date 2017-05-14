@@ -350,37 +350,27 @@ void Game::Update(float deltaTime, float totalTime)
 #pragma region EnitityUpdates
 	world.Step(deltaTime, velocityIterations, positionIterations);
 
-	for each (Entity* ent in entities) {
+	// Collision Check
+	for each (Entity* ent in entities) {	
+		ent->GetMesh()->GetBounds().Center.x = ent->GetPosition().x;
+		ent->GetMesh()->GetBounds().Center.y = ent->GetPosition().y;
+		ent->GetMesh()->GetBounds().Center.z = ent->GetPosition().z;
 
-		
-		// Collision Check
-		{
-			ent->GetMesh()->GetBounds().Center.x = ent->GetPosition().x;
-			ent->GetMesh()->GetBounds().Center.y = ent->GetPosition().y;
-			ent->GetMesh()->GetBounds().Center.z = ent->GetPosition().z;
-
-			if ( spotLightEntity->GetEntity()->GetMesh()->GetBounds().Intersects(ent->GetMesh()->GetBounds()) ){
-				if (
-					(ent->GetPhysicsObject()->_physicsName != "Player") &&
-					(ent->GetPhysicsObject()->_physicsName != "BasicPlatform") &&
-					(ent->GetPhysicsObject()->_physicsName != "SpotLight")
-					) {
-					std::cout << ent->GetPhysicsObject()->_physicsName << std::endl;
-					std::cout << ent->GetPosition().x << "," << ent->GetPosition().y << "," << ent->GetPosition().z << std::endl;
-					ent->GetPhysicsObject()->ReactivatePhysicsObject();
-					ent->SetAlpha(1.0f);
-				}
+		// Check if any transparent blocks are being intersected.
+		if (spotLightEntity->GetEntity()->GetMesh()->GetBounds().Intersects(ent->GetMesh()->GetBounds()) ){
+			if (ent->GetPhysicsObject()->_physicsName == "TransparentPlatform") {
+				std::cout << ent->GetPhysicsObject()->_physicsName << std::endl;
+				std::cout << ent->GetPosition().x << "," << ent->GetPosition().y << "," << ent->GetPosition().z << std::endl;
+				ent->GetPhysicsObject()->ReactivatePhysicsObject();
+				ent->SetAlpha(1.0f);
 			}
-			else {
-				// Add a buffer between reactivating and deactivating objects.
-				if (
-					(ent->GetPhysicsObject()->_physicsName != "Player") &&
-					(ent->GetPhysicsObject()->_physicsName != "BasicPlatform") &&
-					(ent->GetPhysicsObject()->_physicsName != "SpotLight")
-					) {
-					ent->SetAlpha(0.25f);
-					ent->GetPhysicsObject()->DeactivatePhysicsObject();
-				}
+		}
+		// Reset any transparent blocks that are not being intersected
+		else {
+			// Add a buffer between reactivating and deactivating objects.
+			if (ent->GetPhysicsObject()->_physicsName == "TransparentPlatform") {
+				ent->SetAlpha(0.25f);
+				ent->GetPhysicsObject()->DeactivatePhysicsObject();
 			}
 		}
 		// End Collision Check.
@@ -388,6 +378,13 @@ void Game::Update(float deltaTime, float totalTime)
 		if (ent->NeedsPhysicsUpdate()) {
 			ent->UpdatePhysicsTick();
 		}
+	}
+#pragma endregion
+
+#pragma region CheckEndGameCondition
+	if (playerChar->GetMesh()->GetBounds().Intersects(mapLoader->GetEndOfLevel()->GetMesh()->GetBounds()))
+	{
+		curScene = Menu;
 	}
 #pragma endregion
 

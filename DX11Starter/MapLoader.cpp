@@ -83,7 +83,20 @@ void MapLoader::CreateEntity(char identifier, int xOffset, int yOffset)
 			}break;
 		case 'G': //Goal
 		{
-			}break;
+			Entity* newEntity = new Entity(meshObjs[5], materials[1],
+				xOffset * scale,
+				yOffset * scale,
+				0.0f, world,
+				"EndGoal",
+				false, true,
+				0.5f * scale, 0.5f * scale,
+				scale, scale, scale);
+			newEntity->SetTranslation(xOffset * scale, yOffset * scale, 0.0f);
+			newEntity->SetAlpha(0.9f);
+			endOfLevel = newEntity;
+			newEntity->GetPhysicsObject()->DeactivatePhysicsObject();
+			levelEntities.push_back(newEntity);
+		}break;
 		case 'X': //X marks the spot (where the player spawns)
 		{
 			playerSpawnX = xOffset * scale;

@@ -72,6 +72,9 @@ void PhysicsObject::InitPhysicsObject(std::string _name)
 	else if ( "BasicPlatform" == _name ) {
 		isActive = true;
 	}
+	else if ("EndGoal" == _name) {
+		isActive = false;
+	}
 }
 
 b2Body * PhysicsObject::GetPhysicsBody()

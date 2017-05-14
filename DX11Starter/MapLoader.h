@@ -12,6 +12,7 @@ public:
 	~MapLoader();
 	void LoadLevel(string fileName);
 	vector<Entity*> GetLevelEntities();
+	inline Entity* GetEndOfLevel() { return endOfLevel; }
 	float GetPlayerSpawnLocationX();
 	float GetPlayerSpawnLocationY();
 
@@ -21,6 +22,7 @@ private:
 	float scale;
 
 	vector<Entity*> levelEntities;
+	Entity* endOfLevel; // This is just a reference for easy lookup. Still added to levelEntities and deleted witht he rest of the entities.
 	vector<Mesh*> meshObjs;
 	vector<Material*> materials;
 	b2World* world;
