@@ -12,7 +12,7 @@ Entity::Entity(Mesh * Object, Material* materialInput, float _posX, float _posY,
 	alpha = 1.0f;
 	hasPhysics = isDynamic;
 
-	XMMATRIX BoundsTr = XMMATRIX();
+
 	// Get world matrix here.
 	
 
@@ -21,19 +21,20 @@ Entity::Entity(Mesh * Object, Material* materialInput, float _posX, float _posY,
 	rotation.z = 0.0f;
 
 	XMStoreFloat4x4(&rotationMatrix, XMMatrixRotationQuaternion(XMQuaternionIdentity()));
-
+	XMStoreFloat4x4(&worldMatrix, XMMatrixTranspose(XMMatrixIdentity()));
 	SetTranslation(_posX, _posY, _posZ);
 
-	XMStoreFloat4x4(&worldMatrix, XMMatrixTranspose(XMMatrixIdentity()));
+	bounds = DirectX::BoundingBox(XMFLOAT3(_posX, _posY, _posZ), XMFLOAT3(_scaleX/2, _scaleY/2, _scaleZ/2));
+	
+	if ("SpotLight" == _nameForPhysicsBody || "TransparentPlatform" == _nameForPhysicsBody) {
+		printf("asdk");
+	}
 
-	BoundsTr = XMLoadFloat4x4(&worldMatrix);
-
-	DirectX::BoundingBox& tempBounds = meshObj->GetBounds();
-
-	tempBounds.Transform(meshObj->GetBounds(), BoundsTr);
 	if (world != nullptr) {
 		pb = new PhysicsObject(world, isDynamic, hasTrigger, _posX, _posY, _sizeX, _sizeY, _nameForPhysicsBody);
 	}
+
+	
 	
 }
 
@@ -106,8 +107,8 @@ void Entity::CalculateWorldMatrix()
 	if (isDirty)
 	{
 		XMStoreFloat4x4(&worldMatrix, XMMatrixTranspose(XMLoadFloat4x4(&scaleMatrix) * XMLoadFloat4x4(&rotationMatrix) * XMLoadFloat4x4(&translationMatrix)));
-
-		isDirty = false;
+		XMMATRIX BoundsTr = XMMATRIX();
+		// bounds.Transform( bounds, BoundsTr);
 	}
 }
 
