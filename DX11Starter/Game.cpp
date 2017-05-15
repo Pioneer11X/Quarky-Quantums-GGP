@@ -373,15 +373,15 @@ void Game::Update(float deltaTime, float totalTime)
 					ent->SetAlpha(1.0f);
 				}
 			}
-		}
-		// Reset any transparent blocks that are not being intersected
-		else {
-			// Add a buffer between reactivating and deactivating objects.
-			if (ent->GetPhysicsObject()->_physicsName == "TransparentPlatform") {
-				ent->SetAlpha(0.25f);
-				ent->GetPhysicsObject()->DeactivatePhysicsObject();
+			// Reset any transparent blocks that are not being intersected
+			else {
+				// Add a buffer between reactivating and deactivating objects.
+				if (ent->GetPhysicsObject()->_physicsName == "TransparentPlatform") {
+					ent->SetAlpha(0.25f);
+					ent->GetPhysicsObject()->DeactivatePhysicsObject();
+				}
 			}
-		}
+		}	
 		// End Collision Check.
 
 		if (ent->NeedsPhysicsUpdate()) {
@@ -391,7 +391,7 @@ void Game::Update(float deltaTime, float totalTime)
 #pragma endregion
 
 #pragma region CheckEndGameCondition
-	if (playerChar->GetMesh()->GetBounds().Intersects(mapLoader->GetEndOfLevel()->GetMesh()->GetBounds()))
+	if (playerChar->GetBounds().Intersects(mapLoader->GetEndOfLevel()->GetBounds()))
 	{
 		curScene = Menu;
 	}
