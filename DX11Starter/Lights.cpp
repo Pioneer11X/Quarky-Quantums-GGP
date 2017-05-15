@@ -33,42 +33,42 @@ void SpotLightWrapper::UpdateLightPoistion(XMFLOAT3 newPos)
 void SpotLightWrapper::RayCastCheck()
 {
 
-	// ==== My Implementation ====
+	//// ==== My Implementation ====
 
-	// 1. Get all the Entities.
+	//// 1. Get all the Entities.
 
-	std::vector<Entity *> entities = Game::Instance()->GetEntities();
+	//std::vector<Entity *> entities = Game::Instance()->GetEntities();
 
-	// 1.5 Check if the entities are triggerable.
-	// For optimisation, we might want to store a seperate list of entities in the Game Class which are updated only when the entities are added. This saves us a loop.
-	for (std::vector<Entity *>::iterator it = entities.begin(); it != entities.end();)
-	{
-			if (!(*it)->CanBeTrigerred())
-			{
-				it = entities.erase(it);
-			}
-			else
-			{
-				// 2. Check if the entities are within range of the Spotlight.
-				// This needs to be in Update. Done in every Frame.
-				if (CalcDistance((*it)->GetPosition(), myEntity->GetPosition()) > Range) {
-					it = entities.erase(it);
-				}
-				else {
-					++it;
-				}
-			}
-	}
+	//// 1.5 Check if the entities are triggerable.
+	//// For optimisation, we might want to store a seperate list of entities in the Game Class which are updated only when the entities are added. This saves us a loop.
+	//for (std::vector<Entity *>::iterator it = entities.begin(); it != entities.end();)
+	//{
+	//		if (!(*it)->CanBeTrigerred())
+	//		{
+	//			it = entities.erase(it);
+	//		}
+	//		else
+	//		{
+	//			// 2. Check if the entities are within range of the Spotlight.
+	//			// This needs to be in Update. Done in every Frame.
+	//			if (CalcDistance((*it)->GetPosition(), myEntity->GetPosition()) > Range) {
+	//				it = entities.erase(it);
+	//			}
+	//			else {
+	//				++it;
+	//			}
+	//		}
+	//}
 
-	// 3. Get the 4 Points ( Square ) on the same Z Plane as the spotlight.
+	//// 3. Get the 4 Points ( Square ) on the same Z Plane as the spotlight.
 
-	// ==== End of My Implementation ====
+	//// ==== End of My Implementation ====
 
-	// ==== Box2D Check ====
+	//// ==== Box2D Check ====
 
 
 
-	// ==== End of Box2D Check ====
+	//// ==== End of Box2D Check ====
 
 }
 

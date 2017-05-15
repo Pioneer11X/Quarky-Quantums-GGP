@@ -145,7 +145,7 @@ Renderer::~Renderer()
 
 	// Clean up Volumetric stuff
 	delete beamPS;
-
+	pr->CleanUp();
 	delete pr;
 }
 
