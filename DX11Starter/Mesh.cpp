@@ -206,17 +206,6 @@ Mesh::Mesh(std::string parameter, ID3D11Device* device)
 	InitializeVertexBuffer(&verts[0], vertCounter, device);
 	InitializeIndexBuffer(&indices[0], vertCounter, device);
 
-	DirectX::BoundingBox::CreateFromPoints(
-		bounds,
-		vertCounter,
-		reinterpret_cast<const DirectX::XMFLOAT3*>(&verts[0]),
-		sizeof(Vertex)
-	);
-
-	
-
-	//printf("blah");
-
 }
 
 Mesh::~Mesh()

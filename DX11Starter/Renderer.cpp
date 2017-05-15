@@ -121,6 +121,10 @@ Renderer::Renderer(ID3D11Device * deviceIn, ID3D11DeviceContext * contextIn)
 
 	backbufferRTV = Game::Instance()->GetBackBufferRTV();
 	depthStencilView = Game::Instance()->GetDSV();
+
+	pr = new PrimitiveRenderer();
+	pr->Init(device, context);
+
 }
 
 
@@ -141,6 +145,8 @@ Renderer::~Renderer()
 
 	// Clean up Volumetric stuff
 	delete beamPS;
+
+	delete pr;
 }
 
 void Renderer::DrawEntity(Entity* entity)
@@ -269,20 +275,21 @@ void Renderer::RenderShadowMap(std::vector<Entity*> entities)
 
 void Renderer::Draw(std::vector<Entity*> entities, Entity* skyBox, XMFLOAT4X4& viewMatrix, XMFLOAT4X4& projectionMatrix, DirectionalLight* dirLights, PointLight* pointLights, SpotLight* spotLights)
 {
+
 	SpotLight lt = Game::Instance()->playerChar->GetLight();
 	// Shadow view matrix (where the light is looking from)
 	XMMATRIX shView = XMMatrixLookToLH(
 		XMVectorSet(lt.Position.x, lt.Position.y, lt.Position.z, 0), // Eye position
 		XMVectorSet(lt.Direction.x, lt.Direction.y, lt.Direction.z, 0),		// Look at pos
 		XMVectorSet(0, 1, 0, 0));		// Up
-	XMStoreFloat4x4(&shadowViewMatrix, XMMatrixTranspose(shView));
+	DirectX::XMStoreFloat4x4(&shadowViewMatrix, XMMatrixTranspose(shView));
 
 	XMMATRIX shProj = XMMatrixPerspectiveFovLH(
 		0.25f * 3.1415926535f,		// Field of View Angle
 		1,//(float)Game::Instance()->GetScreenWidth() / Game::Instance()->GetScreenHeight(),		// Aspect ratio
 		0.1f,						// Near clip plane distance
 		100.0f);					// Far clip plane distance
-	XMStoreFloat4x4(&shadowProjectionMatrix, XMMatrixTranspose(shProj));
+	DirectX::XMStoreFloat4x4(&shadowProjectionMatrix, XMMatrixTranspose(shProj));
 
 	RenderShadowMap(entities);
 
@@ -335,7 +342,7 @@ void Renderer::Draw(std::vector<Entity*> entities, Entity* skyBox, XMFLOAT4X4& v
 	for (Entity* entity : entities)
 	{
 		if ("SpotLight" == entity->GetPhysicsObject()->_physicsName) {
-			continue;
+			//continue;
 		}
 
 		if (entity->GetAlpha() < 1.0f)
@@ -422,6 +429,19 @@ void Renderer::Draw(std::vector<Entity*> entities, Entity* skyBox, XMFLOAT4X4& v
 #pragma endregion
 
 	DrawBeam(viewMatrix, projectionMatrix);
+
+#pragma region BoundingBoxDisplay
+	//for (Entity* entity : entities) {
+	//	if ("SpotLight" == entity->GetPhysicsObject()->_physicsName)
+	//		std::cout << "lkasdj" << std::endl;
+
+	//	auto& bounds = entity->GetBounds();
+	//	pr->Draw(bounds, PrimitiveRenderer::blue);
+	//	// pr->Reset();
+	//}
+
+	//pr->Render(viewMatrix, projectionMatrix);
+#pragma endregion
 
 }
 
