@@ -74,6 +74,11 @@ Game::~Game()
 	if (sampler) { sampler->Release(); }
 	if (skyBox) { skyBox->Release(); }
 
+	// Delete Particle stuff
+	delete emitter1;
+	delete emitter2;
+	particleSystem.CleanUp();
+
 	// Delete renderer
 	delete renderer;
 
@@ -210,6 +215,9 @@ void Game::Init()
 
 	pointLights.push_back(pLight);
 
+
+	InitParticles();
+
 	// Tell the input assembler stage of the pipeline what kind of
 	// geometric primitives (points, lines or triangles) we want to draw.  
 	// Essentially: "What kind of shape should the GPU draw with our data?"
@@ -319,6 +327,37 @@ void Game::CreateBasicGeometry()
 	skyObject->SetScale(200.0f, 200.0f, 200.0f);
 }
 
+void Game::InitParticles()
+{
+	HRESULT hr = S_OK;
+
+	assert(true == particleSystem.Init(device, context));
+
+	emitter1 = particleSystem.CreateParticleEmitter(L"Assets/Textures/smoke.png");
+	emitter2 = particleSystem.CreateParticleEmitter(L"Assets/Textures/smoke.png");
+
+	emitter1->SetParameters(
+		XMFLOAT3(-1.0f, 0.0f, 0.0f),
+		XMFLOAT3(0.0f, 0.4f, 0.0f),
+		2.0f,
+		10.0f
+	);
+
+	emitter2->SetParameters(
+		XMFLOAT3(1.0f, 0.0f, 0.0f),
+		XMFLOAT3(0.0f, 1.0f, 0.0f),
+		2.0f,
+		10.0f
+	);
+}
+
+void Game::UpdateParticles(float deltaTime, float totalTime)
+{
+
+	particleSystem.Update(deltaTime, totalTime);
+
+}
+
 
 // --------------------------------------------------------
 // Handle resizing DirectX "stuff" to match the new window size.
@@ -400,6 +439,7 @@ void Game::Update(float deltaTime, float totalTime)
 	camera->LerpToPosition(temp, deltaTime);
 	
 	camera->Update(deltaTime, totalTime);
+	UpdateParticles(deltaTime, totalTime);
 }
 
 // --------------------------------------------------------
@@ -425,6 +465,8 @@ void Game::Draw(float deltaTime, float totalTime)
 
 	if (curScene == Menu)
 		GUI::instance().Draw();
+
+	particleSystem.Draw(camera->GetViewMatrix(), camera->GetProjectionMatrix());
 
 	// Present the back buffer to the user
 	//  - Puts the final frame we're drawing into the window so the user can see it

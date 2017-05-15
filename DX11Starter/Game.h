@@ -16,6 +16,7 @@
 #include "Box2D\Box2D.h"
 #include "MapLoader.h"
 #include "Renderer.h"
+#include "ParticleSystem.h"
 
 class Camera;
 
@@ -87,6 +88,9 @@ private:
 	void LoadShaders(); 
 	void CreateMatrices();
 	void CreateBasicGeometry();
+	void InitParticles();
+
+	void UpdateParticles(float deltaTime, float totalTime);
 
 	// Wrappers for DirectX shaders to provide simplified functionality
 	SimpleVertexShader* vertexShader;
@@ -100,6 +104,11 @@ private:
 	ID3D11ShaderResourceView* metalRustSRV;
 	ID3D11ShaderResourceView* crateSRV;
 	ID3D11SamplerState* sampler;
+
+	// Particles
+	ParticleSystem					particleSystem;
+	ParticleEmitter*				emitter1;
+	ParticleEmitter*				emitter2;
 
 	//SkyBox
 	ID3D11ShaderResourceView* skyBox;

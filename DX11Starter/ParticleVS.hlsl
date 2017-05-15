@@ -9,7 +9,7 @@ StructuredBuffer<Particle> particles : register(t0);
 StructuredBuffer<uint> drawList : register(t1);
 
 
-cbuffer CameraConstants : register(b0)
+cbuffer CameraConstants : register(c0)
 {
 	matrix view;
 	matrix projection;

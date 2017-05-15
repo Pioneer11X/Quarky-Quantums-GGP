@@ -9,19 +9,24 @@ bool ParticleSystem::Init(ID3D11Device* device, ID3D11DeviceContext* context)
 	HRESULT hr = S_OK;
 
 	particleInitCS = new SimpleComputeShader(device, context);
-	assert(particleInitCS->LoadShaderFile(L"Assets/Shaders/ParticleInitCS.cso"));
+	if (!particleInitCS->LoadShaderFile(L"Assets/ShaderObjs/x86/ParticleInitCS.cso"))
+		particleInitCS->LoadShaderFile(L"Assets/ShaderObjs/x64/ParticleInitCS.cso");
 
 	particleCS = new SimpleComputeShader(device, context);
-	assert(particleCS->LoadShaderFile(L"Assets/Shaders/ParticleCS.cso"));
+	if (!particleCS->LoadShaderFile(L"Assets/ShaderObjs/x86/ParticleCS.cso"))
+		particleCS->LoadShaderFile(L"Assets/ShaderObjs/x64/ParticleCS.cso");
 
 	particleEmitterCS = new SimpleComputeShader(device, context);
-	assert(particleEmitterCS->LoadShaderFile(L"Assets/Shaders/ParticleEmitterCS.cso"));
+	if (!particleEmitterCS->LoadShaderFile(L"Assets/ShaderObjs/x86/ParticleEmitterCS.cso"))
+		particleEmitterCS->LoadShaderFile(L"Assets/ShaderObjs/x64/ParticleEmitterCS.cso");
 
 	particleVS = new SimpleVertexShader(device, context);
-	assert(particleVS->LoadShaderFile(L"Assets/Shaders/ParticleVS.cso"));
+	if (!particleVS->LoadShaderFile(L"Assets/ShaderObjs/x86/ParticleVS.cso"))
+		particleVS->LoadShaderFile(L"Assets/ShaderObjs/x64/ParticleVS.cso");
 
 	particlePS = new SimplePixelShader(device, context);
-	assert(particlePS->LoadShaderFile(L"Assets/Shaders/ParticlePS.cso"));
+	if (!particlePS->LoadShaderFile(L"Assets/ShaderObjs/x86/ParticlePS.cso"))
+		particlePS->LoadShaderFile(L"Assets/ShaderObjs/x64/ParticlePS.cso");
 
 	{
 		CD3D11_BUFFER_DESC indicesDesc(
