@@ -16,8 +16,6 @@ public:
 	ID3D11Buffer* GetIndexBuffer() const;
 	int GetIndexCount() const;
 
-	DirectX::BoundingBox& GetBounds()  { return bounds; }
-
 private:
 	// Buffers to hold actual geometry data
 	ID3D11Buffer* vertexBuffer;
@@ -32,6 +30,5 @@ private:
 	//The number of indices in Mesh's Index Buffer
 	int indexCount;
 
-	DirectX::BoundingBox bounds;
 };
 
