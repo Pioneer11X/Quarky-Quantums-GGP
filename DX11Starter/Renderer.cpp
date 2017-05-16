@@ -294,7 +294,7 @@ void Renderer::Draw(std::vector<Entity*> entities, Entity* skyBox, XMFLOAT4X4& v
 	RenderShadowMap(entities);
 
 	// Background color (Cornflower Blue in this case) for clearing
-	const float color[4] = { 0.4f, 0.6f, 0.75f, 0.0f };
+	const float color[4] = { 0.01f, 0.01f, 0.01f, 0.0f };
 
 	// Clear the render target and depth buffer (erases what's on the screen)
 	//  - Do this ONCE PER FRAME
@@ -373,7 +373,7 @@ void Renderer::Draw(std::vector<Entity*> entities, Entity* skyBox, XMFLOAT4X4& v
 #pragma endregion
 
 #pragma region Draw SkyBox
-	DrawSkyBox(skyBox, viewMatrix, projectionMatrix);
+	//DrawSkyBox(skyBox, viewMatrix, projectionMatrix);
 #pragma endregion
 
 #pragma region Draw Blended Objects

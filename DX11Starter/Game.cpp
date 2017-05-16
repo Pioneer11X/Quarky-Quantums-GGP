@@ -278,11 +278,12 @@ void Game::CreateBasicGeometry()
 
 	meshObjs.push_back(new Mesh(pathModifier + "sphere.obj", device));
 	meshObjs.push_back(new Mesh(pathModifier + "cone.obj", device));
-	//meshObjs.push_back(new Mesh(pathModifier + "cube.obj", device));
 	meshObjs.push_back(new Mesh(pathModifier + "cylinder.obj", device));
 	meshObjs.push_back(new Mesh(pathModifier + "Plane.obj", device));
 	meshObjs.push_back(new Mesh(pathModifier + "torus.obj", device));
 	meshObjs.push_back(new Mesh(pathModifier + "cube.obj", device));
+
+
 
 	// Init Spot Light for the player
 	SpotLight spotLight;
@@ -302,11 +303,9 @@ void Game::CreateBasicGeometry()
 	Entity* spotlightEnt = new Entity(meshObjs[1], materials[2], 0.0f, 0.0f, 0.0f, &world, "SpotLight" , true, true, 1.0f, 1.0f, 6.5f, 9.0f, 6.75f);
 	spotlightEnt->SetAlpha(0.5f);
 	spotLightEntity = new SpotLightWrapper(spotLight, 2.5f, spotlightEnt);
-	// entities.push_back(spotlightEnt);
 
 	mapLoader = new MapLoader(device, 2.0f, materials, meshObjs, &world);
 	mapLoader->LoadLevel("Level1.txt");
-	//mapLoader->LoadLevel("Level1.txt");
 	for each (Entity* ent in mapLoader->GetLevelEntities()) {
 		entities.push_back(ent);
 	}
@@ -436,7 +435,7 @@ void Game::Update(float deltaTime, float totalTime)
 void Game::Draw(float deltaTime, float totalTime)
 {
 	// Background color (Cornflower Blue in this case) for clearing
-	const float color[4] = {0.4f, 0.6f, 0.75f, 0.0f};
+	const float color[4] = {0.1f, 0.1f, 0.1f, 0.0f};
 
 	// Clear the render target and depth buffer (erases what's on the screen)
 	//  - Do this ONCE PER FRAME

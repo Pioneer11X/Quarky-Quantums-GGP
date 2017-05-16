@@ -53,14 +53,14 @@ void MapLoader::CreateEntity(char identifier, int xOffset, int yOffset)
 	{
 		case 'P': //Basic Platform
 		{
-			Entity* newEntity = new Entity(meshObjs[5], materials[1], 
-				xOffset * scale, 
-				yOffset * scale, 
+			Entity* newEntity = new Entity(meshObjs[5], materials[1],
+				xOffset * scale,
+				yOffset * scale,
 				0.0f, world,
 				"BasicPlatform",
 				false, false,
-				0.5f * scale, 0.5f * scale, 
-				scale, scale, scale);
+				0.5f * scale, 0.5f * scale,
+				scale, scale, scale * 2.0f);
 			newEntity->SetTranslation(xOffset * scale, yOffset * scale, 0.0f);
 			levelEntities.push_back(newEntity);
 		} break;
@@ -73,7 +73,7 @@ void MapLoader::CreateEntity(char identifier, int xOffset, int yOffset)
 				"TransparentPlatform",
 				false, true,
 				0.5f * scale, 0.5f * scale, 
-				scale, scale, scale);
+				scale, scale, scale * 2.0f);
 			newEntity->SetTranslation(xOffset * scale, yOffset * scale, 0.0f);
 			newEntity->SetAlpha(0.25f);
 			levelEntities.push_back(newEntity);
@@ -90,7 +90,7 @@ void MapLoader::CreateEntity(char identifier, int xOffset, int yOffset)
 				"EndGoal",
 				false, true,
 				0.5f * scale, 0.5f * scale,
-				scale, scale, scale);
+				scale, scale, scale * 2.0f);
 			newEntity->SetTranslation(xOffset * scale, yOffset * scale, 0.0f);
 			newEntity->SetAlpha(0.9f);
 			endOfLevel = newEntity;
@@ -111,7 +111,7 @@ void MapLoader::CreateEntity(char identifier, int xOffset, int yOffset)
 				"WeirdPlatform",
 				false, true,
 				0.5f * scale, 0.5f * scale,
-				scale, scale, scale);
+				scale, scale, scale * 2.0f);
 			newEntity->SetTranslation(xOffset * scale, yOffset * scale, 0.0f);
 			newEntity->SetAlpha(1.0f);
 			levelEntities.push_back(newEntity);
