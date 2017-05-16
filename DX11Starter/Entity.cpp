@@ -191,7 +191,7 @@ void Entity::UpdateBounds()
 	// coneBounds.Origin = this->position;
 	coneBounds.Origin = XMFLOAT3(position.x - scale.x / 2, position.y, position.z);
 	XMFLOAT4 testOrient;
-	XMStoreFloat4(&testOrient, XMQuaternionRotationRollPitchYaw( rotation.z , 1.57f - rotation.z , 1.57f ));
+	XMStoreFloat4(&testOrient, XMQuaternionRotationRollPitchYaw( 0 , 1.57f, rotation.z ));
 	// XMStoreFloat4(&testOrient, XMQuaternionRotationRollPitchYaw(rotation.z, rotation.y + 1.57f, rotation.z + 1.57f));
 	coneBounds.Orientation = testOrient;
 	//coneBounds.Origin = XMFLOAT3(position.x - scale.x / 2, position.y, position.z);
