@@ -186,8 +186,10 @@ bool InputManager::Refresh()
 
 bool InputManager::GetButtonDown(WORD button)
 {
-	Refresh();
-	return (state.Gamepad.wButtons & button) != 0;
+	if (Refresh()) {
+		return (state.Gamepad.wButtons & button) != 0;
+	}
+	return false;
 }
 
 StickDirections InputManager::GetStickXDirection(Sticks stick) {
