@@ -388,7 +388,7 @@ void Game::Update(float deltaTime, float totalTime)
 					(ent->GetPhysicsObject()->_physicsName != "BasicPlatform") &&
 					(ent->GetPhysicsObject()->_physicsName != "SpotLight")
 					) {
-					if ("Weird" == ent->GetPhysicsObject()->_physicsName)
+					if ("WeirdPlatform" == ent->GetPhysicsObject()->_physicsName)
 					{
 						ent->SetAlpha(1.0f);
 						ent->GetPhysicsObject()->ReactivatePhysicsObject();
