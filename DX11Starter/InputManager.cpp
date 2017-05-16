@@ -191,10 +191,12 @@ bool InputManager::GetButtonDown(WORD button)
 }
 
 StickDirections InputManager::GetStickXDirection(Sticks stick) {
-	float xDirection = 0;
 	
-	switch (stick)
-	{
+	if (Refresh()) {
+		float xDirection = 0;
+
+		switch (stick)
+		{
 		case LEFTSTICK:
 			xDirection = leftStickX;
 			break;
@@ -204,27 +206,29 @@ StickDirections InputManager::GetStickXDirection(Sticks stick) {
 		default:
 			return StickDirections::STICKNONE;
 			break;
-	}
-
-	if (fabsf(xDirection) > deadzoneX) 
-	{
-		if (xDirection < 0) 
-		{
-			return StickDirections::STICKLEFT;
 		}
-		else if (xDirection > 0)
+
+		if (fabsf(xDirection) > deadzoneX)
 		{
-			return StickDirections::STICKRIGHT;
+			if (xDirection < 0)
+			{
+				return StickDirections::STICKLEFT;
+			}
+			else if (xDirection > 0)
+			{
+				return StickDirections::STICKRIGHT;
+			}
 		}
 	}
 	return StickDirections::STICKNONE;
 }
 
 StickDirections InputManager::GetStickYDirection(Sticks stick) {
-	float yDirection = 0;
+	if (Refresh()) {
+		float yDirection = 0;
 
-	switch (stick)
-	{
+		switch (stick)
+		{
 		case LEFTSTICK:
 			yDirection = leftStickY;
 			break;
@@ -234,24 +238,26 @@ StickDirections InputManager::GetStickYDirection(Sticks stick) {
 		default:
 			return StickDirections::STICKNONE;
 			break;
-	}
-
-	if (fabsf(yDirection) > deadzoneY) 
-	{
-		if (yDirection < 0) 
-		{
-			return StickDirections::STICKLEFT;
 		}
-		else if (yDirection > 0)
+
+		if (fabsf(yDirection) > deadzoneY)
 		{
-			return StickDirections::STICKRIGHT;
+			if (yDirection < 0)
+			{
+				return StickDirections::STICKLEFT;
+			}
+			else if (yDirection > 0)
+			{
+				return StickDirections::STICKRIGHT;
+			}
 		}
 	}
 	return StickDirections::STICKNONE;
 }
 
 bool InputManager::GetTriggerDown(Sticks trigger) {
-	switch (trigger) {
+	if (Refresh()) {
+		switch (trigger) {
 		case LEFTTRIGGER:
 			if (leftTrigger > triggerDeadzone) {
 				return true;
@@ -265,5 +271,6 @@ bool InputManager::GetTriggerDown(Sticks trigger) {
 		default:
 			break;
 		}
+	}
 	return false;
 }
