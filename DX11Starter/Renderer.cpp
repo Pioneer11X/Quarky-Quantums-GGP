@@ -431,16 +431,17 @@ void Renderer::Draw(std::vector<Entity*> entities, Entity* skyBox, XMFLOAT4X4& v
 	DrawBeam(viewMatrix, projectionMatrix);
 
 #pragma region BoundingBoxDisplay
-	//for (Entity* entity : entities) {
-	//	if ("SpotLight" == entity->GetPhysicsObject()->_physicsName)
-	//		std::cout << "lkasdj" << std::endl;
+	for (Entity* entity : entities) {
+		if ("SpotLight" == entity->GetPhysicsObject()->_physicsName)
+			std::cout << "lkasdj" << std::endl;
 
-	//	auto& bounds = entity->GetBounds();
-	//	pr->Draw(bounds, PrimitiveRenderer::blue);
-	//	// pr->Reset();
-	//}
+		auto& bounds = entity->GetBounds();
+		pr->Draw(bounds, PrimitiveRenderer::blue);
+		// pr->Reset();
+	}
+	pr->Draw(Game::Instance()->spotLightEntity->GetEntity()->coneBounds, PrimitiveRenderer::red);
 
-	//pr->Render(viewMatrix, projectionMatrix);
+	pr->Render(viewMatrix, projectionMatrix);
 #pragma endregion
 
 }

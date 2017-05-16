@@ -7,6 +7,10 @@
 #include "PhysicsObject.h"
 #include <DirectXCollision.h>
 
+//DirectX::XMFLOAT3 operator - (DirectX::XMFLOAT3 left, DirectX::XMFLOAT3 right) {
+//	return XMFLOAT3(left.x - right.x, left.y - right.y, left.z - right.z);
+//}
+
 // For the DirectX Math library
 using namespace DirectX;
 
@@ -40,9 +44,13 @@ private:
 
 	// DirectXBoundingBoxes.
 	DirectX::BoundingBox bounds;
+	
 	// DirectX::BoundingBox& boundsRef;
 
 public:
+
+	DirectX::BoundingFrustum coneBounds;
+
 	//Entity(Mesh* Object, Material* materialInput);
 	Entity(Mesh* Object, Material* materialInput, float _posX, float _posY, float _posz, b2World *world = nullptr, std::string _nameForPhysicsBody = "", bool isDynamic = true, bool CanBeTriggered = false, float _sizeX = 1.0f, float _sizeY = 1.0f, float _scaleX = 1.0f, float _scaleY = 1.0f, float _scaleZ = 1.0f);
 	~Entity();
@@ -84,14 +92,7 @@ public:
 	DirectX::BoundingBox& GetBounds() { return bounds; }
 	void SetBounds(DirectX::BoundingBox newBounds) { bounds = newBounds; }
 
-	void UpdateBounds() {
-		// For some reason, this doesn't work?? Even thought the worldmatrix is correct?
-		// bounds.Transform(bounds, XMLoadFloat4x4(&worldMatrix));
-
-		bounds.Center = this->position;
-
-		// bounds.Transform(bounds, (scale.x + scale.y + scale.z) / 3, XMLoadFloat3(&rotation), XMLoadFloat3(&position));
-	}
+	void UpdateBounds();
 };
 
 
