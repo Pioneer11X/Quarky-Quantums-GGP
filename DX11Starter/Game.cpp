@@ -67,10 +67,11 @@ Game::~Game()
 	delete skyPixShader;
 
 	//Release texture D3D resources
-	if (earthSRV) { earthSRV->Release(); }
-	if (crateSRV) { crateSRV->Release(); }
-	if (metalSRV) { metalSRV->Release(); }
-	if (metalRustSRV) { metalRustSRV->Release(); }
+	if (borderSRV) { borderSRV->Release(); }
+	if (platformSRV) { platformSRV->Release(); }
+	if (fadeOutSRV) { fadeOutSRV->Release(); }
+	if (fadeInSRV) { fadeInSRV->Release(); }
+	if (goalSRV) { goalSRV->Release(); }
 	if (sampler) { sampler->Release(); }
 	if (skyBox) { skyBox->Release(); }
 
@@ -153,10 +154,11 @@ void Game::Init()
 	};
 
 	//Load all textures
-	LoadTexture(L"./Assets/Textures/earth.jpg", &earthSRV);
-	LoadTexture(L"./Assets/Textures/crate.jpg", &crateSRV);
-	LoadTexture(L"./Assets/Textures/metalFloor.jpg", &metalSRV);
-	LoadTexture(L"./Assets/Textures/metalRust.jpg", &metalRustSRV);
+	LoadTexture(L"./Assets/Textures/border.png", &borderSRV);
+	LoadTexture(L"./Assets/Textures/platform.png", &platformSRV);
+	LoadTexture(L"./Assets/Textures/transparent.png", &fadeOutSRV);
+	LoadTexture(L"./Assets/Textures/solid.png", &fadeInSRV);
+	LoadTexture(L"./Assets/Textures/goal.png", &goalSRV);
 
 	//Reference: SkyMap retrieved from http://www.custommapmakers.org/skyboxes/zips/mp_met.zip
 	if (S_OK !=
@@ -187,7 +189,7 @@ void Game::Init()
 	
 	//Init Light
 	DirectionalLight light;
-	light.AmbientColor = XMFLOAT4(0.1f, 0.1f, 0.1f, 1.0f);
+	light.AmbientColor = XMFLOAT4(0.15f, 0.15f, 0.15f, 1.0f);
 	light.DiffuseColor = XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f);
 	light.Direction = XMFLOAT3(0.0f, 0.0f, 1.0f);
 	light.isOn = 1;
@@ -275,10 +277,11 @@ void Game::CreateBasicGeometry()
 
 	std::string pathModifier = "./Assets/Models/";
 
-	materials.push_back(new Material(vertexShader, pixelShader, earthSRV, sampler));	//0
-	materials.push_back(new Material(vertexShader, pixelShader, crateSRV, sampler));	//1
-	materials.push_back(new Material(vertexShader, pixelShader, metalSRV, sampler));	//2
-	materials.push_back(new Material(vertexShader, pixelShader, metalRustSRV, sampler));//3
+	materials.push_back(new Material(vertexShader, pixelShader, borderSRV, sampler));	//0
+	materials.push_back(new Material(vertexShader, pixelShader, platformSRV, sampler));	//1
+	materials.push_back(new Material(vertexShader, pixelShader, fadeOutSRV, sampler));	//2
+	materials.push_back(new Material(vertexShader, pixelShader, fadeInSRV, sampler));//3
+	materials.push_back(new Material(vertexShader, pixelShader, goalSRV, sampler));//3
 
 	meshObjs.push_back(new Mesh(pathModifier + "sphere.obj", device));
 	meshObjs.push_back(new Mesh(pathModifier + "cone.obj", device));

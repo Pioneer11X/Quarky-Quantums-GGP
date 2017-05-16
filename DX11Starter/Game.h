@@ -95,10 +95,11 @@ private:
 	SimplePixelShader* skyPixShader;
 
 	//Texture
-	ID3D11ShaderResourceView* earthSRV;
-	ID3D11ShaderResourceView* metalSRV;
-	ID3D11ShaderResourceView* metalRustSRV;
-	ID3D11ShaderResourceView* crateSRV;
+	ID3D11ShaderResourceView* borderSRV;
+	ID3D11ShaderResourceView* platformSRV;
+	ID3D11ShaderResourceView* fadeOutSRV;
+	ID3D11ShaderResourceView* fadeInSRV;
+	ID3D11ShaderResourceView* goalSRV;
 	ID3D11SamplerState* sampler;
 
 	//SkyBox
