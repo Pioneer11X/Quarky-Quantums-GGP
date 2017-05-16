@@ -367,7 +367,8 @@ void Game::Update(float deltaTime, float totalTime)
 		// Collision Check
 		{
 
-			if ( spotLightEntity->GetEntity()->GetBounds().Intersects(ent->GetBounds()) ){
+			//if ( spotLightEntity->GetEntity()->GetBounds().Intersects(ent->GetBounds()) ){
+			if (spotLightEntity->GetEntity()->coneBounds.Intersects(ent->GetBounds())) {
 				if (
 					(ent->GetPhysicsObject()->_physicsName != "Player") &&
 					(ent->GetPhysicsObject()->_physicsName != "BasicPlatform") &&

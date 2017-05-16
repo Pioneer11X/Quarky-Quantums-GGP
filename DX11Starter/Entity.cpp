@@ -25,6 +25,16 @@ Entity::Entity(Mesh * Object, Material* materialInput, float _posX, float _posY,
 	SetTranslation(_posX, _posY, _posZ);
 
 	bounds = DirectX::BoundingBox(XMFLOAT3(_posX, _posY, _posZ), XMFLOAT3(_scaleX/2, _scaleY/2, _scaleZ/2));
+
+	if ("SpotLight" == _nameForPhysicsBody) {
+		XMFLOAT4 test;
+		float pi2 = 1.57f;
+		XMStoreFloat4(&test, XMQuaternionRotationRollPitchYaw(pi2, pi2, 1.57f));
+		coneBounds = DirectX::BoundingFrustum(position, test, 0.5f, -0.5f, 0.5f, -0.5f , 0.0f,  scale.x);
+	}
+	else {
+		coneBounds = DirectX::BoundingFrustum();
+	}
 	
 	if ("SpotLight" == _nameForPhysicsBody || "TransparentPlatform" == _nameForPhysicsBody) {
 		//printf("asdk");
@@ -107,7 +117,7 @@ void Entity::CalculateWorldMatrix()
 	if (isDirty)
 	{
 		XMStoreFloat4x4(&worldMatrix, XMMatrixTranspose(XMLoadFloat4x4(&scaleMatrix) * XMLoadFloat4x4(&rotationMatrix) * XMLoadFloat4x4(&translationMatrix)));
-		XMMATRIX BoundsTr = XMMATRIX();
+		// XMMATRIX BoundsTr = XMMATRIX();
 		// bounds.Transform( bounds, BoundsTr);
 	}
 }
@@ -168,4 +178,24 @@ bool Entity::NeedsPhysicsUpdate()
 bool Entity::CanBeTrigerred()
 {
 	return hasTrigger;
+}
+
+void Entity::UpdateBounds()
+{
+	// For some reason, this doesn't work?? Even thought the worldmatrix is correct?
+	// bounds.Transform(bounds, XMLoadFloat4x4(&worldMatrix));
+
+	bounds.Center = this->position;
+
+	// coneBounds.Origin = XMFLOAT3( position.x - scale.x * rotation.x/2, position.y - scale.y * rotation.y / 2, position.z - scale.z * rotation.z / 2);
+	// coneBounds.Origin = this->position;
+	coneBounds.Origin = XMFLOAT3(position.x - scale.x / 2, position.y, position.z);
+	XMFLOAT4 testOrient;
+	XMStoreFloat4(&testOrient, XMQuaternionRotationRollPitchYaw( 0 , 1.57f, rotation.z ));
+	// XMStoreFloat4(&testOrient, XMQuaternionRotationRollPitchYaw(rotation.z, rotation.y + 1.57f, rotation.z + 1.57f));
+	coneBounds.Orientation = testOrient;
+	//coneBounds.Origin = XMFLOAT3(position.x - scale.x / 2, position.y, position.z);
+	//coneBounds.Orientation = XMFLOAT4(rotation.x, rotation.y, rotation.z, 1);
+
+	// bounds.Transform(bounds, (scale.x + scale.y + scale.z) / 3, XMLoadFloat3(&rotation), XMLoadFloat3(&position));
 }

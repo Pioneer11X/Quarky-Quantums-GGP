@@ -439,6 +439,7 @@ void Renderer::Draw(std::vector<Entity*> entities, Entity* skyBox, XMFLOAT4X4& v
 	//	pr->Draw(bounds, PrimitiveRenderer::blue);
 	//	// pr->Reset();
 	//}
+	//pr->Draw(Game::Instance()->spotLightEntity->GetEntity()->coneBounds, PrimitiveRenderer::red);
 
 	//pr->Render(viewMatrix, projectionMatrix);
 #pragma endregion
