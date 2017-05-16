@@ -187,7 +187,7 @@ void Game::Init()
 	
 	//Init Light
 	DirectionalLight light;
-	light.AmbientColor = XMFLOAT4(0.15f, 0.15f, 0.15f, 1.0f);
+	light.AmbientColor = XMFLOAT4(0.1f, 0.1f, 0.1f, 1.0f);
 	light.DiffuseColor = XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f);
 	light.Direction = XMFLOAT3(0.0f, 0.0f, 1.0f);
 	light.isOn = 1;
@@ -269,6 +269,10 @@ void Game::CreateMatrices()
 // --------------------------------------------------------
 void Game::CreateBasicGeometry()
 {
+
+
+	PlaySound(TEXT("./Assets/Audio/Background.wav"), NULL, SND_ASYNC | SND_LOOP);
+
 	std::string pathModifier = "./Assets/Models/";
 
 	materials.push_back(new Material(vertexShader, pixelShader, earthSRV, sampler));	//0
