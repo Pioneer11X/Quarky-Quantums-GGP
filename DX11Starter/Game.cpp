@@ -373,8 +373,8 @@ void Game::Update(float deltaTime, float totalTime)
 					(ent->GetPhysicsObject()->_physicsName != "BasicPlatform") &&
 					(ent->GetPhysicsObject()->_physicsName != "SpotLight")
 					) {
-					std::cout << ent->GetPhysicsObject()->_physicsName << std::endl;
-					std::cout << ent->GetPosition().x << "," << ent->GetPosition().y << "," << ent->GetPosition().z << std::endl;
+					//std::cout << ent->GetPhysicsObject()->_physicsName << std::endl;
+					//std::cout << ent->GetPosition().x << "," << ent->GetPosition().y << "," << ent->GetPosition().z << std::endl;
 					if ("TransparentPlatform" == ent->GetPhysicsObject()->_physicsName) {
 						ent->GetPhysicsObject()->ReactivatePhysicsObject();
 						ent->SetAlpha(1.0f);

@@ -153,7 +153,5 @@ private:
 
 	//Map Loader
 	MapLoader* mapLoader;
-	
-
 };
 

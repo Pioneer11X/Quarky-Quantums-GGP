@@ -1,6 +1,7 @@
 #include "DXCore.h"
 #include <WindowsX.h>
 #include <sstream>
+#include <Xinput.h>
 
 // Define the static instance variable so our OS-level 
 // message handling function below can talk to our object
@@ -383,11 +384,11 @@ HRESULT DXCore::Run()
 				UpdateTitleBarStats();
 
 			GUI::instance().Update();
-			if (ImGui::Button("Start") || (InputManager::Instance()->GetKeyDown(KeyPressed::SPACEBAR))) {
+			if (ImGui::Button("Start") || (InputManager::Instance()->GetKeyDown(KeyPressed::SPACEBAR)) || InputManager::Instance()->GetButtonDown(XINPUT_GAMEPAD_START)) {
 				curScene = GameLevel;
 			}
 
-			if (ImGui::Button("Quit")) (Quit());
+			if (ImGui::Button("Quit") || InputManager::Instance()->GetButtonDown(XINPUT_GAMEPAD_BACK)) (Quit());
 
 			// The game loop
 			if ( curScene == GameLevel)

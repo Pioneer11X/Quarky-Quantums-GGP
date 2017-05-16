@@ -27,7 +27,7 @@ Entity::Entity(Mesh * Object, Material* materialInput, float _posX, float _posY,
 	bounds = DirectX::BoundingBox(XMFLOAT3(_posX, _posY, _posZ), XMFLOAT3(_scaleX/2, _scaleY/2, _scaleZ/2));
 	
 	if ("SpotLight" == _nameForPhysicsBody || "TransparentPlatform" == _nameForPhysicsBody) {
-		printf("asdk");
+		//printf("asdk");
 	}
 
 	if (world != nullptr) {

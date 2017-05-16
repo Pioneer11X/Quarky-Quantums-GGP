@@ -22,7 +22,7 @@ void PhysicsObject::InitPhysicsObject(std::string _name)
 {
 
 	if ("None" == _name) {
-		std::printf("Forgot to Name an Object\n");
+		//std::printf("Forgot to Name an Object\n");
 	}
 
 	b2BodyDef PhysicsBodyDef;
