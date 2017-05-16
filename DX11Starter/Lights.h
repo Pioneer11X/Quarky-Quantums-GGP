@@ -47,6 +47,10 @@ public:
 	void RayCastCheck();
 	inline SpotLight& GetSpotLight() { return myLight; }
 	inline Entity* GetEntity() { return myEntity; }
+
+	void UpdateCone();
+
+	DirectX::BoundingFrustum coneBounds;
 private:
 	SpotLight myLight;
 	float speed;
