@@ -11,6 +11,10 @@ SpotLightWrapper::SpotLightWrapper(SpotLight newLight, float newSpeed, Entity* s
 	yawAngle = 0.0f;
 	myEntity = spotLightEnt;
 	myEntity->SetRotation(0.0f, 0.0f, XM_PIDIV2);
+	XMFLOAT4 test;
+	float pi2 = 1.57f;
+	XMStoreFloat4(&test, XMQuaternionRotationRollPitchYaw(pi2, pi2, 1.57f));
+	coneBounds = DirectX::BoundingFrustum(spotLightEnt->GetPosition(), test, 0.5f, -0.5f, 0.5f, -0.5f, 0.0f, spotLightEnt->GetScale().x);
 }
 
 SpotLightWrapper::~SpotLightWrapper()
@@ -33,7 +37,7 @@ void SpotLightWrapper::UpdateLightPosition(XMFLOAT3 newPos)
 void SpotLightWrapper::RayCastCheck()
 {
 
-	//// ==== My Implementation ====
+	//// ==== My Raycast Implementation ====
 
 	//// 1. Get all the Entities.
 
@@ -70,6 +74,18 @@ void SpotLightWrapper::RayCastCheck()
 
 	//// ==== End of Box2D Check ====
 
+}
+
+void SpotLightWrapper::UpdateCone()
+{
+	XMFLOAT3 position = this->myEntity->GetPosition();
+	XMFLOAT3 scale = this->myEntity->GetScale();
+	XMFLOAT3 rotation = this->myEntity->GetRotation();
+
+	coneBounds.Origin = XMFLOAT3(position.x - scale.x / 2, position.y, position.z);
+	XMFLOAT4 testOrient;
+	XMStoreFloat4(&testOrient, XMQuaternionRotationRollPitchYaw(0, 1.57f, rotation.z));
+	coneBounds.Orientation = testOrient;
 }
 
 void SpotLightWrapper::HandleKeyboardInputs(float deltaTime)
