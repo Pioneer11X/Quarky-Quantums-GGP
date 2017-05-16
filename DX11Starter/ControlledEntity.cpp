@@ -20,7 +20,7 @@ void ControlledEntity::UpdateSpotLightPosition()
 {
 	XMFLOAT3 newLightPos = this->GetPosition();
 	newLightPos.y += 0.65f;
-	mySpotLight->UpdateLightPoistion(newLightPos);
+	mySpotLight->UpdateLightPosition(newLightPos);
 }
 
 void ControlledEntity::UpdateLightState()
@@ -78,19 +78,22 @@ void ControlledEntity::HandleKeyboardInput(float deltaTime)
 {
 	b2Vec2 tempImpulse = b2Vec2(0.0f, 0.0f);
 
-	if (InputManager::Instance()->GetKeyHolding(KeyPressed::LEFT))
+	if (InputManager::Instance()->GetKeyHolding(KeyPressed::LEFT) || 
+		InputManager::Instance()->GetStickXDirection(Sticks::LEFTSTICK) == StickDirections::STICKLEFT)
 	{
 		this->GetPhysicsObject()->GetPhysicsBody()->SetLinearVelocity(
 			this->GetPhysicsObject()->GetPhysicsBody()->GetLinearVelocity() + b2Vec2(-maxSpeed * deltaTime, 0));
 	}
 
-	if (InputManager::Instance()->GetKeyHolding(KeyPressed::RIGHT))
+	if (InputManager::Instance()->GetKeyHolding(KeyPressed::RIGHT) ||
+		InputManager::Instance()->GetStickXDirection(Sticks::LEFTSTICK) == StickDirections::STICKRIGHT)
 	{
 		this->GetPhysicsObject()->GetPhysicsBody()->SetLinearVelocity(
 			this->GetPhysicsObject()->GetPhysicsBody()->GetLinearVelocity() + b2Vec2(maxSpeed * deltaTime, 0));
 	}
 
-	if (InputManager::Instance()->GetKeyDown(KeyPressed::UP) || InputManager::Instance()->GetKeyDown(KeyPressed::SPACEBAR))
+	if (InputManager::Instance()->GetKeyDown(KeyPressed::UP) || InputManager::Instance()->GetKeyDown(KeyPressed::SPACEBAR) ||
+		InputManager::Instance()->GetButtonDown(XINPUT_GAMEPAD_A))
 	{
 		if (canJump) {
 			tempImpulse = b2Vec2(0, jumpHeight);

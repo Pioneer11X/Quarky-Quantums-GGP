@@ -12,6 +12,10 @@ InputManager::InputManager()
 
 	instance = this;
 
+	deadzoneX = 0.2;
+	deadzoneY = 0.2;
+	triggerDeadzone = 0.2;
+
 	InitKeys();
 }
 
@@ -64,48 +68,6 @@ InputManager * InputManager::Instance()
 	return instance;
 }
 
-//bool InputManager::isUpPressed()
-//{
-//	if (GetAsyncKeyState(KeyPressed::UP) & 0x8000)
-//		return true;
-//	return false;
-//}
-//
-//bool InputManager::isDownPressed()
-//{
-//	if (GetAsyncKeyState(KeyPressed::DOWN) & 0x8000)
-//		return true;
-//	return false;
-//}
-//
-//bool InputManager::isLeftPressed()
-//{
-//	if (GetAsyncKeyState(KeyPressed::LEFT) & 0x8000)
-//		return true;
-//	return false;
-//}
-//
-//bool InputManager::isRightPressed()
-//{
-//	if (GetAsyncKeyState(KeyPressed::RIGHT) & 0x8000)
-//		return true;
-//	return false;
-//}
-//
-//bool InputManager::isForwardPressed()
-//{
-//	if (GetAsyncKeyState(KeyPressed::FORWARD) & 0x8000)
-//		return true;
-//	return false;
-//}
-//
-//bool InputManager::isBackwardPressed()
-//{
-//	if (GetAsyncKeyState(KeyPressed::BACKWARD) & 0x8000)
-//		return true;
-//	return false;
-//}
-
 bool InputManager::GetKeyDown(int keyNumber)
 {
 	if ((GetAsyncKeyState(keys[keyNumber].vKey) & 0x8000) && (keys[keyNumber].keyState != 1))
@@ -151,5 +113,166 @@ bool InputManager::GetKeyUp(int keyNumber)
 
 	}
 
+	return false;
+}
+
+int InputManager::GetPort() 
+{
+	return cId + 1;
+}
+
+XINPUT_GAMEPAD* InputManager::GetState() 
+{
+	return &state.Gamepad;
+}
+
+bool InputManager::CheckConnection()
+{
+	int controllerId = -1;
+
+	for (DWORD i = 0; i < XUSER_MAX_COUNT && controllerId == -1; i++)
+	{
+		XINPUT_STATE state;
+		ZeroMemory(&state, sizeof(XINPUT_STATE));
+
+		if (XInputGetState(i, &state) == ERROR_SUCCESS)
+			controllerId = i;
+	}
+
+	cId = controllerId;
+
+	return controllerId != -1;
+}
+
+bool InputManager::Refresh()
+{
+	if (cId == -1)
+		CheckConnection();
+
+	if (cId != -1)
+	{
+		ZeroMemory(&state, sizeof(XINPUT_STATE));
+		if (XInputGetState(cId, &state) != ERROR_SUCCESS)
+		{
+			cId = -1;
+			return false;
+		}
+
+		float normLX = fmaxf(-1, (float)state.Gamepad.sThumbLX / 32767);
+		float normLY = fmaxf(-1, (float)state.Gamepad.sThumbLY / 32767);
+
+		leftStickX = (abs(normLX) < deadzoneX ? 0 : (abs(normLX) - deadzoneX) * (normLX / abs(normLX)));
+		leftStickY = (abs(normLY) < deadzoneY ? 0 : (abs(normLY) - deadzoneY) * (normLY / abs(normLY)));
+
+		if (deadzoneX > 0) leftStickX *= 1 / (1 - deadzoneX);
+		if (deadzoneY > 0) leftStickY *= 1 / (1 - deadzoneY);
+
+		float normRX = fmaxf(-1, (float)state.Gamepad.sThumbRX / 32767);
+		float normRY = fmaxf(-1, (float)state.Gamepad.sThumbRY / 32767);
+
+		rightStickX = (abs(normRX) < deadzoneX ? 0 : (abs(normRX) - deadzoneX) * (normRX / abs(normRX)));
+		rightStickY = (abs(normRY) < deadzoneY ? 0 : (abs(normRY) - deadzoneY) * (normRY / abs(normRY)));
+
+		if (deadzoneX > 0) rightStickX *= 1 / (1 - deadzoneX);
+		if (deadzoneY > 0) rightStickY *= 1 / (1 - deadzoneY);
+
+		leftTrigger = (float)state.Gamepad.bLeftTrigger / 255;
+		rightTrigger = (float)state.Gamepad.bRightTrigger / 255;
+
+		return true;
+	}
+	return false;
+}
+
+bool InputManager::GetButtonDown(WORD button)
+{
+	if (Refresh()) {
+		return (state.Gamepad.wButtons & button) != 0;
+	}
+	return false;
+}
+
+StickDirections InputManager::GetStickXDirection(Sticks stick) {
+	
+	if (Refresh()) {
+		float xDirection = 0;
+
+		switch (stick)
+		{
+		case LEFTSTICK:
+			xDirection = leftStickX;
+			break;
+		case RIGHTSTICK:
+			xDirection = rightStickX;
+			break;
+		default:
+			return StickDirections::STICKNONE;
+			break;
+		}
+
+		if (fabsf(xDirection) > deadzoneX)
+		{
+			if (xDirection < 0)
+			{
+				return StickDirections::STICKLEFT;
+			}
+			else if (xDirection > 0)
+			{
+				return StickDirections::STICKRIGHT;
+			}
+		}
+	}
+	return StickDirections::STICKNONE;
+}
+
+StickDirections InputManager::GetStickYDirection(Sticks stick) {
+	if (Refresh()) {
+		float yDirection = 0;
+
+		switch (stick)
+		{
+		case LEFTSTICK:
+			yDirection = leftStickY;
+			break;
+		case RIGHTSTICK:
+			yDirection = rightStickY;
+			break;
+		default:
+			return StickDirections::STICKNONE;
+			break;
+		}
+
+		if (fabsf(yDirection) > deadzoneY)
+		{
+			if (yDirection < 0)
+			{
+				return StickDirections::STICKLEFT;
+			}
+			else if (yDirection > 0)
+			{
+				return StickDirections::STICKRIGHT;
+			}
+		}
+	}
+	return StickDirections::STICKNONE;
+}
+
+bool InputManager::GetTriggerDown(Sticks trigger) {
+	if (Refresh()) {
+		switch (trigger) {
+		case LEFTTRIGGER:
+			if (leftTrigger > triggerDeadzone) {
+				return true;
+			}
+			break;
+		case RIGHTTRIGGER:
+			if (rightTrigger > triggerDeadzone) {
+				return true;
+			}
+			break;
+		default:
+			break;
+		}
+	}
 	return false;
 }

@@ -1,13 +1,13 @@
-PPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPP
-P                              P
-P                   P    S    GP
-P                P       S   PPP
-P             P          S     P
-P         P             T      P
-P      P                       P
-P  PP                   T      P
-P      P            P P        P
-P        P      TTT            P
-P           P P                P
-P  X    M                      P
-PPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPP
+BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB
+B                              B
+B                   P    S    GB
+B                P       S   PPB
+B             P          S     B
+B         P             T      B
+B      P                       B
+B  PP                   T      B
+B      P            P P        B
+B        P      TTT            B
+B           P P                B
+B  X    S                      B
+BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB

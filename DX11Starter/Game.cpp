@@ -67,10 +67,11 @@ Game::~Game()
 	delete skyPixShader;
 
 	//Release texture D3D resources
-	if (earthSRV) { earthSRV->Release(); }
-	if (crateSRV) { crateSRV->Release(); }
-	if (metalSRV) { metalSRV->Release(); }
-	if (metalRustSRV) { metalRustSRV->Release(); }
+	if (borderSRV) { borderSRV->Release(); }
+	if (platformSRV) { platformSRV->Release(); }
+	if (fadeOutSRV) { fadeOutSRV->Release(); }
+	if (fadeInSRV) { fadeInSRV->Release(); }
+	if (goalSRV) { goalSRV->Release(); }
 	if (sampler) { sampler->Release(); }
 	if (skyBox) { skyBox->Release(); }
 
@@ -153,10 +154,11 @@ void Game::Init()
 	};
 
 	//Load all textures
-	LoadTexture(L"./Assets/Textures/earth.jpg", &earthSRV);
-	LoadTexture(L"./Assets/Textures/crate.jpg", &crateSRV);
-	LoadTexture(L"./Assets/Textures/metalFloor.jpg", &metalSRV);
-	LoadTexture(L"./Assets/Textures/metalRust.jpg", &metalRustSRV);
+	LoadTexture(L"./Assets/Textures/border.png", &borderSRV);
+	LoadTexture(L"./Assets/Textures/platform.png", &platformSRV);
+	LoadTexture(L"./Assets/Textures/transparent.png", &fadeOutSRV);
+	LoadTexture(L"./Assets/Textures/solid.png", &fadeInSRV);
+	LoadTexture(L"./Assets/Textures/goal.png", &goalSRV);
 
 	//Reference: SkyMap retrieved from http://www.custommapmakers.org/skyboxes/zips/mp_met.zip
 	if (S_OK !=
@@ -269,20 +271,26 @@ void Game::CreateMatrices()
 // --------------------------------------------------------
 void Game::CreateBasicGeometry()
 {
+
+
+	PlaySound(TEXT("./Assets/Audio/Background.wav"), NULL, SND_ASYNC | SND_LOOP);
+
 	std::string pathModifier = "./Assets/Models/";
 
-	materials.push_back(new Material(vertexShader, pixelShader, earthSRV, sampler));	//0
-	materials.push_back(new Material(vertexShader, pixelShader, crateSRV, sampler));	//1
-	materials.push_back(new Material(vertexShader, pixelShader, metalSRV, sampler));	//2
-	materials.push_back(new Material(vertexShader, pixelShader, metalRustSRV, sampler));//3
+	materials.push_back(new Material(vertexShader, pixelShader, borderSRV, sampler));	//0
+	materials.push_back(new Material(vertexShader, pixelShader, platformSRV, sampler));	//1
+	materials.push_back(new Material(vertexShader, pixelShader, fadeOutSRV, sampler));	//2
+	materials.push_back(new Material(vertexShader, pixelShader, fadeInSRV, sampler));//3
+	materials.push_back(new Material(vertexShader, pixelShader, goalSRV, sampler));//3
 
 	meshObjs.push_back(new Mesh(pathModifier + "sphere.obj", device));
 	meshObjs.push_back(new Mesh(pathModifier + "cone.obj", device));
-	//meshObjs.push_back(new Mesh(pathModifier + "cube.obj", device));
 	meshObjs.push_back(new Mesh(pathModifier + "cylinder.obj", device));
 	meshObjs.push_back(new Mesh(pathModifier + "Plane.obj", device));
 	meshObjs.push_back(new Mesh(pathModifier + "torus.obj", device));
 	meshObjs.push_back(new Mesh(pathModifier + "cube.obj", device));
+
+
 
 	// Init Spot Light for the player
 	SpotLight spotLight;
@@ -302,11 +310,9 @@ void Game::CreateBasicGeometry()
 	Entity* spotlightEnt = new Entity(meshObjs[1], materials[2], 0.0f, 0.0f, 0.0f, &world, "SpotLight" , true, true, 1.0f, 1.0f, 6.5f, 9.0f, 6.75f);
 	spotlightEnt->SetAlpha(0.5f);
 	spotLightEntity = new SpotLightWrapper(spotLight, 2.5f, spotlightEnt);
-	// entities.push_back(spotlightEnt);
 
 	mapLoader = new MapLoader(device, 2.0f, materials, meshObjs, &world);
 	mapLoader->LoadLevel("Level1.txt");
-	//mapLoader->LoadLevel("Level1.txt");
 	for each (Entity* ent in mapLoader->GetLevelEntities()) {
 		entities.push_back(ent);
 	}
@@ -361,14 +367,15 @@ void Game::Update(float deltaTime, float totalTime)
 		// Collision Check
 		{
 
-			if ( spotLightEntity->GetEntity()->GetBounds().Intersects(ent->GetBounds()) ){
+			//if ( spotLightEntity->GetEntity()->GetBounds().Intersects(ent->GetBounds()) ){
+			if (spotLightEntity->GetEntity()->coneBounds.Intersects(ent->GetBounds())) {
 				if (
 					(ent->GetPhysicsObject()->_physicsName != "Player") &&
 					(ent->GetPhysicsObject()->_physicsName != "BasicPlatform") &&
 					(ent->GetPhysicsObject()->_physicsName != "SpotLight")
 					) {
-					std::cout << ent->GetPhysicsObject()->_physicsName << std::endl;
-					std::cout << ent->GetPosition().x << "," << ent->GetPosition().y << "," << ent->GetPosition().z << std::endl;
+					//std::cout << ent->GetPhysicsObject()->_physicsName << std::endl;
+					//std::cout << ent->GetPosition().x << "," << ent->GetPosition().y << "," << ent->GetPosition().z << std::endl;
 					if ("TransparentPlatform" == ent->GetPhysicsObject()->_physicsName) {
 						ent->GetPhysicsObject()->ReactivatePhysicsObject();
 						ent->SetAlpha(1.0f);
@@ -436,7 +443,7 @@ void Game::Update(float deltaTime, float totalTime)
 void Game::Draw(float deltaTime, float totalTime)
 {
 	// Background color (Cornflower Blue in this case) for clearing
-	const float color[4] = {0.4f, 0.6f, 0.75f, 0.0f};
+	const float color[4] = {0.1f, 0.1f, 0.1f, 0.0f};
 
 	// Clear the render target and depth buffer (erases what's on the screen)
 	//  - Do this ONCE PER FRAME

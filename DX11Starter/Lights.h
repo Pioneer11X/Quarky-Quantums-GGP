@@ -43,7 +43,7 @@ public:
 	SpotLightWrapper(SpotLight newLight, float newSpeed, Entity* spotLightEnt);
 	~SpotLightWrapper();
 	void HandleKeyboardInputs(float deltaTime);
-	void UpdateLightPoistion(XMFLOAT3 newPos);
+	void UpdateLightPosition(XMFLOAT3 newPos);
 	void RayCastCheck();
 	inline SpotLight& GetSpotLight() { return myLight; }
 	inline Entity* GetEntity() { return myEntity; }

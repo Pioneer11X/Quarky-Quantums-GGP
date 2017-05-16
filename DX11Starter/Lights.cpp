@@ -22,7 +22,7 @@ SpotLightWrapper::~SpotLightWrapper()
 	}
 }
 
-void SpotLightWrapper::UpdateLightPoistion(XMFLOAT3 newPos)
+void SpotLightWrapper::UpdateLightPosition(XMFLOAT3 newPos)
 {
 	myLight.Position = newPos;
 	newPos.x += myLight.Direction.x * (myEntity->GetScale().y/2);
@@ -75,13 +75,15 @@ void SpotLightWrapper::RayCastCheck()
 void SpotLightWrapper::HandleKeyboardInputs(float deltaTime)
 {
 	// Rotate Counter Clockwise
-	if (InputManager::Instance()->GetKeyHolding(KeyPressed::LEFTARROW))
+	if (InputManager::Instance()->GetKeyHolding(KeyPressed::LEFTARROW) || InputManager::Instance()->GetTriggerDown(Sticks::LEFTTRIGGER) ||
+		InputManager::Instance()->GetStickXDirection(Sticks::RIGHTSTICK) == StickDirections::STICKLEFT)
 	{
 		SetRotation(speed * deltaTime);
 	}
 
 	// Rotate Clockwise
-	if (InputManager::Instance()->GetKeyHolding(KeyPressed::RIGHTARROW))
+	if (InputManager::Instance()->GetKeyHolding(KeyPressed::RIGHTARROW) || InputManager::Instance()->GetTriggerDown(Sticks::RIGHTTRIGGER) ||
+		InputManager::Instance()->GetStickXDirection(Sticks::RIGHTSTICK) == StickDirections::STICKRIGHT)
 	{
 		SetRotation(-speed * deltaTime);
 	}

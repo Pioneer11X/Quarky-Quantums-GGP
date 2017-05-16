@@ -53,44 +53,55 @@ void MapLoader::CreateEntity(char identifier, int xOffset, int yOffset)
 	{
 		case 'P': //Basic Platform
 		{
-			Entity* newEntity = new Entity(meshObjs[5], materials[1], 
-				xOffset * scale, 
-				yOffset * scale, 
+			Entity* newEntity = new Entity(meshObjs[5], materials[1],
+				xOffset * scale,
+				yOffset * scale,
 				0.0f, world,
 				"BasicPlatform",
 				false, false,
-				0.5f * scale, 0.5f * scale, 
-				scale, scale, scale);
+				0.5f * scale, 0.5f * scale,
+				scale, scale, scale * 2.5f);
 			newEntity->SetTranslation(xOffset * scale, yOffset * scale, 0.0f);
 			levelEntities.push_back(newEntity);
 		} break;
 		case 'T': //Transparent Platform (Fades in in light)
 		{
-			Entity* newEntity = new Entity(meshObjs[5], materials[1], 
+			Entity* newEntity = new Entity(meshObjs[5], materials[3], 
 				xOffset * scale, 
 				yOffset * scale, 
 				0.0f, world,
 				"TransparentPlatform",
 				false, true,
 				0.5f * scale, 0.5f * scale, 
-				scale, scale, scale);
+				scale, scale, scale * 2.5f);
 			newEntity->SetTranslation(xOffset * scale, yOffset * scale, 0.0f);
 			newEntity->SetAlpha(0.25f);
 			levelEntities.push_back(newEntity);
 			}break;
 		case 'S': //Solid Platform (Fades out in light)
 		{
+			Entity* newEntity = new Entity(meshObjs[5], materials[2],
+				xOffset * scale,
+				yOffset * scale,
+				0.0f, world,
+				"WeirdPlatform",
+				false, true,
+				0.5f * scale, 0.5f * scale,
+				scale, scale, scale * 2.5f);
+			newEntity->SetTranslation(xOffset * scale, yOffset * scale, 0.0f);
+			newEntity->SetAlpha(1.0f);
+			levelEntities.push_back(newEntity);
 			}break;
 		case 'G': //Goal
 		{
-			Entity* newEntity = new Entity(meshObjs[5], materials[1],
+			Entity* newEntity = new Entity(meshObjs[5], materials[4],
 				xOffset * scale,
 				yOffset * scale,
 				0.0f, world,
 				"EndGoal",
 				false, true,
 				0.5f * scale, 0.5f * scale,
-				scale, scale, scale);
+				scale, scale, scale * 2.5f);
 			newEntity->SetTranslation(xOffset * scale, yOffset * scale, 0.0f);
 			newEntity->SetAlpha(0.9f);
 			endOfLevel = newEntity;
@@ -102,20 +113,19 @@ void MapLoader::CreateEntity(char identifier, int xOffset, int yOffset)
 			playerSpawnX = xOffset * scale;
 			playerSpawnY = yOffset * scale;
 			}break;
-		case 'M':
+		case 'B': //Border
 		{
-			Entity* newEntity = new Entity(meshObjs[5], materials[1],
+			Entity* newEntity = new Entity(meshObjs[5], materials[0],
 				xOffset * scale,
 				yOffset * scale,
 				0.0f, world,
-				"WeirdPlatform",
-				false, true,
+				"BorderBlock",
+				false, false,
 				0.5f * scale, 0.5f * scale,
-				scale, scale, scale);
+				scale, scale, scale * 2.5f);
 			newEntity->SetTranslation(xOffset * scale, yOffset * scale, 0.0f);
-			newEntity->SetAlpha(1.0f);
 			levelEntities.push_back(newEntity);
-		}break;
+		} break;
 		default: {} break;
 	}
 }

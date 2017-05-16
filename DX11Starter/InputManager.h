@@ -2,6 +2,7 @@
 #include <Windows.h>
 #include <vector>
 #include <string>
+#include <Xinput.h>
 
 #define NUM_KEYS	9
 
@@ -33,6 +34,23 @@ struct KeyInfo
 	SHORT keyState;
 };
 
+enum Sticks
+{
+	LEFTSTICK = 0,
+	RIGHTSTICK,
+	LEFTTRIGGER,
+	RIGHTTRIGGER
+};
+
+enum StickDirections
+{
+	STICKUP = 0,
+	STICKDOWN,
+	STICKLEFT,
+	STICKRIGHT,
+	STICKNONE
+};
+
 class InputManager
 {
 	static InputManager* instance;
@@ -43,15 +61,36 @@ public:
 	~InputManager();
 	void InitKeys();
 	static InputManager* Instance();
-	//bool isUpPressed();
-	//bool isDownPressed();
-	//bool isLeftPressed();
-	//bool isRightPressed();
-	//bool isForwardPressed();
-	//bool isBackwardPressed();
 
 	bool GetKeyDown(int vKey);
 	bool GetKeyHolding(int vKey);
 	bool GetKeyUp(int vKey);
+	bool GetButtonDown(WORD);
+
+	StickDirections GetStickXDirection(Sticks stick);
+	StickDirections GetStickYDirection(Sticks stick);
+
+	bool GetTriggerDown(Sticks trigger);
+
+private:
+	//Controller code based off https://katyscode.wordpress.com/2013/08/30/xinput-tutorial-part-1-adding-gamepad-support-to-your-windows-game/
+	int cId;
+	XINPUT_STATE state;
+
+	float deadzoneX;
+	float deadzoneY;
+	float triggerDeadzone;
+
+	float leftStickX;
+	float leftStickY;
+	float rightStickX;
+	float rightStickY;
+	float leftTrigger;
+	float rightTrigger;
+
+	int GetPort();
+	XINPUT_GAMEPAD *GetState();
+	bool CheckConnection();
+	bool Refresh();
 };
 
