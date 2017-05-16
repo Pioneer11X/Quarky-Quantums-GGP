@@ -342,7 +342,7 @@ void Renderer::Draw(std::vector<Entity*> entities, Entity* skyBox, XMFLOAT4X4& v
 	for (Entity* entity : entities)
 	{
 		if ("SpotLight" == entity->GetPhysicsObject()->_physicsName) {
-			//continue;
+			continue;
 		}
 
 		if (entity->GetAlpha() < 1.0f)
@@ -373,7 +373,7 @@ void Renderer::Draw(std::vector<Entity*> entities, Entity* skyBox, XMFLOAT4X4& v
 #pragma endregion
 
 #pragma region Draw SkyBox
-	//DrawSkyBox(skyBox, viewMatrix, projectionMatrix);
+	DrawSkyBox(skyBox, viewMatrix, projectionMatrix);
 #pragma endregion
 
 #pragma region Draw Blended Objects
