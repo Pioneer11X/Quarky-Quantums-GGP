@@ -302,7 +302,7 @@ void Game::CreateBasicGeometry()
 	Entity* spotlightEnt = new Entity(meshObjs[1], materials[2], 0.0f, 0.0f, 0.0f, &world, "SpotLight" , true, true, 1.0f, 1.0f, 6.5f, 9.0f, 6.75f);
 	spotlightEnt->SetAlpha(0.5f);
 	spotLightEntity = new SpotLightWrapper(spotLight, 2.5f, spotlightEnt);
-	entities.push_back(spotlightEnt);
+	// entities.push_back(spotlightEnt);
 
 	mapLoader = new MapLoader(device, 2.0f, materials, meshObjs, &world);
 	mapLoader->LoadLevel("Level1.txt");
@@ -352,14 +352,14 @@ void Game::Update(float deltaTime, float totalTime)
 #pragma region EnitityUpdates
 	world.Step(deltaTime, velocityIterations, positionIterations);
 
+	spotLightEntity->GetEntity()->UpdateBounds();
+	playerChar->UpdateBounds();
+
 	for each (Entity* ent in entities) {
 
 		
 		// Collision Check
 		{
-
-
-			ent->UpdateBounds();
 
 			if ( spotLightEntity->GetEntity()->GetBounds().Intersects(ent->GetBounds()) ){
 				if (
@@ -369,16 +369,35 @@ void Game::Update(float deltaTime, float totalTime)
 					) {
 					std::cout << ent->GetPhysicsObject()->_physicsName << std::endl;
 					std::cout << ent->GetPosition().x << "," << ent->GetPosition().y << "," << ent->GetPosition().z << std::endl;
-					ent->GetPhysicsObject()->ReactivatePhysicsObject();
-					ent->SetAlpha(1.0f);
+					if ("TransparentPlatform" == ent->GetPhysicsObject()->_physicsName) {
+						ent->GetPhysicsObject()->ReactivatePhysicsObject();
+						ent->SetAlpha(1.0f);
+					}
+					else if ("WeirdPlatform" == ent->GetPhysicsObject()->_physicsName) {
+						ent->GetPhysicsObject()->DeactivatePhysicsObject();
+						ent->SetAlpha(0.25f);
+					}
+					
 				}
 			}
 			// Reset any transparent blocks that are not being intersected
 			else {
 				// Add a buffer between reactivating and deactivating objects.
-				if (ent->GetPhysicsObject()->_physicsName == "TransparentPlatform") {
-					ent->SetAlpha(0.25f);
-					ent->GetPhysicsObject()->DeactivatePhysicsObject();
+				if (
+					(ent->GetPhysicsObject()->_physicsName != "Player") &&
+					(ent->GetPhysicsObject()->_physicsName != "BasicPlatform") &&
+					(ent->GetPhysicsObject()->_physicsName != "SpotLight")
+					) {
+					if ("WeirdPlatform" == ent->GetPhysicsObject()->_physicsName)
+					{
+						ent->SetAlpha(1.0f);
+						ent->GetPhysicsObject()->ReactivatePhysicsObject();
+					}
+					else if ("TransparentPlatform" == ent->GetPhysicsObject()->_physicsName) {
+						ent->GetPhysicsObject()->DeactivatePhysicsObject();
+						ent->SetAlpha(0.25f);
+					}
+						
 				}
 			}
 		}	
