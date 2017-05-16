@@ -3,6 +3,7 @@
 #include "Entity.h"
 #include <vector>
 #include "Lights.h"
+#include "PrimitiveRenderer.h"
 
 class Renderer
 {
@@ -38,11 +39,15 @@ class Renderer
 	void DrawBeam(XMFLOAT4X4& viewMatrix, XMFLOAT4X4& projectionMatrix);
 	void RenderShadowMap(std::vector<Entity*> entities);
 
+	PrimitiveRenderer* pr;
+
 public:
 	Renderer(ID3D11Device * deviceIn, ID3D11DeviceContext * contextIn);
 	~Renderer();
 	void Draw(std::vector<Entity*> entities, Entity* skyBox, XMFLOAT4X4& viewMatrix, XMFLOAT4X4& projectionMatrix, DirectionalLight* dirLights, PointLight* pointLights, SpotLight* spotLights);
 	void UpdateBuffers(ID3D11RenderTargetView* backBuf, ID3D11DepthStencilView* dsv) { backbufferRTV = backBuf; depthStencilView = dsv; }
+
+	PrimitiveRenderer* PRenderer() { return pr; }
 
 };
 

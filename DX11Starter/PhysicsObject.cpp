@@ -36,12 +36,12 @@ void PhysicsObject::InitPhysicsObject(std::string _name)
 	//if (false == isTrigger) {
 
 		b2PolygonShape PhysicsBox;
-		if ("Spotlight" == _name) {
+		/*if ("Spotlight" == _name) {
 			
 		}
-		else {
+		else {*/
 			PhysicsBox.SetAsBox(sizeX, sizeY);
-		}
+		//}
 
 		b2FixtureDef FixDef;
 		FixDef.shape = &PhysicsBox;
@@ -74,6 +74,9 @@ void PhysicsObject::InitPhysicsObject(std::string _name)
 	}
 	else if ("EndGoal" == _name) {
 		isActive = false;
+	}
+	else if ("WeirdPlatform" == _name) {
+		isActive = true;
 	}
 }
 

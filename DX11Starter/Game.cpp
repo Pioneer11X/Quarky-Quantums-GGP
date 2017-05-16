@@ -286,6 +286,7 @@ void Game::CreateBasicGeometry()
 
 	meshObjs.push_back(new Mesh(pathModifier + "sphere.obj", device));
 	meshObjs.push_back(new Mesh(pathModifier + "cone.obj", device));
+	//meshObjs.push_back(new Mesh(pathModifier + "cube.obj", device));
 	meshObjs.push_back(new Mesh(pathModifier + "cylinder.obj", device));
 	meshObjs.push_back(new Mesh(pathModifier + "Plane.obj", device));
 	meshObjs.push_back(new Mesh(pathModifier + "torus.obj", device));
@@ -306,10 +307,10 @@ void Game::CreateBasicGeometry()
 	spotLight.ExpoAtten = 0.005f;
 
 	// For a collider ( Sensor / Trigger to be valid, there needs to be some volume. So, no 0.0f in any dimension.
-	Entity* spotlightEnt = new Entity(meshObjs[1], materials[2], 0.0f, 0.0f, 0.0f, &world, "SpotLight" , true, true, 1.0f, 1.0f, 13.0f, 18.0f, 13.5f);
+	Entity* spotlightEnt = new Entity(meshObjs[1], materials[2], 0.0f, 0.0f, 0.0f, &world, "SpotLight" , true, true, 1.0f, 1.0f, 6.5f, 9.0f, 6.75f);
 	spotlightEnt->SetAlpha(0.5f);
 	spotLightEntity = new SpotLightWrapper(spotLight, 2.5f, spotlightEnt);
-	entities.push_back(spotlightEnt);
+	// entities.push_back(spotlightEnt);
 
 	mapLoader = new MapLoader(device, 2.0f, materials, meshObjs, &world);
 	mapLoader->LoadLevel("Level1.txt");
@@ -325,6 +326,7 @@ void Game::CreateBasicGeometry()
 	skyObject = new Entity(meshObjs[0], skyMaterial, 0.0f, 0.0f, 0.0f, nullptr, "SkyBox", false);
 	skyObject->SetTranslation(camera->GetPosition().x, camera->GetPosition().y, camera->GetPosition().z);
 	skyObject->SetScale(200.0f, 200.0f, 200.0f);
+
 }
 
 void Game::InitParticles()
@@ -389,29 +391,55 @@ void Game::Update(float deltaTime, float totalTime)
 #pragma region EnitityUpdates
 	world.Step(deltaTime, velocityIterations, positionIterations);
 
-	// Collision Check
-	for each (Entity* ent in entities) {	
-		ent->GetMesh()->GetBounds().Center.x = ent->GetPosition().x;
-		ent->GetMesh()->GetBounds().Center.y = ent->GetPosition().y;
-		ent->GetMesh()->GetBounds().Center.z = ent->GetPosition().z;
+	spotLightEntity->GetEntity()->UpdateBounds();
+	playerChar->UpdateBounds();
 
-		// Check if any transparent blocks are being intersected.
-		if (spotLightEntity->GetEntity()->GetMesh()->GetBounds().Intersects(ent->GetMesh()->GetBounds()) ){
-			if (ent->GetPhysicsObject()->_physicsName == "TransparentPlatform") {
-				std::cout << ent->GetPhysicsObject()->_physicsName << std::endl;
-				std::cout << ent->GetPosition().x << "," << ent->GetPosition().y << "," << ent->GetPosition().z << std::endl;
-				ent->GetPhysicsObject()->ReactivatePhysicsObject();
-				ent->SetAlpha(1.0f);
+	for each (Entity* ent in entities) {
+
+		
+		// Collision Check
+		{
+
+			if ( spotLightEntity->GetEntity()->GetBounds().Intersects(ent->GetBounds()) ){
+				if (
+					(ent->GetPhysicsObject()->_physicsName != "Player") &&
+					(ent->GetPhysicsObject()->_physicsName != "BasicPlatform") &&
+					(ent->GetPhysicsObject()->_physicsName != "SpotLight")
+					) {
+					std::cout << ent->GetPhysicsObject()->_physicsName << std::endl;
+					std::cout << ent->GetPosition().x << "," << ent->GetPosition().y << "," << ent->GetPosition().z << std::endl;
+					if ("TransparentPlatform" == ent->GetPhysicsObject()->_physicsName) {
+						ent->GetPhysicsObject()->ReactivatePhysicsObject();
+						ent->SetAlpha(1.0f);
+					}
+					else if ("WeirdPlatform" == ent->GetPhysicsObject()->_physicsName) {
+						ent->GetPhysicsObject()->DeactivatePhysicsObject();
+						ent->SetAlpha(0.25f);
+					}
+					
+				}
 			}
-		}
-		// Reset any transparent blocks that are not being intersected
-		else {
-			// Add a buffer between reactivating and deactivating objects.
-			if (ent->GetPhysicsObject()->_physicsName == "TransparentPlatform") {
-				ent->SetAlpha(0.25f);
-				ent->GetPhysicsObject()->DeactivatePhysicsObject();
+			// Reset any transparent blocks that are not being intersected
+			else {
+				// Add a buffer between reactivating and deactivating objects.
+				if (
+					(ent->GetPhysicsObject()->_physicsName != "Player") &&
+					(ent->GetPhysicsObject()->_physicsName != "BasicPlatform") &&
+					(ent->GetPhysicsObject()->_physicsName != "SpotLight")
+					) {
+					if ("WeirdPlatform" == ent->GetPhysicsObject()->_physicsName)
+					{
+						ent->SetAlpha(1.0f);
+						ent->GetPhysicsObject()->ReactivatePhysicsObject();
+					}
+					else if ("TransparentPlatform" == ent->GetPhysicsObject()->_physicsName) {
+						ent->GetPhysicsObject()->DeactivatePhysicsObject();
+						ent->SetAlpha(0.25f);
+					}
+						
+				}
 			}
-		}
+		}	
 		// End Collision Check.
 
 		if (ent->NeedsPhysicsUpdate()) {
@@ -421,7 +449,7 @@ void Game::Update(float deltaTime, float totalTime)
 #pragma endregion
 
 #pragma region CheckEndGameCondition
-	if (playerChar->GetMesh()->GetBounds().Intersects(mapLoader->GetEndOfLevel()->GetMesh()->GetBounds()))
+	if (playerChar->GetBounds().Intersects(mapLoader->GetEndOfLevel()->GetBounds()))
 	{
 		curScene = Menu;
 	}
@@ -529,7 +557,7 @@ void Game::OnMouseWheel(float wheelDelta, int x, int y)
 {
 	// Add any custom code here...
 
-	//camera->MoveAlongDirection(wheelDelta * 0.1f);
+	camera->MoveAlongDirection(wheelDelta * 0.1f);
 }
 
 std::vector<Entity*> Game::GetEntities()

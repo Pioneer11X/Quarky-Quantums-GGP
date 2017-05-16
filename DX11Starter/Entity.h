@@ -5,6 +5,7 @@
 #include "Mesh.h"
 #include "Material.h"
 #include "PhysicsObject.h"
+#include <DirectXCollision.h>
 
 // For the DirectX Math library
 using namespace DirectX;
@@ -36,6 +37,10 @@ private:
 	PhysicsObject* pb = nullptr; // For some reason, it doesn't default to this?
 	bool hasPhysics;
 	bool hasTrigger = false; // Can this entity be trigerred by the spotlight.
+
+	// DirectXBoundingBoxes.
+	DirectX::BoundingBox bounds;
+	// DirectX::BoundingBox& boundsRef;
 
 public:
 	//Entity(Mesh* Object, Material* materialInput);
@@ -75,6 +80,18 @@ public:
 
 	bool NeedsPhysicsUpdate();
 	bool CanBeTrigerred();
+
+	DirectX::BoundingBox& GetBounds() { return bounds; }
+	void SetBounds(DirectX::BoundingBox newBounds) { bounds = newBounds; }
+
+	void UpdateBounds() {
+		// For some reason, this doesn't work?? Even thought the worldmatrix is correct?
+		// bounds.Transform(bounds, XMLoadFloat4x4(&worldMatrix));
+
+		bounds.Center = this->position;
+
+		// bounds.Transform(bounds, (scale.x + scale.y + scale.z) / 3, XMLoadFloat3(&rotation), XMLoadFloat3(&position));
+	}
 };
 
 
