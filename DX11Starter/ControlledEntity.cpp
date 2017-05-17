@@ -16,6 +16,11 @@ ControlledEntity::~ControlledEntity()
 {
 }
 
+void ControlledEntity::UpdateSpawnPosition(float _posX, float _posY, float _posZ)
+{
+
+}
+
 void ControlledEntity::UpdateSpotLightPosition()
 {
 	XMFLOAT3 newLightPos = this->GetPosition();

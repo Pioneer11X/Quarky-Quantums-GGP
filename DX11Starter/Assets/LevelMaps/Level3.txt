@@ -1,0 +1,21 @@
+BBBBBBBBBB
+B G      B
+B PPP    B
+B P      B
+B P    S B
+B P T    B
+B P      B
+B S      B
+B        B
+B        B
+B      T B
+B      S B
+B        B
+B        B
+B T      B
+B P      B
+B        B
+B      P B 
+B        B
+B  X     B
+BBBBBBBBBB

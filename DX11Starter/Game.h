@@ -115,6 +115,7 @@ private:
 	//Array of Entity pointers
 	Entity* skyObject;
 	std::vector<Entity*> entities;
+	void DeleteEntities();
 
 	//Array of materials
 	Material* skyMaterial;
@@ -153,5 +154,7 @@ private:
 
 	//Map Loader
 	MapLoader* mapLoader;
+	void LoadNewLevel();
+	int currentLevel = 1;
 };
 

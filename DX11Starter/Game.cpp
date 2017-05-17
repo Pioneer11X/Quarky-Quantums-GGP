@@ -99,14 +99,6 @@ Game::~Game()
 
 	meshObjs.clear();
 
-	// Delete Entity Objs
-	for each (Entity* entity in entities)
-	{
-		delete entity;
-		entity = NULL;
-	}
-	
-	entities.clear();
 	delete skyObject;
 
 	// Delete Material Objs
@@ -118,9 +110,37 @@ Game::~Game()
 
 	materials.clear();
 
+	DeleteEntities();
+
 	delete skyMaterial;
 
 	delete mapLoader;
+}
+
+void Game::DeleteEntities()
+{
+	// Delete Entity Objs
+	for each (Entity* entity in entities)
+	{
+		delete entity;
+		entity = NULL;
+	}
+
+	entities.clear();
+}
+
+void Game::LoadNewLevel()
+{
+	string levelToLoad = "Level";
+	levelToLoad += std::to_string(currentLevel);
+	levelToLoad += ".txt";
+	mapLoader->LoadLevel(levelToLoad);
+	for each (Entity* ent in mapLoader->GetLevelEntities()) {
+		entities.push_back(ent);
+	}
+
+	playerChar = new ControlledEntity(meshObjs[2], materials[2], mapLoader->GetPlayerSpawnLocationX(), mapLoader->GetPlayerSpawnLocationY(), 0.0f, spotLightEntity, &world, true, 0.5f, 0.5f);
+	entities.push_back(playerChar);
 }
 
 // --------------------------------------------------------
@@ -312,13 +332,7 @@ void Game::CreateBasicGeometry()
 	spotLightEntity = new SpotLightWrapper(spotLight, 2.5f, spotlightEnt);
 
 	mapLoader = new MapLoader(device, 2.0f, materials, meshObjs, &world);
-	mapLoader->LoadLevel("Level1.txt");
-	for each (Entity* ent in mapLoader->GetLevelEntities()) {
-		entities.push_back(ent);
-	}
-
-	playerChar = new ControlledEntity(meshObjs[2], materials[2], mapLoader->GetPlayerSpawnLocationX(), mapLoader->GetPlayerSpawnLocationY(), 0.0f, spotLightEntity, &world, true, 0.5f, 0.5f);
-	entities.push_back(playerChar);
+	LoadNewLevel();
 
 	skyMaterial = new Material(skyVertShader, skyPixShader, skyBox, sampler);
 	skyObject = new Entity(meshObjs[0], skyMaterial, 0.0f, 0.0f, 0.0f, nullptr, "SkyBox", false);
@@ -419,7 +433,19 @@ void Game::Update(float deltaTime, float totalTime)
 #pragma region CheckEndGameCondition
 	if (playerChar->GetBounds().Intersects(mapLoader->GetEndOfLevel()->GetBounds()))
 	{
-		curScene = Menu;
+		switch (currentLevel)
+		{
+			case 3:
+				currentLevel = 0;
+				curScene = Menu;
+				break;
+			default:
+				currentLevel++;
+				DeleteEntities();
+				LoadNewLevel();
+				playerChar->UpdateSpawnPosition(mapLoader->GetPlayerSpawnLocationX(), mapLoader->GetPlayerSpawnLocationY(), 0.0f);
+				break;
+		}
 	}
 #pragma endregion
 
@@ -459,7 +485,9 @@ void Game::Draw(float deltaTime, float totalTime)
 		renderer->Draw(entities, skyObject, camera->GetViewMatrix(), camera->GetProjectionMatrix(), &dirLights[0], &pointLights[0], &spotLightEntity->GetSpotLight());
 
 	if (curScene == Menu)
+	{
 		GUI::instance().Draw();
+	}
 
 	// Present the back buffer to the user
 	//  - Puts the final frame we're drawing into the window so the user can see it

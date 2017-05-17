@@ -22,6 +22,9 @@ void MapLoader::LoadLevel(string fileName)
 
 	int yOffset = 0;
 
+	if (levelEntities.size() != 0)
+		DeleteLevelData();
+
 	while (getline(file, currentLine)) 
 	{
 		for (int x = 0; x < currentLine.length(); x++) 
@@ -30,6 +33,11 @@ void MapLoader::LoadLevel(string fileName)
 		}
 		yOffset++;
 	}
+}
+
+void MapLoader::DeleteLevelData()
+{
+	levelEntities.clear();
 }
 
 vector<Entity*> MapLoader::GetLevelEntities()

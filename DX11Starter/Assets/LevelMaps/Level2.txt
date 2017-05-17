@@ -1,7 +1,13 @@
-
-
-
-
-X  
-   T
-PP
+BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB
+B G                            B
+BBB                   S        B
+B     P  P  P  T   S   P   P   B
+B    T                     P   B
+B      S                   P   B
+B    P                     P   B
+B     T  S P               P   B
+B                          P   B
+B              S           P   B
+B          P   T  P     P      B
+B  X    P            P         B
+BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB

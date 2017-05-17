@@ -22,6 +22,7 @@ private:
 	float scale;
 
 	vector<Entity*> levelEntities;
+	void DeleteLevelData();
 	Entity* endOfLevel; // This is just a reference for easy lookup. Still added to levelEntities and deleted witht he rest of the entities.
 	vector<Mesh*> meshObjs;
 	vector<Material*> materials;

@@ -15,6 +15,7 @@ public:
 	void UpdateLightState();
 	void CheckForCollisions();
 	SpotLight& GetLight();
+	void UpdateSpawnPosition(float _posX, float _posY, float _posZ);
 	
 private:
 	SpotLightWrapper* mySpotLight;
