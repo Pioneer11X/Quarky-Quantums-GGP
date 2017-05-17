@@ -20,7 +20,7 @@ b2World world(gravity);
 Game::Game(HINSTANCE hInstance)
 	: DXCore( 
 		hInstance,		   // The application's handle
-		"Quirky Quantums", // Text for the window's title bar
+		"Quarky Quantum",  // Text for the window's title bar
 		1280,			   // Width of the window's client area
 		720,			   // Height of the window's client area
 		true)			   // Show extra stats (fps) in title bar?
@@ -372,7 +372,7 @@ void Game::Update(float deltaTime, float totalTime)
 #pragma region EnitityUpdates
 	world.Step(deltaTime, velocityIterations, positionIterations);
 
-	spotLightEntity->GetEntity()->UpdateBounds();
+	spotLightEntity->UpdateCone();
 	playerChar->UpdateBounds();
 
 	for each (Entity* ent in entities) {
@@ -382,7 +382,7 @@ void Game::Update(float deltaTime, float totalTime)
 		{
 
 			//if ( spotLightEntity->GetEntity()->GetBounds().Intersects(ent->GetBounds()) ){
-			if (spotLightEntity->GetEntity()->coneBounds.Intersects(ent->GetBounds())) {
+			if (spotLightEntity->coneBounds.Intersects(ent->GetBounds())) {
 				if (
 					(ent->GetPhysicsObject()->_physicsName != "Player") &&
 					(ent->GetPhysicsObject()->_physicsName != "BasicPlatform") &&

@@ -65,7 +65,11 @@ void ControlledEntity::CheckForCollisions()
 
 				//If a is below b, then we can jump again
 				if (aCheck <= bCheck) {
-					canJump = true;
+					//check to make sure the object we are intersecting is not a border block
+					Entity* ent = static_cast<Entity*>(a->GetBody()->GetUserData());
+					if (!(ent->GetPhysicsObject()->_physicsName == "BorderBlock")) {
+						canJump = true;
+					}
 				}
 			}
 		}
