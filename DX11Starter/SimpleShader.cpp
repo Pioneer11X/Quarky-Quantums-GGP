@@ -100,9 +100,28 @@ bool ISimpleShader::LoadShaderFile(LPCWSTR shaderFile)
 	D3D11_SHADER_DESC shaderDesc;
 	refl->GetDesc(&shaderDesc);
 
-	// Create resource arrays
+	// Determine the amount of buffers 
 	constantBufferCount = shaderDesc.ConstantBuffers;
-	constantBuffers = new SimpleConstantBuffer[constantBufferCount];
+
+	// Count how many are standard "Scalar CBs" (numeric data)
+	int countOfScalarCBs = 0;
+	for (unsigned int b = 0; b < constantBufferCount; b++)
+	{
+		// Get this buffer
+		ID3D11ShaderReflectionConstantBuffer* cb =
+			refl->GetConstantBufferByIndex(b);
+
+		// Get the description of this buffer
+		D3D11_SHADER_BUFFER_DESC bufferDesc;
+		cb->GetDesc(&bufferDesc);
+
+		// Check the type - only want scalar CB's
+		if( bufferDesc.Type == D3D_CT_CBUFFER )
+			countOfScalarCBs++;
+	}
+
+	// Create resource arrays - we only want scalar CB's here
+	constantBuffers = new SimpleConstantBuffer[countOfScalarCBs];
 	
 	// Handle bound resources (like shaders and samplers)
 	unsigned int resourceCount = shaderDesc.BoundResources;
@@ -142,6 +161,7 @@ bool ISimpleShader::LoadShaderFile(LPCWSTR shaderFile)
 	}
 
 	// Loop through all constant buffers
+	unsigned int scalarCBCount = 0;
 	for (unsigned int b = 0; b < constantBufferCount; b++)
 	{
 		// Get this buffer
@@ -151,6 +171,10 @@ bool ISimpleShader::LoadShaderFile(LPCWSTR shaderFile)
 		// Get the description of this buffer
 		D3D11_SHADER_BUFFER_DESC bufferDesc;
 		cb->GetDesc(&bufferDesc);
+
+		// Is this the right kind of CB?
+		if(bufferDesc.Type != D3D_CT_CBUFFER)
+			continue; // Nope, skip
 		
 		// Get the description of the resource binding, so
 		// we know exactly how it's bound in the shader
@@ -158,8 +182,8 @@ bool ISimpleShader::LoadShaderFile(LPCWSTR shaderFile)
 		refl->GetResourceBindingDescByName(bufferDesc.Name, &bindDesc);
 		
 		// Set up the buffer and put its pointer in the table
-		constantBuffers[b].BindIndex = bindDesc.BindPoint;
-		constantBuffers[b].Name = bufferDesc.Name;
+		constantBuffers[scalarCBCount].BindIndex = bindDesc.BindPoint;
+		constantBuffers[scalarCBCount].Name = bufferDesc.Name;
 		cbTable.insert(std::pair<std::string, SimpleConstantBuffer*>(bufferDesc.Name, &constantBuffers[b]));
 
 		// Create this constant buffer
@@ -170,12 +194,12 @@ bool ISimpleShader::LoadShaderFile(LPCWSTR shaderFile)
 		newBuffDesc.CPUAccessFlags = 0;
 		newBuffDesc.MiscFlags = 0;
 		newBuffDesc.StructureByteStride = 0;
-		device->CreateBuffer(&newBuffDesc, 0, &constantBuffers[b].ConstantBuffer);
+		device->CreateBuffer(&newBuffDesc, 0, &constantBuffers[scalarCBCount].ConstantBuffer);
 
 		// Set up the data buffer for this constant buffer
-		constantBuffers[b].Size = bufferDesc.Size;
-		constantBuffers[b].LocalDataBuffer = new unsigned char[bufferDesc.Size];
-		ZeroMemory(constantBuffers[b].LocalDataBuffer, bufferDesc.Size);
+		constantBuffers[scalarCBCount].Size = bufferDesc.Size;
+		constantBuffers[scalarCBCount].LocalDataBuffer = new unsigned char[bufferDesc.Size];
+		ZeroMemory(constantBuffers[scalarCBCount].LocalDataBuffer, bufferDesc.Size);
 
 		// Loop through all variables in this buffer
 		for (unsigned int v = 0; v < bufferDesc.Variables; v++)
@@ -199,9 +223,15 @@ bool ISimpleShader::LoadShaderFile(LPCWSTR shaderFile)
 
 			// Add this variable to the table and the constant buffer
 			varTable.insert(std::pair<std::string, SimpleShaderVariable>(varName, varStruct));
-			constantBuffers[b].Variables.push_back(varStruct);
+			constantBuffers[scalarCBCount].Variables.push_back(varStruct);
 		}
+
+		// Successfully processed a scalar CB
+		scalarCBCount++;
 	}
+
+	// Update the constant buffer count to only include scalar CB's
+	constantBufferCount = scalarCBCount;
 
 	// All set
 	refl->Release();

@@ -75,6 +75,15 @@ Game::~Game()
 	if (sampler) { sampler->Release(); }
 	if (skyBox) { skyBox->Release(); }
 
+	// Particle stuff
+	delete particleEmitter;
+	delete particleEmitCS;
+	delete particleUpdateCS;
+	delete particleDeadListInitCS;
+	delete particleCopyDrawCountCS;
+	delete particleVS;
+	delete particlePS;
+
 	// Delete renderer
 	delete renderer;
 
@@ -212,6 +221,20 @@ void Game::Init()
 
 	pointLights.push_back(pLight);
 
+	// Set up particles
+	particleEmitter = new Emitter(
+		1000000,
+		1000000.0f, // Particles per second
+		1000.0f, // Particle lifetime
+		device,
+		context,
+		particleDeadListInitCS,
+		particleEmitCS,
+		particleUpdateCS,
+		particleCopyDrawCountCS,
+		particleVS,
+		particlePS);
+
 	// Tell the input assembler stage of the pipeline what kind of
 	// geometric primitives (points, lines or triangles) we want to draw.  
 	// Essentially: "What kind of shape should the GPU draw with our data?"
@@ -241,6 +264,30 @@ void Game::LoadShaders()
 	skyPixShader = new SimplePixelShader(device, context);
 	if (!skyPixShader->LoadShaderFile(L"Assets/ShaderObjs/x86/PixelShaderSky.cso"))
 		skyPixShader->LoadShaderFile(L"Assets/ShaderObjs/x64/PixelShaderSky.cso");
+
+	particleEmitCS = new SimpleComputeShader(device, context);
+	if (!particleEmitCS->LoadShaderFile(L"Assets/ShaderObjs/x86/ParticleEmitCS.cso"))
+		particleEmitCS->LoadShaderFile(L"Assets/ShaderObjs/x64/ParticleEmitCS.cso");
+
+	particleUpdateCS = new SimpleComputeShader(device, context);
+	if (!particleUpdateCS->LoadShaderFile(L"Assets/ShaderObjs/x86ParticleUpdateCS.cso"))
+		particleUpdateCS->LoadShaderFile(L"Assets/ShaderObjs/x64/ParticleUpdateCS.cso");
+
+	particleDeadListInitCS = new SimpleComputeShader(device, context);
+	if (!particleDeadListInitCS->LoadShaderFile(L"Assets/ShaderObjs/x86/ParticleDeadListInitCS.cso"))
+		particleDeadListInitCS->LoadShaderFile(L"Assets/ShaderObjs/x64/ParticleDeadListInitCS.cso");
+
+	particleCopyDrawCountCS = new SimpleComputeShader(device, context);
+	if (!particleCopyDrawCountCS->LoadShaderFile(L"Assets/ShaderObjs/x86/ParticleCopyDrawCountCS.cso"))
+		particleCopyDrawCountCS->LoadShaderFile(L"Assets/ShaderObjs/x64/ParticleCopyDrawCountCS.cso");
+
+	particleVS = new SimpleVertexShader(device, context);
+	if (!particleVS->LoadShaderFile(L"Assets/ShaderObjs/x86/ParticleVS.cso"))
+		particleVS->LoadShaderFile(L"Assets/ShaderObjs/x64/ParticleVS.cso");
+
+	particlePS = new SimplePixelShader(device, context);
+	if (!particlePS->LoadShaderFile(L"Assets/ShaderObjs/x86/ParticlePS.cso"))
+		particlePS->LoadShaderFile(L"Assets/ShaderObjs/x64/ParticlePS.cso");
 
 	// You'll notice that the code above attempts to load each
 	// compiled shader file (.cso) from two different relative paths.
@@ -426,8 +473,13 @@ void Game::Update(float deltaTime, float totalTime)
 	playerChar->HandleKeyboardInput(deltaTime);
 	playerChar->UpdateSpotLightPosition();
 	playerChar->UpdateLightState();
+	//XMFLOAT3 playerPos = playerChar->GetPosition();
+	//printf("\n%f %f %f", playerPos.x, playerPos.y, playerPos.z);
 
 	spotLightEntity->HandleKeyboardInputs(deltaTime);
+
+	// Handle particle update
+	particleEmitter->Update(deltaTime, totalTime);
 
 	XMFLOAT3 temp;
 	float camOffset = 6.5f;
@@ -455,9 +507,12 @@ void Game::Draw(float deltaTime, float totalTime)
 		1.0f,
 		0);
 
-	if ( curScene == GameLevel)
-		renderer->Draw(entities, skyObject, camera->GetViewMatrix(), camera->GetProjectionMatrix(), &dirLights[0], &pointLights[0], &spotLightEntity->GetSpotLight());
-
+	if (curScene == GameLevel)
+	{
+		//renderer->Draw(entities, skyObject, camera->GetViewMatrix(), camera->GetProjectionMatrix(), &dirLights[0], &pointLights[0], &spotLightEntity->GetSpotLight());
+		particleEmitter->Draw(camera, (float)width / height, (float)width, (float)height, true);
+	}
+		
 	if (curScene == Menu)
 		GUI::instance().Draw();
 

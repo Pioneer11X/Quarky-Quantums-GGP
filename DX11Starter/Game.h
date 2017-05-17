@@ -15,9 +15,11 @@
 #include "ControlledEntity.h"
 #include "Box2D\Box2D.h"
 #include "MapLoader.h"
+#include "Emitter.h"
 #include "Renderer.h"
 
 class Camera;
+class Emitter;
 
 class Game 
 	: public DXCore
@@ -104,6 +106,15 @@ private:
 
 	//SkyBox
 	ID3D11ShaderResourceView* skyBox;
+
+	// Particle stuff
+	SimpleVertexShader* particleVS;
+	SimplePixelShader* particlePS;
+	SimpleComputeShader* particleEmitCS;
+	SimpleComputeShader* particleUpdateCS;
+	SimpleComputeShader* particleDeadListInitCS;
+	SimpleComputeShader* particleCopyDrawCountCS;
+	Emitter* particleEmitter;
 
 	// Keeps track of the old mouse position.  Useful for 
 	// determining how far the mouse moved in a single frame.

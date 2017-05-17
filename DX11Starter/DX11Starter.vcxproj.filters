@@ -90,6 +90,9 @@
     <ClCompile Include="PrimitiveRenderer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Emitter.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="DXCore.h">
@@ -164,6 +167,9 @@
     <ClInclude Include="PrimitiveRenderer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Emitter.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="PixelShader.hlsl">
@@ -184,10 +190,34 @@
     <FxCompile Include="BeamPS.hlsl">
       <Filter>Shaders</Filter>
     </FxCompile>
+    <FxCompile Include="ParticleCopyDrawCountCS.hlsl">
+      <Filter>Shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="ParticleDeadListInitCS.hlsl">
+      <Filter>Shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="ParticleEmitCS.hlsl">
+      <Filter>Shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="ParticlePS.hlsl">
+      <Filter>Shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="ParticleUpdateCS.hlsl">
+      <Filter>Shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="ParticleVS.hlsl">
+      <Filter>Shaders</Filter>
+    </FxCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
     <None Include="lib\Box2D.idb" />
+    <None Include="ParticleIncludes.hlsli">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="SimplexNoise.hlsli">
+      <Filter>Shaders</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Library Include="lib\Box2D.lib" />
