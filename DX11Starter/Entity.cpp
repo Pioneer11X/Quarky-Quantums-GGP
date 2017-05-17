@@ -32,6 +32,7 @@ Entity::Entity(Mesh * Object, Material* materialInput, float _posX, float _posY,
 
 	if (world != nullptr) {
 		pb = new PhysicsObject(world, isDynamic, hasTrigger, _posX, _posY, _sizeX, _sizeY, _nameForPhysicsBody);
+		pb->GetPhysicsBody()->SetUserData(this);
 	}
 
 	
