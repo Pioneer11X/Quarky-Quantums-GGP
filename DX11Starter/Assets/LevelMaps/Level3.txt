@@ -18,4 +18,5 @@ B        B
 B      P B 
 B        B
 B  X     B
+BPPPPPPPPB
 BBBBBBBBBB
